@@ -156,8 +156,8 @@ public class CardEdge extends Applet
 	private static final byte INS_VERIFY_PIN = (byte)0x42;
 	private static final byte INS_CHANGE_PIN = (byte)0x44;
 	private static final byte INS_UNBLOCK_PIN = (byte)0x46;
-	private static final byte INS_LOGOUT_ALL = (byte)0x60;
-	private static final byte INS_GET_CHALLENGE = (byte)0x62;
+	private static final byte INS_LOGOUT_ALL = (byte)0x70;
+	private static final byte INS_GET_CHALLENGE = (byte)0x72;
 	private static final byte INS_EXT_AUTH = (byte)0x38;
 	private static final byte INS_CREATE_OBJ = (byte)0x5A;
 	private static final byte INS_DELETE_OBJ = (byte)0x52;
