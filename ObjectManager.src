@@ -1,6 +1,6 @@
-package com.sun.javacard.samples.CardEdge;
+package JAVA_PACKAGE;
 
-import com.sun.javacard.samples.CardEdge.MemoryManager;
+import JAVA_PACKAGE.MemoryManager;
 
 import javacard.framework.Util;
 import javacard.framework.ISOException;
