@@ -18,14 +18,14 @@ JAVA_PACKAGE=com.sun.javacard.samples.$(JAVA_APPLET)
 
 #   Selectively enable algorithms (what is disabled returns SW_UNSUPPORTED_FEATURE)
 # CPPFLAGS += -DWITH_DSA -DWITH_RSA -DWITH_DES -DWITH_3DES -DWITH_3DES3
-CPPFLAGS += -DWITH_DSA -DWITH_RSA -DWITH_DES -DWITH_3DES
+CPPFLAGS += -DWITH_RSA -DWITH_DES -DWITH_3DES
 
 #   Selectively enable directions (what is disabled returns SW_UNSUPPORTED_FEATURE)
 # CPPFLAGS += -DWITH_ENCRYPT -DWITH_DECRYPT -DWITH_SIGN
 CPPFLAGS += -DWITH_ENCRYPT -DWITH_DECRYPT -DWITH_SIGN
 
 #   Disable ExtAuthenticate command, if unused and more space is required on board
-CPPFLAGS += -DWITH_EXT_AUTH
+#CPPFLAGS += -DWITH_EXT_AUTH
 
 #   Disable PIN Policy enforcement, if unneeded and more space is required on board
 CPPFLAGS += -UWITH_PIN_POLICY
@@ -45,7 +45,7 @@ JAVADOC_OUTPUT_DIR=doc
 CPPFLAGS += -P
 # Enable redundant debug checks (increases Applet size, decreases performance)
 # When such a check fails, we get a SW_INTERNAL_ERROR
-CPPFLAGS += -DAPPLET_DEBUG=1
+#CPPFLAGS += -DAPPLET_DEBUG=1
 
 # Set version information for GetStatus
 CPPFLAGS += -DAPPLET_VERSION_MAJOR=$(APPLET_VERSION_MAJOR)
@@ -61,7 +61,7 @@ CPPFLAGS += -DJAVA_PACKAGE=$(JAVA_PACKAGE)
 CPPFLAGS += -DJAVA_APPLET=$(JAVA_APPLET)
 
 JCFLAGS=-g
-JCCLASSPATH=-classpath /home/tommaso/jc211/bin/api21.jar:$(shell pwd)
+JCCLASSPATH=-classpath /home/ehersked/jc211/bin/jc_api_21.jar:$(shell pwd)
 
 all: CardEdge.java MemoryManager.java ObjectManager.java
 

@@ -146,6 +146,9 @@ public class JAVA_APPLET extends javacard.framework.Applet {
      ****************************************/
 
     // Keys' use and management
+    private final static byte INS_SETUP =	(byte) 0x2A;
+
+    // Keys' use and management
     private final static byte INS_GEN_KEYPAIR =	(byte) 0x30;
     private final static byte INS_IMPORT_KEY =	(byte) 0x32;
     private final static byte INS_EXPORT_KEY =	(byte) 0x34;
@@ -244,19 +247,14 @@ public class JAVA_APPLET extends javacard.framework.Applet {
     // Cipher Modes admitted in ComputeCrypt()
     private final static byte CM_RSA_NOPAD =	(byte) 0x00;
     private final static byte CM_RSA_PAD_PKCS1 =(byte) 0x01;
-    private final static byte CM_DSA_SHA =	(byte) 0x10;
+    private final static byte CM_DSA_SHA = (byte) 0x10;
     private final static byte CM_DES_CBC_NOPAD =(byte) 0x20;
     private final static byte CM_DES_ECB_NOPAD =(byte) 0x21;
+    private final static byte DL_APDU = (byte) 0x01;
+    private final static byte DL_OBJECT = (byte) 0x02;
+    private final static byte LIST_OPT_RESET = (byte) 0x00;
+    private final static byte LIST_OPT_NEXT = (byte) 0x01;
 
-    // Data Locations admitted in ComputeCrypt()
-    private final static byte DL_APDU =		(byte) 0x01;
-    private final static byte DL_OBJECT =	(byte) 0x02;
-
-    /** List option */
-    private final static byte LIST_OPT_RESET =	(byte) 0x00;
-    private final static byte LIST_OPT_NEXT =	(byte) 0x01;
-
-    // ********** Key generation options **********
     private final static byte OPT_DEFAULT =
 	(byte) 0x00; // For every algorithm: use default JavaCard generation parameters
     private final static byte OPT_RSA_PUB_EXP =
@@ -320,32 +318,18 @@ public class JAVA_APPLET extends javacard.framework.Applet {
      * control, so we don't have to ping each PIN object	*/
     private short logged_ids;
 
+    /* For the setup function - should only be called once      */
+    private boolean setupDone = false;
+    private byte create_object_ACL;
+    private byte create_key_ACL;
+    private byte create_pin_ACL;
+
     /****************************************
      *               Methods                *
      ****************************************/
 
     private JAVA_APPLET (byte[] bArray, short bOffset,byte bLength){
-	byte i;
-	mem = new MemoryManager((short) OBJECT_MEMORY_SIZE);
-	om = new ObjectManager(mem);
-	keys = new Key[MAX_NUM_KEYS];
-	keyACLs = new byte[(short) (MAX_NUM_KEYS * KEY_ACL_SIZE)];
-	keyTries = new byte[MAX_NUM_KEYS];
-	for (i = (byte) 0; i < (byte) MAX_NUM_KEYS; i++)
-  	    keyTries[i] = MAX_KEY_TRIES;
-	keyPairs = new KeyPair[MAX_NUM_KEYS];
-	ciphers = new Cipher[MAX_NUM_KEYS];
-	signatures = new Signature[MAX_NUM_KEYS];
-	ciph_dirs = new byte[MAX_NUM_KEYS];
-	for (i = (byte) 0; i < (byte) MAX_NUM_KEYS; i++)
-	    ciph_dirs[i] = (byte) 0xFF;
-	pins = new OwnerPIN[MAX_NUM_PINS];
-	ublk_pins = new OwnerPIN[MAX_NUM_PINS];
-
-	// TODO: pass in starting PIN setting with instantiation
-	/* Setting initial PIN n.0 value */
-	pins[0] = new OwnerPIN((byte) 5, pinMaxSize);
-	PIN_INIT_VALUE = new byte[8];
+        PIN_INIT_VALUE = new byte[8];
 
 	/* Muscle00 satisfies all current policies (if charset allows it) */
 	PIN_INIT_VALUE[0] = (byte)'M';
@@ -358,27 +342,20 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 	PIN_INIT_VALUE[7] = (byte)'0';
 
 	/* If init pin code does not satisfy policies, internal error */
-	if (! CheckPINPolicy(PIN_INIT_VALUE, (short) 0, (byte) PIN_INIT_VALUE.length))
+	if (!CheckPINPolicy(PIN_INIT_VALUE, (short) 0, 
+	     	            (byte) PIN_INIT_VALUE.length))
 	    ISOException.throwIt(SW_INTERNAL_ERROR);
 
-	pins[0].update(PIN_INIT_VALUE, (short) 0, (byte) PIN_INIT_VALUE.length);
+        ublk_pins = new OwnerPIN[MAX_NUM_PINS];
+	pins = new OwnerPIN[MAX_NUM_PINS];
 
-	/* Muscle01 satisfies all current policies (if charset allows it) */
-	PIN_INIT_VALUE[7] = (byte)'1';
-	ublk_pins[0] = new OwnerPIN((byte) 5, pinMaxSize);
-	/* If init unblock code does not satisfy policies, internal error */
-	if (! CheckPINPolicy(PIN_INIT_VALUE, (short) 0, (byte) PIN_INIT_VALUE.length))
-	    ISOException.throwIt(SW_INTERNAL_ERROR);
+	// TODO: pass in starting PIN setting with instantiation
+	/* Setting initial PIN n.0 value */
+	pins[0] = new OwnerPIN((byte) 3, pinMaxSize);
+	pins[0].update(PIN_INIT_VALUE, (short) 0, 
+		       (byte) PIN_INIT_VALUE.length);
 
-	ublk_pins[0].update(PIN_INIT_VALUE, (short) 0, (byte) PIN_INIT_VALUE.length);
 
-	logged_ids = 0x00;		// No identities logged in
-	getChallengeDone = false;	// No GetChallenge() issued so far
-	randomData = null;		// Will be created on demand when needed
-
-  	STD_PUBLIC_ACL = new byte[KEY_ACL_SIZE];
-  	for (i = (byte) 0; i < (byte) KEY_ACL_SIZE; i += (short) 2)
-  	    Util.setShort(STD_PUBLIC_ACL, i, (short)0x0000);
     } // end of the constructor
 
     public static void install(byte[] bArray, short bOffset, byte bLength){
@@ -387,7 +364,8 @@ public class JAVA_APPLET extends javacard.framework.Applet {
         if (bArray[bOffset] == 0)
 	    wal.register();
 	else
-	    wal.register(bArray, (short) (bOffset + 1), (byte)(bArray[bOffset]));
+	    wal.register(bArray, (short) (bOffset + 1), 
+			 (byte)(bArray[bOffset]));
     } // end of install method
 
     public boolean select() {
@@ -395,18 +373,20 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 	   Do session cleanup operation */
 
 	// Destroy the IO objects (if they exist)
-	om.destroyObject(IN_OBJECT_CLA, IN_OBJECT_ID, true);
-	om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, true);
-
-	LogOutAll();
+	if (setupDone) {
+	    om.destroyObject(IN_OBJECT_CLA, IN_OBJECT_ID, true);
+	    om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, true);
+        }
+        LogOutAll();
 	return true;
     }// end of select method
 
     public void deselect() {
 	// Destroy the IO objects (if they exist)
-	om.destroyObject(IN_OBJECT_CLA, IN_OBJECT_ID, true);
-	om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, true);
-
+	if (setupDone) {
+	    om.destroyObject(IN_OBJECT_CLA, IN_OBJECT_ID, true);
+	    om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, true);
+	}
 	LogOutAll();
     }
 
@@ -436,7 +416,18 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 	if (buffer[ISO7816.OFFSET_CLA] != CardEdge_CLA)
 	    ISOException.throwIt
 		(ISO7816.SW_CLA_NOT_SUPPORTED);
-	switch (buffer[ISO7816.OFFSET_INS]) {
+
+	byte ins = buffer[ISO7816.OFFSET_INS];
+	if (!setupDone && (ins != (byte) INS_SETUP))
+	    ISOException.throwIt(SW_UNSUPPORTED_FEATURE);
+
+	if (setupDone && (ins == (byte) INS_SETUP))
+	    ISOException.throwIt(ISO7816.SW_INS_NOT_SUPPORTED);
+	
+	switch (ins) {
+	case INS_SETUP:
+	    setup(apdu, buffer);
+	    break;
 	case INS_GEN_KEYPAIR:
 	    GenerateKeyPair(apdu, buffer);
 	    break;
@@ -503,6 +494,105 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 	};
     }	// end of process method
 
+    /********** SETUP FUNCTION *********/
+    private void setup(APDU apdu, byte[] buffer) {
+	short bytesLeft = Util.makeShort((byte) 0x00,
+			    buffer[ISO7816.OFFSET_LC]);
+	if (bytesLeft != apdu.setIncomingAndReceive())
+	    ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
+
+        short base = (short) (ISO7816.OFFSET_CDATA);
+
+	byte numBytes = buffer[base++];
+
+	OwnerPIN pin = pins[0];
+
+	if (!CheckPINPolicy(buffer, base, numBytes))
+	    ISOException.throwIt(SW_INVALID_PARAMETER);
+
+	if (pin.getTriesRemaining() == (byte) 0x00)
+	    ISOException.throwIt(SW_IDENTITY_BLOCKED);
+
+	if (!pin.check(buffer, base, numBytes))
+	    ISOException.throwIt(SW_AUTH_FAILED);
+
+	base += numBytes;
+
+	byte pin_tries = buffer[base++];
+	byte ublk_tries = buffer[base++];
+	numBytes = buffer[base++];
+
+	if (!CheckPINPolicy(buffer, base, numBytes))
+	    ISOException.throwIt(SW_INVALID_PARAMETER);
+
+	pins[0] = new OwnerPIN(pin_tries, pinMaxSize);
+	pins[0].update(buffer, base, numBytes);
+
+	base += numBytes;
+	numBytes = buffer[base++];
+
+	if (!CheckPINPolicy(buffer, base, numBytes))
+	    ISOException.throwIt(SW_INVALID_PARAMETER);
+
+	ublk_pins[0] = new OwnerPIN(ublk_tries, pinMaxSize);
+	ublk_pins[0].update(buffer, base, numBytes);
+
+	base += numBytes;
+
+	pin_tries = buffer[base++];
+	ublk_tries = buffer[base++];
+	numBytes = buffer[base++];
+
+	if (!CheckPINPolicy(buffer, base, numBytes))
+	    ISOException.throwIt(SW_INVALID_PARAMETER);
+
+	pins[1] = new OwnerPIN(pin_tries, pinMaxSize);
+	pins[1].update(buffer, base, numBytes);
+
+	base += numBytes;
+	numBytes = buffer[base++];
+
+	if (!CheckPINPolicy(buffer, base, numBytes))
+	    ISOException.throwIt(SW_INVALID_PARAMETER);
+
+	ublk_pins[1] = new OwnerPIN(ublk_tries, pinMaxSize);
+	ublk_pins[1].update(buffer, base, numBytes);
+	base += numBytes;
+	
+        base += (short) 2;
+        short mem_size = Util.getShort(buffer, base);
+        base += (short) 2;
+
+	create_object_ACL = buffer[base++];
+	create_key_ACL = buffer[base++];
+	create_pin_ACL = buffer[base++];
+
+	mem = new MemoryManager((short) mem_size);
+	om = new ObjectManager(mem);
+
+	keys = new Key[MAX_NUM_KEYS];
+	keyACLs = new byte[(short) (MAX_NUM_KEYS * KEY_ACL_SIZE)];
+	keyTries = new byte[MAX_NUM_KEYS];
+	for (byte i = (byte) 0; i < (byte) MAX_NUM_KEYS; i++)
+  	    keyTries[i] = MAX_KEY_TRIES;
+	keyPairs = new KeyPair[MAX_NUM_KEYS];
+	ciphers = new Cipher[MAX_NUM_KEYS];
+	signatures = new Signature[MAX_NUM_KEYS];
+	ciph_dirs = new byte[MAX_NUM_KEYS];
+	for (byte i = (byte) 0; i < (byte) MAX_NUM_KEYS; i++)
+	    ciph_dirs[i] = (byte) 0xFF;
+
+	logged_ids = 0x00;		// No identities logged in
+	getChallengeDone = false;	// No GetChallenge() issued so far
+	randomData = null;		// Will be created on demand when needed
+
+  	STD_PUBLIC_ACL = new byte[KEY_ACL_SIZE];
+  	for (byte i = (byte) 0; i < (byte) KEY_ACL_SIZE; i += (short) 2)
+  	    Util.setShort(STD_PUBLIC_ACL, i, (short)0x0000);
+
+	setupDone = true;
+    }
+
     /********** UTILITY FUNCTIONS **********/
 
     /* SendData() wraps the setGoing(), setLength(), .. stuff
@@ -556,7 +646,9 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 	    // We have to create the Key
 
 	    /* Check that Identity n.0 is logged */
-	    if ((logged_ids & 1) == 0x00)
+	    if ((create_key_ACL == (byte) 0xFF) ||
+		(((logged_ids & create_key_ACL) == (short) 0x0000) &&
+		(create_key_ACL != (byte) 0x00)))
 		ISOException.throwIt(SW_UNAUTHORIZED);
 
 	    keys[key_nb] = KeyBuilder.buildKey(jc_key_type, key_size, false);
@@ -1818,7 +1910,9 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 	byte num_tries = buffer[ISO7816.OFFSET_P2];
 
 	/* Check that Identity n.0 is logged */
-	if (! pins[0].isValidated())
+	if ((create_pin_ACL == (byte) 0xFF) || (
+	    ((logged_ids & create_pin_ACL) == (short) 0x0000) &&
+	     (create_pin_ACL != (byte) 0x00)))
 	    ISOException.throwIt(SW_UNAUTHORIZED);
 
 	if ((pin_nb < 0) || (pin_nb >= MAX_NUM_PINS)
@@ -1980,6 +2074,11 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 				 buffer[ISO7816.OFFSET_LC]);
 	if (bytesLeft != apdu.setIncomingAndReceive())
 	    ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
+
+	if ((create_object_ACL == (byte) 0xFF) || (
+	    ((logged_ids & create_object_ACL) == (short) 0x0000) &&
+	     (create_object_ACL != (byte) 0x00)))
+	    ISOException.throwIt(SW_UNAUTHORIZED);
 
 	// ID + Size + ACL = 14 bytes
 	if (bytesLeft != (short) (4 + 4 + ObjectManager.OBJ_ACL_SIZE))
@@ -2256,20 +2355,21 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 	// Allow size = 0 for only seeding purposes
 	if (size != (short) 0x0000) {
 	    // Automatically throws exception if no memory
-	    short base = om.createObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, (short) (size + 2),
-					 getRestrictedACL(), (short) 0);
+	    short base = om.createObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, (short) (size + 2), getRestrictedACL(), (short) 0);
 	    mem.setShort(base, size);
 	    randomData.generateData(mem.getBuffer(), (short) (base + 2), size);
 	    /* Remember that out object contains getChallenge data (to avoid attacks
-	     * pretending to write the out object before extAuth) */
+	    * pretending to write the out object before extAuth) */
 	    getChallengeDone = true;
 	    // Actually return data in APDU only if DL_APDU specified.
 	    if (data_loc == DL_APDU) {
 		sendData(apdu, mem.getBuffer(), base, (short) (size + 2));
 		/* Don't destroy out object ! Generated data is needed in ExtAuth ! */
+		/* Not if running without external authentication */
+		om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, true);
 	    }
-	}
-    }
+     }
+ }
 
 #ifdef WITH_EXT_AUTH
     private void ExternalAuthenticate(APDU apdu, byte[] buffer) {
