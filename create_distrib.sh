@@ -28,7 +28,7 @@ set -e
 
 # CVS
 echo -n "Generating CVS Changelog..."
-#rcs2log > Changelog.cvs
+rcs2log | perl -pe 's+/cvsroot/muscleplugins/MCardApplet/++g;' > Changelog.cvs
 echo "done"
 
 present_files=$(tempfile)
