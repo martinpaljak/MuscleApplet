@@ -30,7 +30,12 @@ fi
 
 # doc
 echo -n "Generating documentation..."
-./doc/generate.sh &> /dev/null
+( cd doc  && ./generate.sh &> /dev/null )
+echo "done"
+
+# CVS
+echo -n "Generating CVS Changelog..."
+rcs2log > Changelog.cvs
 echo "done"
 
 present_files=$(tempfile)
