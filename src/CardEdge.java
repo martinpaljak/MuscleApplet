@@ -407,31 +407,12 @@ public class CardEdge extends Applet
 	}
 
 	/**
-	 * APDU handlers
+	 * OP Initialisation
 	 */
-	private void ComputeCrypt(APDU apdu, byte buffer[])
-	{
-		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-
-		if (bytesLeft != apdu.setIncomingAndReceive())
-			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-
-		byte key_nb = buffer[ISO7816.OFFSET_P1];
-
-		if (key_nb < 0 || key_nb >= MAX_NUM_KEYS || keys[key_nb] == null)
-			ISOException.throwIt((short)SW_INCORRECT_P1);
-
-		if (!authorizeKeyUse(key_nb))
-			ISOException.throwIt((short)SW_UNAUTHORIZED);
-
-		byte op = buffer[ISO7816.OFFSET_P2];
-		Key key = keys[key_nb];
-label0:
-		switch(op)
-		{
-		case OP_INIT:
-		{
-			if (bytesLeft < 3)
+ 	private void OpInit(APDU apdu, byte buffer[], short bytesLeft,
+		byte key_nb, byte op, Key key)
+        {
+                        if (bytesLeft < 3)
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
 
 			byte ciph_mode = buffer[ISO7816.OFFSET_CDATA];
@@ -576,12 +557,14 @@ label0:
 				break;
 			}
 			}
-			break;
-		}
+        }
 
-		case OP_PROCESS:
-		case OP_FINALIZE:
-		{
+	/**
+	 * OP Process or Finilize
+	 */
+	private void OpProcessFinalize(APDU apdu, byte buffer[],
+		short bytesLeft, byte key_nb, byte op, Key key)
+        {
 			byte ciph_dir = ciph_dirs[key_nb];
 			switch(ciph_dir)
 			{
@@ -623,7 +606,7 @@ label0:
 				if (op == 2)
 				{
 					sign.update(src_buff, (short)(src_base + 2), size);
-					break label0;
+					return;
 				}
 				if (ciph_dir == 1)
 				{
@@ -644,7 +627,7 @@ label0:
 						sendData(apdu, mem.getBuffer(), dst_base, (short)(sign_size + 2));
 						om.destroyObject((short)-1, (short)-1, true);
 					}
-					break label0;
+					return;
 				}
 				if (src_avail < (short)(2 + size + 2))
 					ISOException.throwIt((short)SW_INVALID_PARAMETER);
@@ -659,7 +642,7 @@ label0:
 				if (!sign.verify(src_buff, (short)(src_base + 2), size, src_buff, (short)(src_base + 2 + size + 2), sign_size))
 					ISOException.throwIt((short)SW_SIGNATURE_INVALID);
 
-				break label0;
+				return;
 			}
 
 			case CD_ENCRYPT:
@@ -727,14 +710,50 @@ label0:
 				break;
 			}
 			}
-			break;
-		}
+        }
 
-		default:
+
+	/**
+	 * APDU handlers
+	 */
+ 	private void ComputeCrypt(APDU apdu, byte buffer[])
+	{
+		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
+
+		if (bytesLeft != apdu.setIncomingAndReceive())
+			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
+
+		byte key_nb = buffer[ISO7816.OFFSET_P1];
+
+		if (key_nb < 0 || key_nb >= MAX_NUM_KEYS || keys[key_nb] == null)
+			ISOException.throwIt((short)SW_INCORRECT_P1);
+
+		if (!authorizeKeyUse(key_nb))
+			ISOException.throwIt((short)SW_UNAUTHORIZED);
+
+		byte op = buffer[ISO7816.OFFSET_P2];
+		Key key = keys[key_nb];
+
+		switch(op)
 		{
-			ISOException.throwIt((short)SW_INCORRECT_P2);
-			break;
-		}
+			case OP_INIT:
+			{
+				OpInit(apdu, buffer, bytesLeft, key_nb, op, key);
+				break;
+			}
+
+			case OP_PROCESS:
+			case OP_FINALIZE:
+			{
+				OpProcessFinalize(apdu, buffer, bytesLeft, key_nb, op, key);
+				break;
+			}
+
+			default:
+			{
+				ISOException.throwIt((short)SW_INCORRECT_P2);
+				break;
+			}
 		}
 	}
 
