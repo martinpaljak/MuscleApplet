@@ -41,7 +41,7 @@ set -e
 # print executed commands
 set -x
 
-$CONVERTER -verbose -classdir out -exportpath $JC21/api21_export_files \
+$CONVERTER -verbose -classdir out -exportpath $APIDIR \
   -applet $APPLET_AID $APPLET_NAME -out CAP EXP JCA \
   $APPLET $PACKAGE_AID $VERSION
 

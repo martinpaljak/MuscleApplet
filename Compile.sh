@@ -33,5 +33,5 @@ fi
 # print executed commands
 set -x
 
-$JAVAC -verbose -classpath $JC21/lib/api21.jar -g -d "$OUTPUT_DIR" $APPLET_SRC
+$JAVAC -verbose -classpath $CLASSPATH:$JC21/lib/api21.jar -g -d "$OUTPUT_DIR" $APPLET_SRC
 
