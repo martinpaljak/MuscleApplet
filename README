@@ -1,0 +1,65 @@
+/************************************************************
+    MUSCLE SmartCard Development
+	Package:	CardEdgeApplet
+	Type:		Java precompiled binaries
+	Description:	CardEdge implementation with JavaCard
+	Authors:	Tommaso Cucinotta <cucinotta@sssup.it>
+			David Corcoran <corcoran@linuxnet.com>
+			See AUTHORS file for further details
+	Date:		October 2001
+	License:	See LICENSE file
+************************************************************/
+
+
+REQUIREMENTS
+============================================================
+In order to use this program, you must have a JavaCard 2.1.1
+compliant smart card and a supported smart card reader.
+You must also have all the software required to load a Java
+Card Applet on your smartcard.
+Different smart card vendors provide emulators for their own
+smart cards. You can also try loading this program into an
+emulated card. In this case you don't need cards nor readers
+to be connected to your system.
+
+
+DESCRIPTION
+============================================================
+This package contains precompiled binaries for the Card Edge
+Applet, a free implementation of the Cryptographic Card Edge
+Definition for Java Enabled Smartcards.
+
+  http://www.linuxnet.com/applets.html
+
+Note that different versions of this Applet could be released,
+with different features disabled, in order to let you save
+space on the card if your application does not require those
+features at all.
+
+
+ADDITIONAL FEATURES
+============================================================
+This Applet actually supports some pin policy enforcement.
+Checks are made on the pin size, character set and mix of
+characters.
+The exact pin policy depends on parameters provided at
+instantiation time.
+
+
+KNOWN LIMITATIONS
+============================================================
+This Applet has been tested with Schlumberger Cyberflex
+Access 32K cards, and is known to work with most cryptographic
+features involving RSA and DES keys. DSA testing still needs
+to be done with cards supporting it.
+
+
+KNOWN BUGS
+============================================================
+None at the moment (05-Oct-2001)
+
+
+SUPPORT
+============================================================
+If you need any further information, please contact us using
+the public mailing list for the M.U.S.C.L.E. project.

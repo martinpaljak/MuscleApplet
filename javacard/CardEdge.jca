@@ -1,0 +1,6333 @@
+// converted by version 1.1
+// on Tue Oct 16 20:28:14 CDT 2001
+
+.package com/sun/javacard/samples/CardEdge {
+	.aid 0xA0:0x0:0x0:0x0:0x1;
+	.version 1.0;
+
+	.imports {
+		0xA0:0x0:0x0:0x0:0x62:0x1:0x1 1.0;		//javacard/framework
+		0xA0:0x0:0x0:0x0:0x62:0x1:0x2 1.1;		//javacard/security
+		0xA0:0x0:0x0:0x0:0x62:0x2:0x1 1.1;		//javacardx/crypto
+		0xA0:0x0:0x0:0x0:0x62:0x0:0x1 1.0;		//java/lang
+	}
+
+	.applet {
+		0xA0:0x0:0x0:0x0:0x1:0x1 CardEdge;
+	}
+
+	.constantPool {
+		// 0
+		instanceFieldRef MemoryManager CardEdge/mem;
+		// 1
+		instanceFieldRef ObjectManager CardEdge/om;
+		// 2
+		instanceFieldRef 1.0[] CardEdge/keys;
+		// 3
+		instanceFieldRef byte[] CardEdge/keyACLs;
+		// 4
+		instanceFieldRef byte[] CardEdge/keyTries;
+		// 5
+		instanceFieldRef 1.16[] CardEdge/keyPairs;
+		// 6
+		instanceFieldRef 2.1[] CardEdge/ciphers;
+		// 7
+		instanceFieldRef 1.15[] CardEdge/signatures;
+		// 8
+		instanceFieldRef byte[] CardEdge/ciph_dirs;
+		// 9
+		instanceFieldRef 0.9[] CardEdge/pins;
+		// 10
+		instanceFieldRef 0.9[] CardEdge/ublk_pins;
+		// 11
+		instanceFieldRef short CardEdge/logged_ids;
+		// 12
+		instanceFieldRef boolean CardEdge/getChallengeDone;
+		// 13
+		instanceFieldRef 1.14 CardEdge/randomData;
+		// 14
+		instanceFieldRef byte CardEdge/key_it;
+		// 15
+		instanceFieldRef byte[] MemoryManager/ptr;
+		// 16
+		instanceFieldRef short MemoryManager/free_head;
+		// 17
+		instanceFieldRef MemoryManager ObjectManager/mem;
+		// 18
+		instanceFieldRef short ObjectManager/obj_list_head;
+		// 19
+		instanceFieldRef short ObjectManager/it;
+		// 20
+		classRef ObjectManager;
+		// 21
+		staticMethodRef 0.9.0(BB)V;		// javacard/framework/OwnerPIN.<init>(BB)V
+		// 22
+		staticFieldRef byte[] CardEdge/PIN_INIT_VALUE;
+		// 23
+		staticMethodRef CardEdge/CheckPINPolicy([BSB)Z;
+		// 24
+		staticMethodRef 0.7.1(S)V;		// javacard/framework/ISOException.throwIt(S)V
+		// 25
+		virtualMethodRef 0.9.8([BSB)V;		// javacard/framework/OwnerPIN.update([BSB)V
+		// 26
+		classRef 1.16;		// javacard/security/KeyPair
+		// 27
+		staticMethodRef ObjectManager/<init>(Lcom/sun/javacard/samples/CardEdge/MemoryManager;)V;
+		// 28
+		classRef 2.1;		// javacardx/crypto/Cipher
+		// 29
+		staticFieldRef byte[] CardEdge/STD_PUBLIC_ACL;
+		// 30
+		staticMethodRef 0.16.6([BSS)S;		// javacard/framework/Util.setShort([BSS)S
+		// 31
+		classRef CardEdge;
+		// 32
+		staticMethodRef CardEdge/<init>([BSB)V;
+		// 33
+		virtualMethodRef 0.3.1()V;		// javacard/framework/Applet.register()V
+		// 34
+		virtualMethodRef 0.3.2([BSB)V;		// javacard/framework/Applet.register([BSB)V
+		// 35
+		virtualMethodRef ObjectManager/destroyObject(SSZ)V;
+		// 36
+		staticMethodRef CardEdge/LogOutAll()V;
+		// 37
+		virtualMethodRef 0.3.3()Z;		// javacard/framework/Applet.selectingApplet()Z
+		// 38
+		virtualMethodRef 0.10.1()[B;		// javacard/framework/APDU.getBuffer()[B
+		// 39
+		staticMethodRef CardEdge/GenerateKeyPair(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 40
+		staticMethodRef CardEdge/ImportKey(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 41
+		staticMethodRef CardEdge/ExportKey(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 42
+		staticMethodRef CardEdge/ComputeCrypt(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 43
+		staticMethodRef CardEdge/VerifyPIN(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 44
+		staticMethodRef CardEdge/CreatePIN(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 45
+		staticMethodRef CardEdge/ChangePIN(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 46
+		staticMethodRef CardEdge/UnblockPIN(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 47
+		staticMethodRef CardEdge/GetChallenge(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 48
+		staticMethodRef CardEdge/ExternalAuthenticate(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 49
+		staticMethodRef CardEdge/CreateObject(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 50
+		staticMethodRef CardEdge/DeleteObject(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 51
+		staticMethodRef CardEdge/ReadObject(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 52
+		staticMethodRef CardEdge/WriteObject(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 53
+		staticMethodRef CardEdge/ListPINs(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 54
+		staticMethodRef CardEdge/ListObjects(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 55
+		staticMethodRef CardEdge/ListKeys(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 56
+		staticMethodRef CardEdge/GetStatus(Ljavacard/framework/APDU;[B)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 57
+		staticMethodRef 0.16.2([BS[BSS)S;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+		// 58
+		virtualMethodRef 0.10.8(SS)V;		// javacard/framework/APDU.setOutgoingAndSend(SS)V
+		// 59
+		staticMethodRef 2.1.0(BZ)Ljavacardx/crypto/Cipher;;		// javacardx/crypto/Cipher.getInstance(BZ)Ljavacardx/crypto/Cipher;
+			.descriptor	Ljavacardx/crypto/Cipher;	2.1;
+
+		// 60
+		virtualMethodRef 2.1.2()B;		// javacardx/crypto/Cipher.getAlgorithm()B
+		// 61
+		staticMethodRef 1.15.0(BZ)Ljavacard/security/Signature;;		// javacard/security/Signature.getInstance(BZ)Ljavacard/security/Signature;
+			.descriptor	Ljavacard/security/Signature;	1.15;
+
+		// 62
+		virtualMethodRef 1.15.1()B;		// javacard/security/Signature.getAlgorithm()B
+		// 63
+		staticMethodRef CardEdge/keyType2JCType(B)B;
+		// 64
+		staticMethodRef 1.13.0(BSZ)Ljavacard/security/Key;;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+			.descriptor	Ljavacard/security/Key;	1.0;
+
+		// 65
+		staticMethodRef 0.16.4([BS)S;		// javacard/framework/Util.getShort([BS)S
+		// 66
+		staticFieldRef byte[] CardEdge/acl;
+		// 67
+		staticMethodRef 0.16.5(BB)S;		// javacard/framework/Util.makeShort(BB)S
+		// 68
+		virtualMethodRef 0.10.6()S;		// javacard/framework/APDU.setIncomingAndReceive()S
+		// 69
+		virtualMethodRef CardEdge/authorizeKeyUse(B)Z;
+		// 70
+		virtualMethodRef MemoryManager/getBuffer()[B;
+		// 71
+		virtualMethodRef ObjectManager/getBaseAddress(SS)S;
+		// 72
+		virtualMethodRef ObjectManager/getSizeFromAddress(S)S;
+		// 73
+		staticMethodRef CardEdge/getSignature(BB)Ljavacard/security/Signature;;
+			.descriptor	Ljavacard/security/Signature;	1.15;
+
+		// 74
+		virtualMethodRef 1.15.3(Ljavacard/security/Key;B)V;		// javacard/security/Signature.init(Ljavacard/security/Key;B)V
+			.descriptor	Ljavacard/security/Key;	1.0;
+
+		// 75
+		virtualMethodRef 1.15.4(Ljavacard/security/Key;B[BSS)V;		// javacard/security/Signature.init(Ljavacard/security/Key;B[BSS)V
+			.descriptor	Ljavacard/security/Key;	1.0;
+
+		// 76
+		staticMethodRef CardEdge/getCipher(BB)Ljavacardx/crypto/Cipher;;
+			.descriptor	Ljavacardx/crypto/Cipher;	2.1;
+
+		// 77
+		virtualMethodRef 2.1.3(Ljavacard/security/Key;B)V;		// javacardx/crypto/Cipher.init(Ljavacard/security/Key;B)V
+			.descriptor	Ljavacard/security/Key;	1.0;
+
+		// 78
+		virtualMethodRef 2.1.4(Ljavacard/security/Key;B[BSS)V;		// javacardx/crypto/Cipher.init(Ljavacard/security/Key;B[BSS)V
+			.descriptor	Ljavacard/security/Key;	1.0;
+
+		// 79
+		virtualMethodRef 1.15.6([BSS)V;		// javacard/security/Signature.update([BSS)V
+		// 80
+		virtualMethodRef 1.15.2()S;		// javacard/security/Signature.getLength()S
+		// 81
+		virtualMethodRef CardEdge/getCurrentACL()[B;
+		// 82
+		virtualMethodRef ObjectManager/createObject(SSS[BS)S;
+		// 83
+		virtualMethodRef 1.15.5([BSS[BS)S;		// javacard/security/Signature.sign([BSS[BS)S
+		// 84
+		virtualMethodRef MemoryManager/setShort(SS)V;
+		// 85
+		staticMethodRef CardEdge/sendData(Ljavacard/framework/APDU;[BSS)V;
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+		// 86
+		virtualMethodRef 1.15.7([BSS[BSS)Z;		// javacard/security/Signature.verify([BSS[BSS)Z
+		// 87
+		virtualMethodRef 2.1.5([BSS[BS)S;		// javacardx/crypto/Cipher.update([BSS[BS)S
+		// 88
+		virtualMethodRef 2.1.1([BSS[BS)S;		// javacardx/crypto/Cipher.doFinal([BSS[BS)S
+		// 89
+		staticMethodRef CardEdge/GenerateKeyPairRSA([B)V;
+		// 90
+		staticMethodRef CardEdge/GenerateKeyPairDSA([B)V;
+		// 91
+		staticMethodRef CardEdge/getKey(BBS)Ljavacard/security/Key;;
+			.descriptor	Ljavacard/security/Key;	1.0;
+
+		// 92
+		classRef 1.9;		// javacard/security/RSAPublicKey
+		// 93
+		classRef 1.2;		// javacard/security/PrivateKey
+		// 94
+		virtualMethodRef CardEdge/authorizeKeyWrite(B)Z;
+		// 95
+		staticMethodRef 0.16.1([BS[BSS)S;		// javacard/framework/Util.arrayCopy([BS[BSS)S
+		// 96
+		staticMethodRef 1.16.1(Ljavacard/security/PublicKey;Ljavacard/security/PrivateKey;)V;		// javacard/security/KeyPair.<init>(Ljavacard/security/PublicKey;Ljavacard/security/PrivateKey;)V
+			.descriptor	Ljavacard/security/PublicKey;	1.3;
+			.descriptor	Ljavacard/security/PrivateKey;	1.2;
+
+		// 97
+		virtualMethodRef 1.16.3()Ljavacard/security/PublicKey;;		// javacard/security/KeyPair.getPublic()Ljavacard/security/PublicKey;
+			.descriptor	Ljavacard/security/PublicKey;	1.3;
+
+		// 98
+		virtualMethodRef 1.16.2()Ljavacard/security/PrivateKey;;		// javacard/security/KeyPair.getPrivate()Ljavacard/security/PrivateKey;
+			.descriptor	Ljavacard/security/PrivateKey;	1.2;
+
+		// 99
+		virtualMethodRef 1.16.1()V;		// javacard/security/KeyPair.genKeyPair()V
+		// 100
+		classRef 3.2;		// java/lang/Exception
+		// 101
+		classRef 1.6;		// javacard/security/DSAPublicKey
+		// 102
+		classRef 1.5;		// javacard/security/DSAPrivateKey
+		// 103
+		staticMethodRef CardEdge/DSAGetGPQ([BSSLjavacard/security/DSAKey;)S;
+			.descriptor	Ljavacard/security/DSAKey;	1.1;
+
+		// 104
+		classRef 1.1;		// javacard/security/DSAKey
+		// 105
+		virtualMethodRef MemoryManager/getByte(S)B;
+		// 106
+		virtualMethodRef MemoryManager/getShort(S)S;
+		// 107
+		classRef 1.8;		// javacard/security/RSAPrivateKey
+		// 108
+		classRef 1.7;		// javacard/security/RSAPrivateCrtKey
+		// 109
+		classRef 1.10;		// javacard/security/DESKey
+		// 110
+		virtualMethodRef CardEdge/authorizeKeyRead(B)Z;
+		// 111
+		virtualMethodRef ObjectManager/createObjectMax(SS[BS)S;
+		// 112
+		staticMethodRef CardEdge/ThrowDeleteObjects(S)V;
+		// 113
+		virtualMethodRef MemoryManager/setByte(SB)V;
+		// 114
+		staticMethodRef CardEdge/getKeyType(Ljavacard/security/Key;)B;
+			.descriptor	Ljavacard/security/Key;	1.0;
+
+		// 115
+		virtualMethodRef ObjectManager/clampObject(SSS)Z;
+		// 116
+		virtualMethodRef 0.9.4()Z;		// javacard/framework/OwnerPIN.isValidated()Z
+		// 117
+		virtualMethodRef 0.9.2()B;		// javacard/framework/OwnerPIN.getTriesRemaining()B
+		// 118
+		virtualMethodRef 0.9.1([BSB)Z;		// javacard/framework/OwnerPIN.check([BSB)Z
+		// 119
+		staticMethodRef CardEdge/LogoutIdentity(B)V;
+		// 120
+		virtualMethodRef 0.9.6()V;		// javacard/framework/OwnerPIN.resetAndUnblock()V
+		// 121
+		virtualMethodRef ObjectManager/exists(SS)Z;
+		// 122
+		virtualMethodRef ObjectManager/authorizeDeleteFromAddress(SS)Z;
+		// 123
+		virtualMethodRef ObjectManager/authorizeReadFromAddress(SS)Z;
+		// 124
+		virtualMethodRef ObjectManager/authorizeWriteFromAddress(SS)Z;
+		// 125
+		virtualMethodRef MemoryManager/setBytes(SS[BSS)V;
+		// 126
+		virtualMethodRef 0.9.5()V;		// javacard/framework/OwnerPIN.reset()V
+		// 127
+		virtualMethodRef ObjectManager/getFirstRecord([BS)Z;
+		// 128
+		virtualMethodRef ObjectManager/getNextRecord([BS)Z;
+		// 129
+		classRef MemoryManager;
+		// 130
+		staticMethodRef 1.14.0(B)Ljavacard/security/RandomData;;		// javacard/security/RandomData.getInstance(B)Ljavacard/security/RandomData;
+			.descriptor	Ljavacard/security/RandomData;	1.14;
+
+		// 131
+		virtualMethodRef 1.14.2([BSS)V;		// javacard/security/RandomData.setSeed([BSS)V
+		// 132
+		virtualMethodRef CardEdge/getRestrictedACL()[B;
+		// 133
+		virtualMethodRef 1.14.1([BSS)V;		// javacard/security/RandomData.generateData([BSS)V
+		// 134
+		virtualMethodRef MemoryManager/alloc(S)S;
+		// 135
+		staticMethodRef 0.16.0([BS[BSS)B;		// javacard/framework/Util.arrayCompare([BS[BSS)B
+		// 136
+		virtualMethodRef MemoryManager/free(S)V;
+		// 137
+		staticMethodRef CardEdge/LoginStrongIdentity(B)V;
+		// 138
+		virtualMethodRef MemoryManager/freemem()S;
+		// 139
+		staticMethodRef 3.0.0()V;		// java/lang/Object.<init>()V
+		// 140
+		classRef 1.15;		// javacard/security/Signature
+		// 141
+		classRef 1.0;		// javacard/security/Key
+		// 142
+		staticMethodRef MemoryManager/Init(S)V;
+		// 143
+		staticMethodRef MemoryManager/<init>(S)V;
+		// 144
+		classRef 0.9;		// javacard/framework/OwnerPIN
+		// 145
+		virtualMethodRef MemoryManager/setShort(SSS)V;
+		// 146
+		virtualMethodRef MemoryManager/getMaxSize()S;
+		// 147
+		staticMethodRef ObjectManager/getEntry(SS)S;
+		// 148
+		virtualMethodRef MemoryManager/realloc(SS)Z;
+		// 149
+		virtualMethodRef MemoryManager/getShort(SS)S;
+		// 150
+		staticMethodRef ObjectManager/authorizeOp(SS)Z;
+		// 151
+		staticMethodRef 0.16.3([BSSB)S;		// javacard/framework/Util.arrayFillNonAtomic([BSSB)S
+		// 152
+		staticMethodRef 0.3.0()V;		// javacard/framework/Applet.<init>()V
+	}
+
+	.class public CardEdge 0 extends 0.3 {		// extends javacard/framework/Applet
+
+		.fields {
+			private MemoryManager mem 0;		// Lcom/sun/javacard/samples/CardEdge/MemoryManager;
+			private ObjectManager om 1;		// Lcom/sun/javacard/samples/CardEdge/ObjectManager;
+			private 1.0[] keys 2;		// [Ljavacard/security/Key;
+			private byte[] keyACLs 3;		// [B
+			private byte[] keyTries 4;		// [B
+			private 2.1[] ciphers 5;		// [Ljavacardx/crypto/Cipher;
+			private 1.15[] signatures 6;		// [Ljavacard/security/Signature;
+			private byte[] ciph_dirs 7;		// [B
+			private 1.16[] keyPairs 8;		// [Ljavacard/security/KeyPair;
+			private 1.14 randomData 9;		// Ljavacard/security/RandomData;
+			private 0.9[] pins 10;		// [Ljavacard/framework/OwnerPIN;
+			private 0.9[] ublk_pins 11;		// [Ljavacard/framework/OwnerPIN;
+			private byte key_it 12;		// B
+			private boolean getChallengeDone 13;		// Z
+			private short logged_ids 14;		// S
+			private static final byte MAX_NUM_KEYS = 8;		// B
+			private static final byte MAX_NUM_PINS = 8;		// B
+			private static final byte MAX_NUM_AUTH_KEYS = 6;		// B
+			private static final byte PIN_POLICY_SIZE = 1;		// B
+			private static final byte PIN_POLICY_CHARSET = 2;		// B
+			private static final byte PIN_POLICY_MIXED = 4;		// B
+			private static final byte PIN_CHARSET_NUMBERS = 1;		// B
+			private static final byte PIN_CHARSET_UC_LETTERS = 2;		// B
+			private static final byte PIN_CHARSET_LC_LETTERS = 4;		// B
+			private static final byte PIN_CHARSET_PUNCT = 8;		// B
+			private static final byte PIN_CHARSET_OTHERS = -128;		// B
+			private static final byte PIN_MIXED_TWO = 1;		// B
+			private static final byte PIN_MIXED_CASE = 2;		// B
+			private static final byte PIN_MIXED_ALL = 4;		// B
+			private static final byte pinPolicies = 7;		// B
+			private static final byte pinMinSize = 4;		// B
+			private static final byte pinMaxSize = 16;		// B
+			private static final byte MAX_KEY_TRIES = 5;		// B
+			private static byte[] PIN_INIT_VALUE;		// [B
+			private static final short IN_OBJECT_CLA = -1;		// S
+			private static final short IN_OBJECT_ID = -2;		// S
+			private static final short OUT_OBJECT_CLA = -1;		// S
+			private static final short OUT_OBJECT_ID = -1;		// S
+			private static final byte KEY_ACL_SIZE = 6;		// B
+			private static byte[] STD_PUBLIC_ACL;		// [B
+			private static byte[] acl;		// [B
+			private static final byte CardEdge_CLA = -80;		// B
+			private static final byte INS_GEN_KEYPAIR = 48;		// B
+			private static final byte INS_IMPORT_KEY = 50;		// B
+			private static final byte INS_EXPORT_KEY = 52;		// B
+			private static final byte INS_COMPUTE_CRYPT = 54;		// B
+			private static final byte INS_CREATE_PIN = 64;		// B
+			private static final byte INS_VERIFY_PIN = 66;		// B
+			private static final byte INS_CHANGE_PIN = 68;		// B
+			private static final byte INS_UNBLOCK_PIN = 70;		// B
+			private static final byte INS_LOGOUT_ALL = 96;		// B
+			private static final byte INS_GET_CHALLENGE = 98;		// B
+			private static final byte INS_EXT_AUTH = 56;		// B
+			private static final byte INS_CREATE_OBJ = 90;		// B
+			private static final byte INS_DELETE_OBJ = 82;		// B
+			private static final byte INS_READ_OBJ = 86;		// B
+			private static final byte INS_WRITE_OBJ = 84;		// B
+			private static final byte INS_LIST_OBJECTS = 88;		// B
+			private static final byte INS_LIST_PINS = 72;		// B
+			private static final byte INS_LIST_KEYS = 58;		// B
+			private static final byte INS_GET_STATUS = 60;		// B
+			private static final short SW_NO_MEMORY_LEFT = -25599;		// S
+			private static final short SW_AUTH_FAILED = -25598;		// S
+			private static final short SW_OPERATION_NOT_ALLOWED = -25597;		// S
+			private static final short SW_UNSUPPORTED_FEATURE = -25595;		// S
+			private static final short SW_UNAUTHORIZED = -25594;		// S
+			private static final short SW_OBJECT_NOT_FOUND = -25593;		// S
+			private static final short SW_OBJECT_EXISTS = -25592;		// S
+			private static final short SW_INCORRECT_ALG = -25591;		// S
+			private static final short SW_INCORRECT_P1 = -25584;		// S
+			private static final short SW_INCORRECT_P2 = -25583;		// S
+			private static final short SW_SEQUENCE_END = -25582;		// S
+			private static final short SW_INVALID_PARAMETER = -25585;		// S
+			private static final short SW_SIGNATURE_INVALID = -25589;		// S
+			private static final short SW_IDENTITY_BLOCKED = -25588;		// S
+			private static final short SW_UNSPECIFIED_ERROR = -25587;		// S
+			private static final short SW_INTERNAL_ERROR = -25345;		// S
+			private static final byte ALG_RSA = 0;		// B
+			private static final byte ALG_RSA_CRT = 1;		// B
+			private static final byte ALG_DSA = 2;		// B
+			private static final byte ALG_DES = 3;		// B
+			private static final byte ALG_3DES = 4;		// B
+			private static final byte ALG_3DES3 = 5;		// B
+			private static final byte KEY_RSA_PUBLIC = 1;		// B
+			private static final byte KEY_RSA_PRIVATE = 2;		// B
+			private static final byte KEY_RSA_PRIVATE_CRT = 3;		// B
+			private static final byte KEY_DSA_PUBLIC = 4;		// B
+			private static final byte KEY_DSA_PRIVATE = 5;		// B
+			private static final byte KEY_DES = 6;		// B
+			private static final byte KEY_3DES = 7;		// B
+			private static final byte KEY_3DES3 = 8;		// B
+			private static final byte BLOB_ENC_PLAIN = 0;		// B
+			private static final byte OP_INIT = 1;		// B
+			private static final byte OP_PROCESS = 2;		// B
+			private static final byte OP_FINALIZE = 3;		// B
+			private static final byte CD_SIGN = 1;		// B
+			private static final byte CD_VERIFY = 2;		// B
+			private static final byte CD_ENCRYPT = 3;		// B
+			private static final byte CD_DECRYPT = 4;		// B
+			private static final byte CM_RSA_NOPAD = 0;		// B
+			private static final byte CM_RSA_PAD_PKCS1 = 1;		// B
+			private static final byte CM_DSA_SHA = 16;		// B
+			private static final byte CM_DES_CBC_NOPAD = 32;		// B
+			private static final byte CM_DES_ECB_NOPAD = 33;		// B
+			private static final byte DL_APDU = 1;		// B
+			private static final byte DL_OBJECT = 2;		// B
+			private static final byte LIST_OPT_RESET = 0;		// B
+			private static final byte LIST_OPT_NEXT = 1;		// B
+			private static final byte OPT_DEFAULT = 0;		// B
+			private static final byte OPT_RSA_PUB_EXP = 1;		// B
+			private static final byte OPT_DSA_GPQ = 2;		// B
+			private static final short OFFSET_GENKEY_ALG = 5;		// S
+			private static final short OFFSET_GENKEY_SIZE = 6;		// S
+			private static final short OFFSET_GENKEY_PRV_ACL = 8;		// S
+			private static final short OFFSET_GENKEY_PUB_ACL = 14;		// S
+			private static final short OFFSET_GENKEY_OPTIONS = 20;		// S
+			private static final short OFFSET_GENKEY_RSA_PUB_EXP_LENGTH = 21;		// S
+			private static final short OFFSET_GENKEY_RSA_PUB_EXP_VALUE = 23;		// S
+			private static final short OFFSET_GENKEY_DSA_GPQ = 21;		// S
+		}
+
+		.publicMethodTable 4 {
+			equals(Ljava/lang/Object;)Z;
+			register()V;
+			register([BSB)V;
+			selectingApplet()Z;
+			deselect()V;
+			getShareableInterfaceObject(Ljavacard/framework/AID;B)Ljavacard/framework/Shareable;;
+			select()Z;
+			process(Ljavacard/framework/APDU;)V;
+		}
+
+		.packageMethodTable 0 {
+			authorizeKeyRead(B)Z;
+			authorizeKeyWrite(B)Z;
+			authorizeKeyUse(B)Z;
+			getCurrentACL()[B;
+			getRestrictedACL()[B;
+		}
+
+		.method private <init>([BSB)V {
+			.stack 6;
+			.locals 1;
+
+				L0:	aload_0;
+					invokespecial 152;		// javacard/framework/Applet.<init>()V
+					aload_0;
+					new 129;		// com/sun/javacard/samples/CardEdge/MemoryManager
+					dup;
+					sspush 4096;
+					invokespecial 143;		// com/sun/javacard/samples/CardEdge/MemoryManager.<init>(S)V
+					putfield_a 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					aload_0;
+					new 20;		// com/sun/javacard/samples/CardEdge/ObjectManager
+					dup;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokespecial 27;		// com/sun/javacard/samples/CardEdge/ObjectManager.<init>(Lcom/sun/javacard/samples/CardEdge/MemoryManager;)V
+					putfield_a 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					aload_0;
+					bspush 8;
+					anewarray 141;		// javacard/security/Key
+					putfield_a 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					aload_0;
+					bspush 48;
+					newarray 11;
+					putfield_a 3;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyACLs
+					aload_0;
+					bspush 8;
+					newarray 11;
+					putfield_a 4;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyTries
+					sconst_0;
+					sstore 4;
+					goto L2;
+				L1:	getfield_a_this 4;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyTries
+					sload 4;
+					sconst_5;
+					bastore;
+					sload 4;
+					sconst_1;
+					sadd;
+					s2b;
+					sstore 4;
+				L2:	sload 4;
+					bspush 8;
+					if_scmplt L1;
+				L3:	aload_0;
+					bspush 8;
+					anewarray 26;		// javacard/security/KeyPair
+					putfield_a 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					aload_0;
+					bspush 8;
+					anewarray 28;		// javacardx/crypto/Cipher
+					putfield_a 6;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciphers
+					aload_0;
+					bspush 8;
+					anewarray 140;		// javacard/security/Signature
+					putfield_a 7;		// reference com/sun/javacard/samples/CardEdge/CardEdge.signatures
+					aload_0;
+					bspush 8;
+					newarray 11;
+					putfield_a 8;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciph_dirs
+					sconst_0;
+					sstore 4;
+					goto L5;
+				L4:	getfield_a_this 8;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciph_dirs
+					sload 4;
+					sconst_m1;
+					bastore;
+					sload 4;
+					sconst_1;
+					sadd;
+					s2b;
+					sstore 4;
+				L5:	sload 4;
+					bspush 8;
+					if_scmplt L4;
+				L6:	aload_0;
+					bspush 8;
+					anewarray 144;		// javacard/framework/OwnerPIN
+					putfield_a 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					aload_0;
+					bspush 8;
+					anewarray 144;		// javacard/framework/OwnerPIN
+					putfield_a 10;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ublk_pins
+					getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sconst_0;
+					new 144;		// javacard/framework/OwnerPIN
+					dup;
+					sconst_5;
+					bspush 16;
+					invokespecial 21;		// javacard/framework/OwnerPIN.<init>(BB)V
+					aastore;
+					bspush 8;
+					newarray 11;
+					putstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					sconst_0;
+					bspush 77;
+					bastore;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					sconst_1;
+					bspush 117;
+					bastore;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					sconst_2;
+					bspush 115;
+					bastore;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					sconst_3;
+					bspush 99;
+					bastore;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					sconst_4;
+					bspush 108;
+					bastore;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					sconst_5;
+					bspush 101;
+					bastore;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					bspush 6;
+					bspush 48;
+					bastore;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					bspush 7;
+					bspush 48;
+					bastore;
+					aload_0;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					sconst_0;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					arraylength;
+					s2b;
+					invokespecial 23;		// com/sun/javacard/samples/CardEdge/CardEdge.CheckPINPolicy([BSB)Z
+					ifne L8;
+				L7:	sspush -25345;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sconst_0;
+					aaload;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					sconst_0;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					arraylength;
+					s2b;
+					invokevirtual 25;		// javacard/framework/OwnerPIN.update([BSB)V
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					bspush 7;
+					bspush 49;
+					bastore;
+					getfield_a_this 10;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ublk_pins
+					sconst_0;
+					new 144;		// javacard/framework/OwnerPIN
+					dup;
+					sconst_5;
+					bspush 16;
+					invokespecial 21;		// javacard/framework/OwnerPIN.<init>(BB)V
+					aastore;
+					aload_0;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					sconst_0;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					arraylength;
+					s2b;
+					invokespecial 23;		// com/sun/javacard/samples/CardEdge/CardEdge.CheckPINPolicy([BSB)Z
+					ifne L10;
+				L9:	sspush -25345;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L10:	getfield_a_this 10;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ublk_pins
+					sconst_0;
+					aaload;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					sconst_0;
+					getstatic_a 22;		// reference com/sun/javacard/samples/CardEdge/CardEdge.PIN_INIT_VALUE
+					arraylength;
+					s2b;
+					invokevirtual 25;		// javacard/framework/OwnerPIN.update([BSB)V
+					aload_0;
+					sconst_0;
+					putfield_s 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					aload_0;
+					sconst_0;
+					putfield_b 12;		// boolean com/sun/javacard/samples/CardEdge/CardEdge.getChallengeDone
+					aload_0;
+					aconst_null;
+					putfield_a 13;		// reference com/sun/javacard/samples/CardEdge/CardEdge.randomData
+					bspush 6;
+					newarray 11;
+					putstatic_a 29;		// reference com/sun/javacard/samples/CardEdge/CardEdge.STD_PUBLIC_ACL
+					sconst_0;
+					sstore 4;
+					goto L12;
+				L11:	getstatic_a 29;		// reference com/sun/javacard/samples/CardEdge/CardEdge.STD_PUBLIC_ACL
+					sload 4;
+					sconst_0;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sload 4;
+					sconst_2;
+					sadd;
+					s2b;
+					sstore 4;
+				L12:	sload 4;
+					bspush 6;
+					if_scmplt L11;
+				L13:	return;
+		}
+
+		.method public static install([BSB)V 0 {
+			.stack 5;
+			.locals 1;
+
+				L0:	new 31;		// com/sun/javacard/samples/CardEdge/CardEdge
+					dup;
+					aload_0;
+					sload_1;
+					sload_2;
+					invokespecial 32;		// com/sun/javacard/samples/CardEdge/CardEdge.<init>([BSB)V
+					astore_3;
+					aload_0;
+					sload_1;
+					baload;
+					ifne L2;
+				L1:	aload_3;
+					invokevirtual 33;		// javacard/framework/Applet.register()V
+					goto L3;
+				L2:	aload_3;
+					aload_0;
+					sload_1;
+					sconst_1;
+					sadd;
+					aload_0;
+					sload_1;
+					baload;
+					invokevirtual 34;		// javacard/framework/Applet.register([BSB)V
+				L3:	return;
+		}
+
+		.method public select()Z 6 {
+			.stack 4;
+			.locals 0;
+
+				L0:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					aload_0;
+					invokespecial 36;		// com/sun/javacard/samples/CardEdge/CardEdge.LogOutAll()V
+					sconst_1;
+					sreturn;
+		}
+
+		.method public deselect()V 4 {
+			.stack 4;
+			.locals 0;
+
+				L0:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					aload_0;
+					invokespecial 36;		// com/sun/javacard/samples/CardEdge/CardEdge.LogOutAll()V
+					return;
+		}
+
+		.method public process(Ljavacard/framework/APDU;)V 7 {
+			.stack 3;
+			.locals 1;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_0;
+					invokevirtual 37;		// javacard/framework/Applet.selectingApplet()Z
+					ifeq L2;
+				L1:	sspush -28672;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_1;
+					invokevirtual 38;		// javacard/framework/APDU.getBuffer()[B
+					astore_2;
+					aload_2;
+					sconst_0;
+					baload;
+					ifne L5;
+				L3:	aload_2;
+					sconst_1;
+					baload;
+					bspush -92;
+					if_scmpne L5;
+				L4:	return;
+				L5:	aload_2;
+					sconst_0;
+					baload;
+					bspush -80;
+					if_scmpeq L7;
+				L6:	sspush 28160;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	aload_2;
+					sconst_1;
+					baload;
+					stableswitch L27 48 98 L8 L27 L9 L27 L10 L27 L11 L27 L18 L27 L25 L27 L26 L27 L27 L27 L13 L27 L12 L27 L14 L27 L15 L27 L23 L27 L27 L27 L27 L27 L27 L27 L27 L27 L20 L27 L22 L27 L21 L27 L24 L27 L19 L27 L27 L27 L27 L27 L16 L27 L17;
+				L8:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 39;		// com/sun/javacard/samples/CardEdge/CardEdge.GenerateKeyPair(Ljavacard/framework/APDU;[B)V
+					goto_w L28;
+				L9:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 40;		// com/sun/javacard/samples/CardEdge/CardEdge.ImportKey(Ljavacard/framework/APDU;[B)V
+					goto_w L28;
+				L10:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 41;		// com/sun/javacard/samples/CardEdge/CardEdge.ExportKey(Ljavacard/framework/APDU;[B)V
+					goto_w L28;
+				L11:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 42;		// com/sun/javacard/samples/CardEdge/CardEdge.ComputeCrypt(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L12:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 43;		// com/sun/javacard/samples/CardEdge/CardEdge.VerifyPIN(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L13:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 44;		// com/sun/javacard/samples/CardEdge/CardEdge.CreatePIN(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L14:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 45;		// com/sun/javacard/samples/CardEdge/CardEdge.ChangePIN(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L15:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 46;		// com/sun/javacard/samples/CardEdge/CardEdge.UnblockPIN(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L16:	aload_0;
+					invokespecial 36;		// com/sun/javacard/samples/CardEdge/CardEdge.LogOutAll()V
+					goto L28;
+				L17:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 47;		// com/sun/javacard/samples/CardEdge/CardEdge.GetChallenge(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L18:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 48;		// com/sun/javacard/samples/CardEdge/CardEdge.ExternalAuthenticate(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L19:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 49;		// com/sun/javacard/samples/CardEdge/CardEdge.CreateObject(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L20:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 50;		// com/sun/javacard/samples/CardEdge/CardEdge.DeleteObject(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L21:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 51;		// com/sun/javacard/samples/CardEdge/CardEdge.ReadObject(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L22:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 52;		// com/sun/javacard/samples/CardEdge/CardEdge.WriteObject(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L23:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 53;		// com/sun/javacard/samples/CardEdge/CardEdge.ListPINs(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L24:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 54;		// com/sun/javacard/samples/CardEdge/CardEdge.ListObjects(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L25:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 55;		// com/sun/javacard/samples/CardEdge/CardEdge.ListKeys(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L26:	aload_0;
+					aload_1;
+					aload_2;
+					invokespecial 56;		// com/sun/javacard/samples/CardEdge/CardEdge.GetStatus(Ljavacard/framework/APDU;[B)V
+					goto L28;
+				L27:	sspush 27904;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L28:	return;
+		}
+
+		.method private sendData(Ljavacard/framework/APDU;[BSS)V {
+			.stack 5;
+			.locals 0;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	sload 4;
+					sspush 255;
+					if_scmple L2;
+				L1:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_2;
+					sload_3;
+					aload_1;
+					invokevirtual 38;		// javacard/framework/APDU.getBuffer()[B
+					sconst_0;
+					sload 4;
+					invokestatic 57;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					aload_1;
+					sconst_0;
+					sload 4;
+					invokevirtual 58;		// javacard/framework/APDU.setOutgoingAndSend(SS)V
+					return;
+		}
+
+		.method private getCipher(BB)Ljavacardx/crypto/Cipher; {
+			.stack 4;
+			.locals 0;
+
+			.descriptor	Ljavacardx/crypto/Cipher;	2.1;
+
+				L0:	getfield_a_this 6;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciphers
+					sload_1;
+					aaload;
+					ifnonnull L2;
+				L1:	getfield_a_this 6;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciphers
+					sload_1;
+					sload_2;
+					sconst_0;
+					invokestatic 59;		// javacardx/crypto/Cipher.getInstance(BZ)Ljavacardx/crypto/Cipher;
+					aastore;
+					goto L4;
+				L2:	getfield_a_this 6;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciphers
+					sload_1;
+					aaload;
+					invokevirtual 60;		// javacardx/crypto/Cipher.getAlgorithm()B
+					sload_2;
+					if_scmpeq L4;
+				L3:	sspush -25597;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	getfield_a_this 6;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciphers
+					sload_1;
+					aaload;
+					areturn;
+		}
+
+		.method private getSignature(BB)Ljavacard/security/Signature; {
+			.stack 4;
+			.locals 0;
+
+			.descriptor	Ljavacard/security/Signature;	1.15;
+
+				L0:	getfield_a_this 7;		// reference com/sun/javacard/samples/CardEdge/CardEdge.signatures
+					sload_1;
+					aaload;
+					ifnonnull L2;
+				L1:	getfield_a_this 7;		// reference com/sun/javacard/samples/CardEdge/CardEdge.signatures
+					sload_1;
+					sload_2;
+					sconst_0;
+					invokestatic 61;		// javacard/security/Signature.getInstance(BZ)Ljavacard/security/Signature;
+					aastore;
+					goto L4;
+				L2:	getfield_a_this 7;		// reference com/sun/javacard/samples/CardEdge/CardEdge.signatures
+					sload_1;
+					aaload;
+					invokevirtual 62;		// javacard/security/Signature.getAlgorithm()B
+					sload_2;
+					if_scmpeq L4;
+				L3:	sspush -25597;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	getfield_a_this 7;		// reference com/sun/javacard/samples/CardEdge/CardEdge.signatures
+					sload_1;
+					aaload;
+					areturn;
+		}
+
+		.method private getKey(BBS)Ljavacard/security/Key; {
+			.stack 5;
+			.locals 1;
+
+			.descriptor	Ljavacard/security/Key;	1.0;
+
+				L0:	aload_0;
+					sload_2;
+					invokespecial 63;		// com/sun/javacard/samples/CardEdge/CardEdge.keyType2JCType(B)B
+					sstore 4;
+					getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload_1;
+					aaload;
+					ifnonnull L4;
+				L1:	getfield_s_this 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					sconst_1;
+					sand;
+					ifne L3;
+				L2:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L3:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload_1;
+					sload 4;
+					sload_3;
+					sconst_0;
+					invokestatic 64;		// javacard/security/KeyBuilder.buildKey(BSZ)Ljavacard/security/Key;
+					aastore;
+					goto L7;
+				L4:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload_1;
+					aaload;
+					invokeinterface 1 141 1;		// javacard/security/Key
+					sload_3;
+					if_scmpne L6;
+				L5:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload_1;
+					aaload;
+					invokeinterface 1 141 2;		// javacard/security/Key
+					sload 4;
+					if_scmpeq L7;
+				L6:	sspush -25597;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload_1;
+					aaload;
+					areturn;
+		}
+
+		.method private keyType2JCType(B)B {
+			.stack 1;
+			.locals 0;
+
+				L0:	sload_1;
+					stableswitch L8 1 8 L1 L2 L3 L4 L5 L6 L7 L7;
+				L1:	sconst_4;
+					sreturn;
+				L2:	sconst_5;
+					sreturn;
+				L3:	bspush 6;
+					sreturn;
+				L4:	bspush 7;
+					sreturn;
+				L5:	bspush 7;
+					sreturn;
+				L6:	sconst_3;
+					sreturn;
+				L7:	sconst_3;
+					sreturn;
+				L8:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					sconst_0;
+					sreturn;
+		}
+
+		.method private getKeyType(Ljavacard/security/Key;)B {
+			.stack 2;
+			.locals 0;
+
+			.descriptor	Ljavacard/security/Key;	1.0;
+
+				L0:	aload_1;
+					invokeinterface 1 141 2;		// javacard/security/Key
+					stableswitch L12 3 8 L6 L1 L2 L3 L4 L5;
+				L1:	sconst_1;
+					sreturn;
+				L2:	sconst_2;
+					sreturn;
+				L3:	sconst_3;
+					sreturn;
+				L4:	sconst_4;
+					sreturn;
+				L5:	sconst_5;
+					sreturn;
+				L6:	aload_1;
+					invokeinterface 1 141 1;		// javacard/security/Key
+					bspush 64;
+					if_scmpne L8;
+				L7:	bspush 6;
+					sreturn;
+				L8:	aload_1;
+					invokeinterface 1 141 1;		// javacard/security/Key
+					sspush 128;
+					if_scmpne L10;
+				L9:	bspush 7;
+					sreturn;
+				L10:	aload_1;
+					invokeinterface 1 141 1;		// javacard/security/Key
+					sspush 192;
+					if_scmpne L12;
+				L11:	bspush 8;
+					sreturn;
+				L12:	sspush -25345;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					sconst_0;
+					sreturn;
+		}
+
+		.method  authorizeKeyRead(B)Z 128 {
+			.stack 2;
+			.locals 2;
+
+				L0:	sload_1;
+					bspush 6;
+					smul;
+					sstore_2;
+					getfield_a_this 3;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyACLs
+					sload_2;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore_3;
+					sload_3;
+					sconst_m1;
+					if_scmpeq L3;
+				L1:	sload_3;
+					getfield_s_this 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					sand;
+					sload_3;
+					if_scmpne L3;
+				L2:	sconst_1;
+					goto L4;
+				L3:	sconst_0;
+				L4:	sreturn;
+		}
+
+		.method  authorizeKeyWrite(B)Z 129 {
+			.stack 2;
+			.locals 2;
+
+				L0:	sload_1;
+					bspush 6;
+					smul;
+					sconst_2;
+					sadd;
+					sstore_2;
+					getfield_a_this 3;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyACLs
+					sload_2;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore_3;
+					sload_3;
+					sconst_m1;
+					if_scmpeq L3;
+				L1:	sload_3;
+					getfield_s_this 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					sand;
+					sload_3;
+					if_scmpne L3;
+				L2:	sconst_1;
+					goto L4;
+				L3:	sconst_0;
+				L4:	sreturn;
+		}
+
+		.method  authorizeKeyUse(B)Z 130 {
+			.stack 2;
+			.locals 2;
+
+				L0:	sload_1;
+					bspush 6;
+					smul;
+					sconst_4;
+					sadd;
+					sstore_2;
+					getfield_a_this 3;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyACLs
+					sload_2;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore_3;
+					sload_3;
+					sconst_m1;
+					if_scmpeq L3;
+				L1:	sload_3;
+					getfield_s_this 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					sand;
+					sload_3;
+					if_scmpne L3;
+				L2:	sconst_1;
+					goto L4;
+				L3:	sconst_0;
+				L4:	sreturn;
+		}
+
+		.method  getCurrentACL()[B 131 {
+			.stack 3;
+			.locals 1;
+
+				L0:	getstatic_a 66;		// reference com/sun/javacard/samples/CardEdge/CardEdge.acl
+					ifnonnull L2;
+				L1:	bspush 6;
+					newarray 11;
+					putstatic_a 66;		// reference com/sun/javacard/samples/CardEdge/CardEdge.acl
+				L2:	sconst_0;
+					sstore_1;
+					goto L4;
+				L3:	getstatic_a 66;		// reference com/sun/javacard/samples/CardEdge/CardEdge.acl
+					sload_1;
+					getfield_s_this 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sload_1;
+					sconst_2;
+					sadd;
+					s2b;
+					sstore_1;
+				L4:	sload_1;
+					bspush 6;
+					if_scmplt L3;
+				L5:	getstatic_a 66;		// reference com/sun/javacard/samples/CardEdge/CardEdge.acl
+					areturn;
+		}
+
+		.method  getRestrictedACL()[B 132 {
+			.stack 3;
+			.locals 1;
+
+				L0:	getstatic_a 66;		// reference com/sun/javacard/samples/CardEdge/CardEdge.acl
+					ifnonnull L2;
+				L1:	bspush 6;
+					newarray 11;
+					putstatic_a 66;		// reference com/sun/javacard/samples/CardEdge/CardEdge.acl
+				L2:	sconst_0;
+					sstore_1;
+					goto L4;
+				L3:	getstatic_a 66;		// reference com/sun/javacard/samples/CardEdge/CardEdge.acl
+					sload_1;
+					sconst_m1;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sload_1;
+					sconst_2;
+					sadd;
+					s2b;
+					sstore_1;
+				L4:	sload_1;
+					bspush 6;
+					if_scmplt L3;
+				L5:	getstatic_a 66;		// reference com/sun/javacard/samples/CardEdge/CardEdge.acl
+					areturn;
+		}
+
+		.method private LoginStrongIdentity(B)V {
+			.stack 5;
+			.locals 0;
+
+				L0:	aload_0;
+					dup;
+					getfield_s 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					sconst_1;
+					sload_1;
+					bspush 8;
+					sadd;
+					sshl;
+					sor;
+					putfield_s 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					return;
+		}
+
+		.method private LogoutIdentity(B)V {
+			.stack 4;
+			.locals 0;
+
+				L0:	aload_0;
+					dup;
+					getfield_s 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					sconst_1;
+					sload_1;
+					sshl;
+					sconst_m1;
+					sxor;
+					sand;
+					putfield_s 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					return;
+		}
+
+		.method private ThrowDeleteObjects(S)V {
+			.stack 4;
+			.locals 0;
+
+				L0:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					sload_1;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+		}
+
+		.method private CheckPINPolicy([BSB)Z {
+			.stack 2;
+			.locals 0;
+
+				L0:	sload_3;
+					sconst_4;
+					if_scmplt L2;
+				L1:	sload_3;
+					bspush 16;
+					if_scmple L3;
+				L2:	sconst_0;
+					sreturn;
+				L3:	sconst_1;
+					sreturn;
+		}
+
+		.method private ComputeCrypt(Ljavacard/framework/APDU;[B)V {
+			.stack 7;
+			.locals 17;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L2;
+				L1:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_2;
+					sconst_2;
+					baload;
+					sstore 4;
+					sload 4;
+					iflt L5;
+				L3:	sload 4;
+					bspush 8;
+					if_scmpge L5;
+				L4:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload 4;
+					aaload;
+					ifnonnull L6;
+				L5:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	aload_0;
+					sload 4;
+					invokevirtual 69;		// com/sun/javacard/samples/CardEdge/CardEdge.authorizeKeyUse(B)Z
+					ifne L8;
+				L7:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	aload_2;
+					sconst_3;
+					baload;
+					sstore 5;
+					getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload 4;
+					aaload;
+					astore 6;
+					sload 5;
+					stableswitch L114 1 3 L9 L62 L62;
+				L9:	sload_3;
+					sconst_3;
+					if_scmpge L11;
+				L10:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L11:	aload_2;
+					sconst_5;
+					baload;
+					sstore 13;
+					aload_2;
+					bspush 6;
+					baload;
+					sstore 7;
+					aload_2;
+					bspush 7;
+					baload;
+					sstore 8;
+					sload 8;
+					slookupswitch L16 2 1 L12 2 L13;
+				L12:	aload_2;
+					astore 9;
+					bspush 8;
+					sstore 10;
+					sload_3;
+					sconst_3;
+					ssub;
+					sstore 11;
+					goto L17;
+				L13:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					astore 9;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					invokevirtual 71;		// com/sun/javacard/samples/CardEdge/ObjectManager.getBaseAddress(SS)S
+					sstore 10;
+					sload 10;
+					aload_0;
+					pop;
+					sconst_m1;
+					if_scmpne L15;
+				L14:	sspush -25593;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L15:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 10;
+					invokevirtual 72;		// com/sun/javacard/samples/CardEdge/ObjectManager.getSizeFromAddress(S)S
+					sstore 11;
+					goto L17;
+				L16:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L17:	sload 11;
+					sconst_2;
+					if_scmpge L19;
+				L18:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L19:	aload 9;
+					sload 10;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 12;
+					sload 11;
+					sconst_2;
+					sload 12;
+					sadd;
+					if_scmpge L21;
+				L20:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L21:	sload 7;
+					stableswitch L61 1 4 L22 L22 L38 L38;
+				L22:	aload 6;
+					invokeinterface 1 141 2;		// javacard/security/Key
+					stableswitch L27 4 8 L23 L23 L27 L24 L24;
+				L23:	bspush 11;
+					sstore 14;
+					sspush -25595;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					goto L28;
+				L24:	sload 13;
+					bspush 16;
+					if_scmpne L26;
+				L25:	bspush 14;
+					sstore 14;
+					goto L28;
+				L26:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L27:	sspush -25591;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L28:	aload_0;
+					sload 4;
+					sload 14;
+					invokespecial 73;		// com/sun/javacard/samples/CardEdge/CardEdge.getSignature(BB)Ljavacard/security/Signature;
+					astore 15;
+					sload 12;
+					ifne L33;
+				L29:	aload 15;
+					aload 6;
+					sload 7;
+					sconst_1;
+					if_scmpne L31;
+				L30:	sconst_1;
+					goto L32;
+				L31:	sconst_2;
+				L32:	invokevirtual 74;		// javacard/security/Signature.init(Ljavacard/security/Key;B)V
+					goto L37;
+				L33:	aload 15;
+					aload 6;
+					sload 7;
+					sconst_1;
+					if_scmpne L35;
+				L34:	sconst_1;
+					goto L36;
+				L35:	sconst_2;
+				L36:	aload 9;
+					sload 10;
+					sconst_2;
+					sadd;
+					sload 12;
+					invokevirtual 75;		// javacard/security/Signature.init(Ljavacard/security/Key;B[BSS)V
+				L37:	getfield_a_this 8;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciph_dirs
+					sload 4;
+					sload 7;
+					bastore;
+					goto_w L115;
+				L38:	aload 6;
+					invokeinterface 1 141 2;		// javacard/security/Key
+					stableswitch L50 3 8 L44 L39 L39 L39 L49 L49;
+				L39:	sload 13;
+					ifne L41;
+				L40:	bspush 12;
+					sstore 14;
+					goto L51;
+				L41:	sload 13;
+					sconst_1;
+					if_scmpne L43;
+				L42:	bspush 10;
+					sstore 14;
+					goto L51;
+				L43:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L44:	sload 13;
+					bspush 32;
+					if_scmpne L46;
+				L45:	sconst_1;
+					sstore 14;
+					goto L51;
+				L46:	sload 13;
+					bspush 33;
+					if_scmpne L48;
+				L47:	sconst_5;
+					sstore 14;
+					goto L51;
+				L48:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L49:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L50:	sspush -25345;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L51:	aload_0;
+					sload 4;
+					sload 14;
+					invokespecial 76;		// com/sun/javacard/samples/CardEdge/CardEdge.getCipher(BB)Ljavacardx/crypto/Cipher;
+					astore 16;
+					sload 12;
+					ifne L56;
+				L52:	aload 16;
+					aload 6;
+					sload 7;
+					sconst_3;
+					if_scmpne L54;
+				L53:	sconst_2;
+					goto L55;
+				L54:	sconst_1;
+				L55:	invokevirtual 77;		// javacardx/crypto/Cipher.init(Ljavacard/security/Key;B)V
+					goto L60;
+				L56:	aload 16;
+					aload 6;
+					sload 7;
+					sconst_3;
+					if_scmpne L58;
+				L57:	sconst_2;
+					goto L59;
+				L58:	sconst_1;
+				L59:	aload 9;
+					sload 10;
+					sconst_2;
+					sadd;
+					sload 12;
+					invokevirtual 78;		// javacardx/crypto/Cipher.init(Ljavacard/security/Key;B[BSS)V
+				L60:	getfield_a_this 8;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciph_dirs
+					sload 4;
+					sload 7;
+					bastore;
+					goto_w L115;
+				L61:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					goto_w L115;
+				L62:	getfield_a_this 8;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciph_dirs
+					sload 4;
+					baload;
+					sstore 7;
+					sload 7;
+					stableswitch L113 1 4 L63 L63 L94 L94;
+				L63:	getfield_a_this 7;		// reference com/sun/javacard/samples/CardEdge/CardEdge.signatures
+					sload 4;
+					aaload;
+					astore 17;
+					aload 17;
+					ifnonnull L65;
+				L64:	sspush 27270;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L65:	aload_2;
+					sconst_5;
+					baload;
+					sstore 8;
+					sload 8;
+					slookupswitch L70 2 1 L66 2 L67;
+				L66:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					astore 9;
+					bspush 6;
+					sstore 10;
+					sload_3;
+					sconst_1;
+					ssub;
+					sstore 11;
+					goto L71;
+				L67:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					astore 9;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					invokevirtual 71;		// com/sun/javacard/samples/CardEdge/ObjectManager.getBaseAddress(SS)S
+					sstore 10;
+					sload 10;
+					sconst_m1;
+					if_scmpne L69;
+				L68:	sspush -25593;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L69:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 10;
+					invokevirtual 72;		// com/sun/javacard/samples/CardEdge/ObjectManager.getSizeFromAddress(S)S
+					sstore 11;
+					goto L71;
+				L70:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L71:	sload 11;
+					sconst_2;
+					if_scmpge L73;
+				L72:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L73:	aload 9;
+					sload 10;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 12;
+					sload 11;
+					sconst_2;
+					sload 12;
+					sadd;
+					if_scmpge L75;
+				L74:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L75:	sload 5;
+					sconst_2;
+					if_scmpne L77;
+				L76:	aload 17;
+					aload 9;
+					sload 10;
+					sconst_2;
+					sadd;
+					sload 12;
+					invokevirtual 79;		// javacard/security/Signature.update([BSS)V
+					goto_w L115;
+				L77:	sload 7;
+					sconst_1;
+					if_scmpne L85;
+				L78:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					aload 17;
+					invokevirtual 80;		// javacard/security/Signature.getLength()S
+					sconst_2;
+					sadd;
+					aload_0;
+					invokevirtual 81;		// com/sun/javacard/samples/CardEdge/CardEdge.getCurrentACL()[B
+					sconst_0;
+					invokevirtual 82;		// com/sun/javacard/samples/CardEdge/ObjectManager.createObject(SSS[BS)S
+					sstore 18;
+					sload 18;
+					sconst_m1;
+					if_scmpne L80;
+				L79:	sspush -25599;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L80:	aload 17;
+					aload 9;
+					sload 10;
+					sconst_2;
+					sadd;
+					sload 12;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 18;
+					sconst_2;
+					sadd;
+					invokevirtual 83;		// javacard/security/Signature.sign([BSS[BS)S
+					sstore 19;
+					sload 19;
+					aload 17;
+					invokevirtual 80;		// javacard/security/Signature.getLength()S
+					if_scmple L82;
+				L81:	sspush -25345;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L82:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 18;
+					sload 19;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 8;
+					sconst_1;
+					if_scmpne L84;
+				L83:	aload_0;
+					aload_1;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 18;
+					sload 19;
+					sconst_2;
+					sadd;
+					invokespecial 85;		// com/sun/javacard/samples/CardEdge/CardEdge.sendData(Ljavacard/framework/APDU;[BSS)V
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+				L84:	goto_w L115;
+				L85:	sload 11;
+					sconst_2;
+					sload 12;
+					sadd;
+					sconst_2;
+					sadd;
+					if_scmpge L87;
+				L86:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L87:	aload 9;
+					sload 10;
+					sconst_2;
+					sadd;
+					sload 12;
+					sadd;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 18;
+					sload 11;
+					sconst_2;
+					sload 12;
+					sadd;
+					sconst_2;
+					sadd;
+					sload 18;
+					sadd;
+					if_scmpge L89;
+				L88:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L89:	sload 18;
+					aload 17;
+					invokevirtual 80;		// javacard/security/Signature.getLength()S
+					if_scmpeq L91;
+				L90:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L91:	aload 17;
+					aload 9;
+					sload 10;
+					sconst_2;
+					sadd;
+					sload 12;
+					aload 9;
+					sload 10;
+					sconst_2;
+					sadd;
+					sload 12;
+					sadd;
+					sconst_2;
+					sadd;
+					sload 18;
+					invokevirtual 86;		// javacard/security/Signature.verify([BSS[BSS)Z
+					ifne L93;
+				L92:	sspush -25589;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L93:	goto_w L115;
+				L94:	getfield_a_this 6;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ciphers
+					sload 4;
+					aaload;
+					astore 18;
+					aload 18;
+					ifnonnull L96;
+				L95:	sspush 27270;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L96:	aload_2;
+					sconst_5;
+					baload;
+					sstore 8;
+					sload 8;
+					slookupswitch L101 2 1 L97 2 L98;
+				L97:	aload_2;
+					astore 9;
+					bspush 6;
+					sstore 10;
+					sload_3;
+					sconst_1;
+					ssub;
+					sstore 11;
+					goto L102;
+				L98:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					astore 9;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					invokevirtual 71;		// com/sun/javacard/samples/CardEdge/ObjectManager.getBaseAddress(SS)S
+					sstore 10;
+					sload 10;
+					sconst_m1;
+					if_scmpne L100;
+				L99:	sspush -25593;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L100:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 10;
+					invokevirtual 72;		// com/sun/javacard/samples/CardEdge/ObjectManager.getSizeFromAddress(S)S
+					sstore 11;
+					goto L102;
+				L101:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L102:	sload 11;
+					sconst_2;
+					if_scmpge L104;
+				L103:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L104:	aload 9;
+					sload 10;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 12;
+					sload 11;
+					sconst_2;
+					sload 12;
+					sadd;
+					if_scmpge L106;
+				L105:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L106:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sload 12;
+					sconst_2;
+					sadd;
+					aload_0;
+					invokevirtual 81;		// com/sun/javacard/samples/CardEdge/CardEdge.getCurrentACL()[B
+					sconst_0;
+					invokevirtual 82;		// com/sun/javacard/samples/CardEdge/ObjectManager.createObject(SSS[BS)S
+					sstore 19;
+					sload 19;
+					sconst_m1;
+					if_scmpne L108;
+				L107:	sspush -25599;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L108:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 19;
+					sload 12;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 5;
+					sconst_2;
+					if_scmpne L110;
+				L109:	aload 18;
+					aload 9;
+					sload 10;
+					sconst_2;
+					sadd;
+					sload 12;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 19;
+					sconst_2;
+					sadd;
+					invokevirtual 87;		// javacardx/crypto/Cipher.update([BSS[BS)S
+					pop;
+					goto L111;
+				L110:	aload 18;
+					aload 9;
+					sload 10;
+					sconst_2;
+					sadd;
+					sload 12;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 19;
+					sconst_2;
+					sadd;
+					invokevirtual 88;		// javacardx/crypto/Cipher.doFinal([BSS[BS)S
+					pop;
+				L111:	sload 8;
+					sconst_1;
+					if_scmpne L115;
+				L112:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 19;
+					aload_2;
+					sconst_0;
+					sload 12;
+					sconst_2;
+					sadd;
+					invokestatic 57;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					aload_0;
+					aload_1;
+					aload_2;
+					sconst_0;
+					sload 12;
+					sconst_2;
+					sadd;
+					invokespecial 85;		// com/sun/javacard/samples/CardEdge/CardEdge.sendData(Ljavacard/framework/APDU;[BSS)V
+					goto L115;
+				L113:	sspush -25345;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					goto L115;
+				L114:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L115:	return;
+		}
+
+		.method private GenerateKeyPair(Ljavacard/framework/APDU;[B)V {
+			.stack 3;
+			.locals 2;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L2;
+				L1:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_2;
+					sconst_5;
+					baload;
+					sstore 4;
+					sload 4;
+					stableswitch L5 0 2 L3 L3 L4;
+				L3:	aload_0;
+					aload_2;
+					invokespecial 89;		// com/sun/javacard/samples/CardEdge/CardEdge.GenerateKeyPairRSA([B)V
+					goto L6;
+				L4:	aload_0;
+					aload_2;
+					invokespecial 90;		// com/sun/javacard/samples/CardEdge/CardEdge.GenerateKeyPairDSA([B)V
+					goto L6;
+				L5:	sspush -25591;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	return;
+		}
+
+		.method private GenerateKeyPairRSA([B)V {
+			.stack 6;
+			.locals 9;
+
+				L0:	aload_1;
+					sconst_2;
+					baload;
+					sstore_2;
+					sload_2;
+					iflt L2;
+				L1:	sload_2;
+					bspush 8;
+					if_scmplt L3;
+				L2:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L3:	aload_1;
+					sconst_3;
+					baload;
+					sstore_3;
+					sload_3;
+					iflt L5;
+				L4:	sload_3;
+					bspush 8;
+					if_scmplt L6;
+				L5:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	sload_3;
+					sload_2;
+					if_scmpne L8;
+				L7:	sspush 27270;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	aload_1;
+					sconst_5;
+					baload;
+					sstore 4;
+					aload_1;
+					bspush 6;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					aload_1;
+					bspush 20;
+					baload;
+					sstore 6;
+					aload_0;
+					sload_3;
+					sconst_1;
+					sload 5;
+					invokespecial 91;		// com/sun/javacard/samples/CardEdge/CardEdge.getKey(BBS)Ljavacard/security/Key;
+					checkcast 0 92;		// T_CLASSORINTERFACE javacard/security/RSAPublicKey
+					astore 7;
+					aload_0;
+					sload_2;
+					sload 4;
+					ifne L10;
+				L9:	sconst_2;
+					goto L11;
+				L10:	sconst_3;
+				L11:	sload 5;
+					invokespecial 91;		// com/sun/javacard/samples/CardEdge/CardEdge.getKey(BBS)Ljavacard/security/Key;
+					checkcast 0 93;		// T_CLASSORINTERFACE javacard/security/PrivateKey
+					astore 8;
+					aload 7;
+					invokeinterface 1 141 3;		// javacard/security/Key
+					ifeq L14;
+				L12:	aload_0;
+					sload_3;
+					invokevirtual 94;		// com/sun/javacard/samples/CardEdge/CardEdge.authorizeKeyWrite(B)Z
+					ifne L14;
+				L13:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L14:	aload 8;
+					invokeinterface 1 141 3;		// javacard/security/Key
+					ifeq L17;
+				L15:	aload_0;
+					sload_2;
+					invokevirtual 94;		// com/sun/javacard/samples/CardEdge/CardEdge.authorizeKeyWrite(B)Z
+					ifne L17;
+				L16:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L17:	aload_1;
+					bspush 8;
+					getfield_a_this 3;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyACLs
+					sload_2;
+					bspush 6;
+					smul;
+					bspush 6;
+					invokestatic 95;		// javacard/framework/Util.arrayCopy([BS[BSS)S
+					pop;
+					aload_1;
+					bspush 14;
+					getfield_a_this 3;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyACLs
+					sload_3;
+					bspush 6;
+					smul;
+					bspush 6;
+					invokestatic 95;		// javacard/framework/Util.arrayCopy([BS[BSS)S
+					pop;
+					sload 6;
+					slookupswitch L21 2 0 L18 1 L20;
+				L18:	aload 7;
+					invokeinterface 1 141 3;		// javacard/security/Key
+					ifeq L22;
+				L19:	aload 7;
+					invokeinterface 1 141 0;		// javacard/security/Key
+					goto L22;
+				L20:	aload_1;
+					bspush 21;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 9;
+					aload 7;
+					aload_1;
+					bspush 23;
+					sload 9;
+					invokeinterface 4 92 6;		// javacard/security/RSAPublicKey
+					goto L22;
+				L21:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L22:	getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_3;
+					aaload;
+					ifnonnull L25;
+				L23:	getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_2;
+					aaload;
+					ifnonnull L25;
+				L24:	getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_3;
+					new 26;		// javacard/security/KeyPair
+					dup;
+					aload 7;
+					aload 8;
+					invokespecial 96;		// javacard/security/KeyPair.<init>(Ljavacard/security/PublicKey;Ljavacard/security/PrivateKey;)V
+					aastore;
+					getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_2;
+					getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_3;
+					aaload;
+					aastore;
+					goto L27;
+				L25:	getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_3;
+					aaload;
+					getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_2;
+					aaload;
+					if_acmpeq L27;
+				L26:	sspush -25597;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L27:	getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_3;
+					aaload;
+					astore 10;
+					aload 10;
+					invokevirtual 97;		// javacard/security/KeyPair.getPublic()Ljavacard/security/PublicKey;
+					aload 7;
+					if_acmpne L29;
+				L28:	aload 10;
+					invokevirtual 98;		// javacard/security/KeyPair.getPrivate()Ljavacard/security/PrivateKey;
+					aload 8;
+					if_acmpeq L30;
+				L29:	sspush -25345;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L30:	aload 10;
+					invokevirtual 99;		// javacard/security/KeyPair.genKeyPair()V
+					return;
+		}
+
+		.method private GenerateKeyPairDSA([B)V {
+			.stack 6;
+			.locals 11;
+
+				L0:	aload_1;
+					sconst_2;
+					baload;
+					sstore_2;
+					sload_2;
+					iflt L2;
+				L1:	sload_2;
+					bspush 8;
+					if_scmplt L3;
+				L2:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L3:	aload_1;
+					sconst_3;
+					baload;
+					sstore_3;
+					sload_3;
+					iflt L5;
+				L4:	sload_3;
+					bspush 8;
+					if_scmplt L6;
+				L5:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	aload_1;
+					sconst_5;
+					baload;
+					sstore 4;
+					aload_1;
+					bspush 6;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					aload_1;
+					bspush 20;
+					baload;
+					sstore 6;
+					sload_3;
+					sload_2;
+					if_scmpne L8;
+				L7:	sspush 27270;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	aload_0;
+					sload_3;
+					sconst_4;
+					sload 5;
+					invokespecial 91;		// com/sun/javacard/samples/CardEdge/CardEdge.getKey(BBS)Ljavacard/security/Key;
+					checkcast 0 101;		// T_CLASSORINTERFACE javacard/security/DSAPublicKey
+					astore 7;
+					aload_0;
+					sload_2;
+					sconst_5;
+					sload 5;
+					invokespecial 91;		// com/sun/javacard/samples/CardEdge/CardEdge.getKey(BBS)Ljavacard/security/Key;
+					checkcast 0 102;		// T_CLASSORINTERFACE javacard/security/DSAPrivateKey
+					astore 8;
+					aload 7;
+					invokeinterface 1 141 3;		// javacard/security/Key
+					ifeq L11;
+				L9:	aload_0;
+					sload_3;
+					invokevirtual 94;		// com/sun/javacard/samples/CardEdge/CardEdge.authorizeKeyWrite(B)Z
+					ifne L11;
+				L10:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L11:	aload 8;
+					invokeinterface 1 141 3;		// javacard/security/Key
+					ifeq L14;
+				L12:	aload_0;
+					sload_2;
+					invokevirtual 94;		// com/sun/javacard/samples/CardEdge/CardEdge.authorizeKeyWrite(B)Z
+					ifne L14;
+				L13:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L14:	aload_1;
+					bspush 8;
+					getfield_a_this 3;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyACLs
+					sload_2;
+					bspush 6;
+					smul;
+					bspush 6;
+					invokestatic 95;		// javacard/framework/Util.arrayCopy([BS[BSS)S
+					pop;
+					aload_1;
+					bspush 14;
+					getfield_a_this 3;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyACLs
+					sload_3;
+					bspush 6;
+					smul;
+					bspush 6;
+					invokestatic 95;		// javacard/framework/Util.arrayCopy([BS[BSS)S
+					pop;
+					sload 6;
+					slookupswitch L22 2 0 L15 2 L17;
+				L15:	aload 7;
+					invokeinterface 1 141 3;		// javacard/security/Key
+					ifeq L23;
+				L16:	aload 7;
+					invokeinterface 1 141 0;		// javacard/security/Key
+					goto L23;
+				L17:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					invokevirtual 71;		// com/sun/javacard/samples/CardEdge/ObjectManager.getBaseAddress(SS)S
+					sstore 9;
+					sload 9;
+					sconst_m1;
+					if_scmpne L19;
+				L18:	sspush -25593;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L19:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 9;
+					invokevirtual 72;		// com/sun/javacard/samples/CardEdge/ObjectManager.getSizeFromAddress(S)S
+					sstore 10;
+					sload 10;
+					sconst_2;
+					if_scmpge L21;
+				L20:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L21:	aload_0;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 9;
+					sload 10;
+					aload 7;
+					invokespecial 103;		// com/sun/javacard/samples/CardEdge/CardEdge.DSAGetGPQ([BSSLjavacard/security/DSAKey;)S
+					pop;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					goto L23;
+				L22:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L23:	getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_3;
+					aaload;
+					ifnonnull L26;
+				L24:	getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_2;
+					aaload;
+					ifnonnull L26;
+				L25:	getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_3;
+					new 26;		// javacard/security/KeyPair
+					dup;
+					aload 7;
+					aload 8;
+					invokespecial 96;		// javacard/security/KeyPair.<init>(Ljavacard/security/PublicKey;Ljavacard/security/PrivateKey;)V
+					aastore;
+					getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_2;
+					getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_3;
+					aaload;
+					aastore;
+					goto L28;
+				L26:	getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_3;
+					aaload;
+					getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_2;
+					aaload;
+					if_acmpeq L28;
+				L27:	sspush -25597;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L28:	getfield_a_this 5;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyPairs
+					sload_3;
+					aaload;
+					astore 11;
+					aload 11;
+					invokevirtual 97;		// javacard/security/KeyPair.getPublic()Ljavacard/security/PublicKey;
+					aload 7;
+					if_acmpne L30;
+				L29:	aload 11;
+					invokevirtual 98;		// javacard/security/KeyPair.getPrivate()Ljavacard/security/PrivateKey;
+					aload 8;
+					if_acmpeq L31;
+				L30:	sspush -25345;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L31:	aload 11;
+					invokevirtual 99;		// javacard/security/KeyPair.genKeyPair()V
+				L32:	goto L34;
+				L33:	astore 12;
+					sspush -25587;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L34:	return;
+			.exceptionTable {
+				// start_block end_block handler_block catch_type_index
+				L31 L32 L33 100;
+			}
+		}
+
+		.method private DSAGetGPQ([BSSLjavacard/security/DSAKey;)S {
+			.stack 4;
+			.locals 2;
+
+			.descriptor	Ljavacard/security/DSAKey;	1.1;
+
+				L0:	sload_2;
+					sstore 6;
+					sload_3;
+					sconst_2;
+					if_scmpge L2;
+				L1:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_1;
+					sload_2;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					sinc 2 2;
+					sinc 3 -2;
+					sload_3;
+					sload 5;
+					sconst_2;
+					sadd;
+					if_scmpge L4;
+				L3:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload 4;
+					aload_1;
+					sload_2;
+					sload 5;
+					invokeinterface 4 104 3;		// javacard/security/DSAKey
+					sload_2;
+					sload 5;
+					sadd;
+					sstore_2;
+					sload_3;
+					sload 5;
+					ssub;
+					sstore_3;
+					aload_1;
+					sload_2;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					sinc 2 2;
+					sinc 3 -2;
+					sload_3;
+					sload 5;
+					sconst_2;
+					sadd;
+					if_scmpge L6;
+				L5:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	aload 4;
+					aload_1;
+					sload_2;
+					sload 5;
+					invokeinterface 4 104 4;		// javacard/security/DSAKey
+					sload_2;
+					sload 5;
+					sadd;
+					sstore_2;
+					sload_3;
+					sload 5;
+					ssub;
+					sstore_3;
+					aload_1;
+					sload_2;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					sinc 2 2;
+					sinc 3 -2;
+					sload_3;
+					sload 5;
+					if_scmpge L8;
+				L7:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	aload 4;
+					aload_1;
+					sload_2;
+					sload 5;
+					invokeinterface 4 104 5;		// javacard/security/DSAKey
+					sload_2;
+					sload 5;
+					sadd;
+					sstore_2;
+					sload_3;
+					sload 5;
+					ssub;
+					sstore_3;
+					sload_2;
+					sload 6;
+					ssub;
+					sreturn;
+		}
+
+		.method private ImportKey(Ljavacard/framework/APDU;[B)V {
+			.stack 5;
+			.locals 14;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L2;
+				L1:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L4;
+				L3:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_2;
+					sconst_2;
+					baload;
+					sstore 4;
+					sload 4;
+					iflt L6;
+				L5:	sload 4;
+					bspush 8;
+					if_scmplt L7;
+				L6:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload 4;
+					aaload;
+					ifnull L11;
+				L8:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload 4;
+					aaload;
+					invokeinterface 1 141 3;		// javacard/security/Key
+					ifeq L11;
+				L9:	aload_0;
+					sload 4;
+					invokevirtual 94;		// com/sun/javacard/samples/CardEdge/CardEdge.authorizeKeyWrite(B)Z
+					ifne L11;
+				L10:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L11:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					invokevirtual 71;		// com/sun/javacard/samples/CardEdge/ObjectManager.getBaseAddress(SS)S
+					sstore 5;
+					sload 5;
+					sconst_m1;
+					if_scmpne L13;
+				L12:	sspush -25593;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L13:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 5;
+					invokevirtual 72;		// com/sun/javacard/samples/CardEdge/ObjectManager.getSizeFromAddress(S)S
+					sstore 6;
+					sload 6;
+					sconst_4;
+					if_scmpge L15;
+				L14:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L15:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 105;		// com/sun/javacard/samples/CardEdge/MemoryManager.getByte(S)B
+					ifeq L17;
+				L16:	sspush -25595;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L17:	sinc 5 1;
+					sinc 6 -1;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 105;		// com/sun/javacard/samples/CardEdge/MemoryManager.getByte(S)B
+					sstore 7;
+					sinc 5 1;
+					sinc 6 -1;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 8;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 7;
+					stableswitch L60 1 8 L18 L25 L32 L50 L45 L55 L55 L55;
+				L18:	aload_0;
+					sload 4;
+					sload 7;
+					sload 8;
+					invokespecial 91;		// com/sun/javacard/samples/CardEdge/CardEdge.getKey(BBS)Ljavacard/security/Key;
+					checkcast 0 92;		// T_CLASSORINTERFACE javacard/security/RSAPublicKey
+					astore 10;
+					sload 6;
+					sconst_2;
+					if_scmpge L20;
+				L19:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L20:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					sconst_2;
+					sadd;
+					if_scmpge L22;
+				L21:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L22:	aload 10;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 92 7;		// javacard/security/RSAPublicKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					if_scmpge L24;
+				L23:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L24:	aload 10;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 92 6;		// javacard/security/RSAPublicKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					goto_w L61;
+				L25:	aload_0;
+					sload 4;
+					sload 7;
+					sload 8;
+					invokespecial 91;		// com/sun/javacard/samples/CardEdge/CardEdge.getKey(BBS)Ljavacard/security/Key;
+					checkcast 0 107;		// T_CLASSORINTERFACE javacard/security/RSAPrivateKey
+					astore 11;
+					sload 6;
+					sconst_2;
+					if_scmpge L27;
+				L26:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L27:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					sconst_2;
+					sadd;
+					if_scmpge L29;
+				L28:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L29:	aload 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 107 7;		// javacard/security/RSAPrivateKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					if_scmpge L31;
+				L30:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L31:	aload 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 107 6;		// javacard/security/RSAPrivateKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					goto_w L61;
+				L32:	aload_0;
+					sload 4;
+					sload 7;
+					sload 8;
+					invokespecial 91;		// com/sun/javacard/samples/CardEdge/CardEdge.getKey(BBS)Ljavacard/security/Key;
+					checkcast 0 108;		// T_CLASSORINTERFACE javacard/security/RSAPrivateCrtKey
+					astore 12;
+					sload 6;
+					sconst_2;
+					if_scmpge L34;
+				L33:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L34:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					sconst_2;
+					sadd;
+					if_scmpge L36;
+				L35:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L36:	aload 12;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 108 11;		// javacard/security/RSAPrivateCrtKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					sconst_2;
+					sadd;
+					if_scmpge L38;
+				L37:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L38:	aload 12;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 108 13;		// javacard/security/RSAPrivateCrtKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					sconst_2;
+					sadd;
+					if_scmpge L40;
+				L39:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L40:	aload 12;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 108 12;		// javacard/security/RSAPrivateCrtKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					sconst_2;
+					sadd;
+					if_scmpge L42;
+				L41:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L42:	aload 12;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 108 9;		// javacard/security/RSAPrivateCrtKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					if_scmpge L44;
+				L43:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L44:	aload 12;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 108 10;		// javacard/security/RSAPrivateCrtKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					goto_w L61;
+				L45:	aload_0;
+					sload 4;
+					sload 7;
+					sload 8;
+					invokespecial 91;		// com/sun/javacard/samples/CardEdge/CardEdge.getKey(BBS)Ljavacard/security/Key;
+					checkcast 0 102;		// T_CLASSORINTERFACE javacard/security/DSAPrivateKey
+					astore 13;
+					aload_0;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 6;
+					aload 13;
+					invokespecial 103;		// com/sun/javacard/samples/CardEdge/CardEdge.DSAGetGPQ([BSSLjavacard/security/DSAKey;)S
+					sstore 14;
+					sload 5;
+					sload 14;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 14;
+					ssub;
+					sstore 6;
+					sload 6;
+					sconst_2;
+					if_scmpge L47;
+				L46:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L47:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					if_scmpge L49;
+				L48:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L49:	aload 13;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 102 11;		// javacard/security/DSAPrivateKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					goto_w L61;
+				L50:	aload_0;
+					sload 4;
+					sload 7;
+					sload 8;
+					invokespecial 91;		// com/sun/javacard/samples/CardEdge/CardEdge.getKey(BBS)Ljavacard/security/Key;
+					checkcast 0 101;		// T_CLASSORINTERFACE javacard/security/DSAPublicKey
+					astore 15;
+					aload_0;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 6;
+					aload 15;
+					invokespecial 103;		// com/sun/javacard/samples/CardEdge/CardEdge.DSAGetGPQ([BSSLjavacard/security/DSAKey;)S
+					sstore 14;
+					sload 5;
+					sload 14;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 14;
+					ssub;
+					sstore 6;
+					sload 6;
+					sconst_2;
+					if_scmpge L52;
+				L51:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L52:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					if_scmpge L54;
+				L53:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L54:	aload 15;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sload 9;
+					invokeinterface 4 101 11;		// javacard/security/DSAPublicKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					goto L61;
+				L55:	aload_0;
+					sload 4;
+					sload 7;
+					sload 8;
+					invokespecial 91;		// com/sun/javacard/samples/CardEdge/CardEdge.getKey(BBS)Ljavacard/security/Key;
+					checkcast 0 109;		// T_CLASSORINTERFACE javacard/security/DESKey
+					astore 16;
+					sload 6;
+					sconst_2;
+					if_scmpge L57;
+				L56:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L57:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 9;
+					sinc 5 2;
+					sinc 6 -2;
+					sload 6;
+					sload 9;
+					if_scmpge L59;
+				L58:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L59:	aload 16;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					invokeinterface 3 109 5;		// javacard/security/DESKey
+					sload 5;
+					sload 9;
+					sadd;
+					sstore 5;
+					sload 6;
+					sload 9;
+					ssub;
+					sstore 6;
+					goto L61;
+				L60:	sspush -25591;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L61:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					return;
+		}
+
+		.method private ExportKey(Ljavacard/framework/APDU;[B)V {
+			.stack 5;
+			.locals 16;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L2;
+				L1:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L4;
+				L3:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_2;
+					sconst_2;
+					baload;
+					sstore 4;
+					sload 4;
+					iflt L6;
+				L5:	sload 4;
+					bspush 8;
+					if_scmplt L7;
+				L6:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload 4;
+					aaload;
+					astore 5;
+					aload 5;
+					ifnull L9;
+				L8:	aload 5;
+					invokeinterface 1 141 3;		// javacard/security/Key
+					ifne L10;
+				L9:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L10:	aload_0;
+					sload 4;
+					invokevirtual 110;		// com/sun/javacard/samples/CardEdge/CardEdge.authorizeKeyRead(B)Z
+					ifne L12;
+				L11:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L12:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					aload_0;
+					invokevirtual 81;		// com/sun/javacard/samples/CardEdge/CardEdge.getCurrentACL()[B
+					sconst_0;
+					invokevirtual 111;		// com/sun/javacard/samples/CardEdge/ObjectManager.createObjectMax(SS[BS)S
+					sstore 6;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 6;
+					invokevirtual 72;		// com/sun/javacard/samples/CardEdge/ObjectManager.getSizeFromAddress(S)S
+					sstore 7;
+					sload 7;
+					sstore 8;
+					aload_2;
+					sconst_5;
+					baload;
+					ifeq L14;
+				L13:	sspush -25595;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L14:	sload 8;
+					sconst_4;
+					if_scmpge L16;
+				L15:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L16:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sconst_0;
+					invokevirtual 113;		// com/sun/javacard/samples/CardEdge/MemoryManager.setByte(SB)V
+					sinc 6 1;
+					aload 5;
+					invokeinterface 1 141 2;		// javacard/security/Key
+					sstore 9;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					aload_0;
+					aload 5;
+					invokespecial 114;		// com/sun/javacard/samples/CardEdge/CardEdge.getKeyType(Ljavacard/security/Key;)B
+					invokevirtual 113;		// com/sun/javacard/samples/CardEdge/MemoryManager.setByte(SB)V
+					sinc 6 1;
+					aload 5;
+					invokeinterface 1 141 1;		// javacard/security/Key
+					sstore 10;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 10;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sinc 6 2;
+					sinc 8 -4;
+					getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload 4;
+					aaload;
+					invokeinterface 1 141 1;		// javacard/security/Key
+					bspush 8;
+					sdiv;
+					sconst_2;
+					sadd;
+					sstore 12;
+					sload 9;
+					stableswitch L59 3 8 L38 L17 L22 L27 L41 L50;
+				L17:	aload 5;
+					checkcast 0 92;		// T_CLASSORINTERFACE javacard/security/RSAPublicKey
+					astore 13;
+					sload 8;
+					sload 12;
+					if_scmpge L19;
+				L18:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L19:	aload 13;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 92 5;		// javacard/security/RSAPublicKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L21;
+				L20:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L21:	aload 13;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 92 4;		// javacard/security/RSAPublicKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					goto_w L60;
+				L22:	aload 5;
+					checkcast 0 107;		// T_CLASSORINTERFACE javacard/security/RSAPrivateKey
+					astore 14;
+					sload 8;
+					sload 12;
+					if_scmpge L24;
+				L23:	sspush -25599;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L24:	aload 14;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 107 5;		// javacard/security/RSAPrivateKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L26;
+				L25:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L26:	aload 14;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 107 4;		// javacard/security/RSAPrivateKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					goto_w L60;
+				L27:	aload 5;
+					checkcast 0 108;		// T_CLASSORINTERFACE javacard/security/RSAPrivateCrtKey
+					astore 15;
+					sload 8;
+					sload 12;
+					if_scmpge L29;
+				L28:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L29:	aload 15;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 108 6;		// javacard/security/RSAPrivateCrtKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L31;
+				L30:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L31:	aload 15;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 108 8;		// javacard/security/RSAPrivateCrtKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L33;
+				L32:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L33:	aload 15;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 108 7;		// javacard/security/RSAPrivateCrtKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L35;
+				L34:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L35:	aload 15;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 108 4;		// javacard/security/RSAPrivateCrtKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L37;
+				L36:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L37:	aload 15;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 108 5;		// javacard/security/RSAPrivateCrtKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					goto_w L60;
+				L38:	aload 5;
+					checkcast 0 109;		// T_CLASSORINTERFACE javacard/security/DESKey
+					astore 16;
+					sload 8;
+					sload 12;
+					if_scmpge L40;
+				L39:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L40:	aload 16;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 109 4;		// javacard/security/DESKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					goto_w L60;
+				L41:	aload 5;
+					checkcast 0 101;		// T_CLASSORINTERFACE javacard/security/DSAPublicKey
+					astore 17;
+					sload 8;
+					sload 12;
+					if_scmpge L43;
+				L42:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L43:	aload 17;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 104 0;		// javacard/security/DSAKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L45;
+				L44:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L45:	aload 17;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 104 1;		// javacard/security/DSAKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L47;
+				L46:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L47:	aload 17;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 104 2;		// javacard/security/DSAKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L49;
+				L48:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L49:	aload 17;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 101 10;		// javacard/security/DSAPublicKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					goto_w L60;
+				L50:	aload 5;
+					checkcast 0 102;		// T_CLASSORINTERFACE javacard/security/DSAPrivateKey
+					astore 18;
+					sload 8;
+					sload 12;
+					if_scmpge L52;
+				L51:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L52:	aload 18;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 104 0;		// javacard/security/DSAKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L54;
+				L53:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L54:	aload 18;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 104 1;		// javacard/security/DSAKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L56;
+				L55:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L56:	aload 18;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 104 2;		// javacard/security/DSAKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					sload 8;
+					sload 12;
+					if_scmpge L58;
+				L57:	aload_0;
+					sspush -25599;
+					invokespecial 112;		// com/sun/javacard/samples/CardEdge/CardEdge.ThrowDeleteObjects(S)V
+				L58:	aload 18;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 6;
+					sconst_2;
+					sadd;
+					invokeinterface 3 102 10;		// javacard/security/DSAPrivateKey
+					sstore 11;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 6;
+					sload 11;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					sload 6;
+					sconst_2;
+					sload 11;
+					sadd;
+					sadd;
+					sstore 6;
+					sload 8;
+					sconst_2;
+					sload 11;
+					sadd;
+					ssub;
+					sstore 8;
+					goto L60;
+				L59:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L60:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sload 7;
+					sload 8;
+					ssub;
+					invokevirtual 115;		// com/sun/javacard/samples/CardEdge/ObjectManager.clampObject(SSS)Z
+					pop;
+					return;
+		}
+
+		.method private CreatePIN(Ljavacard/framework/APDU;[B)V {
+			.stack 6;
+			.locals 5;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_2;
+					baload;
+					sstore_3;
+					aload_2;
+					sconst_3;
+					baload;
+					sstore 4;
+					getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sconst_0;
+					aaload;
+					invokevirtual 116;		// javacard/framework/OwnerPIN.isValidated()Z
+					ifne L2;
+				L1:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	sload_3;
+					iflt L5;
+				L3:	sload_3;
+					bspush 8;
+					if_scmpge L5;
+				L4:	getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sload_3;
+					aaload;
+					ifnull L6;
+				L5:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore 5;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					sload 5;
+					if_scmpeq L8;
+				L7:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	sload 5;
+					sconst_4;
+					if_scmpge L10;
+				L9:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L10:	aload_2;
+					sconst_5;
+					baload;
+					sstore 6;
+					sload 5;
+					sconst_1;
+					sload 6;
+					sadd;
+					sconst_1;
+					sadd;
+					if_scmpge L12;
+				L11:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L12:	aload_0;
+					aload_2;
+					bspush 6;
+					sload 6;
+					invokespecial 23;		// com/sun/javacard/samples/CardEdge/CardEdge.CheckPINPolicy([BSB)Z
+					ifne L14;
+				L13:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L14:	aload_2;
+					bspush 6;
+					sload 6;
+					sadd;
+					baload;
+					sstore 7;
+					sload 5;
+					sconst_1;
+					sload 6;
+					sadd;
+					sconst_1;
+					sadd;
+					sload 7;
+					sadd;
+					if_scmpeq L16;
+				L15:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L16:	aload_0;
+					aload_2;
+					bspush 6;
+					sload 6;
+					sadd;
+					sconst_1;
+					sadd;
+					sload 7;
+					invokespecial 23;		// com/sun/javacard/samples/CardEdge/CardEdge.CheckPINPolicy([BSB)Z
+					ifne L18;
+				L17:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L18:	getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sload_3;
+					new 144;		// javacard/framework/OwnerPIN
+					dup;
+					sload 4;
+					bspush 16;
+					invokespecial 21;		// javacard/framework/OwnerPIN.<init>(BB)V
+					aastore;
+					getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sload_3;
+					aaload;
+					aload_2;
+					bspush 6;
+					sload 6;
+					invokevirtual 25;		// javacard/framework/OwnerPIN.update([BSB)V
+					getfield_a_this 10;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ublk_pins
+					sload_3;
+					new 144;		// javacard/framework/OwnerPIN
+					dup;
+					sconst_3;
+					bspush 16;
+					invokespecial 21;		// javacard/framework/OwnerPIN.<init>(BB)V
+					aastore;
+					bspush 6;
+					sload 6;
+					sadd;
+					sconst_1;
+					sadd;
+					s2b;
+					sstore 6;
+					getfield_a_this 10;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ublk_pins
+					sload_3;
+					aaload;
+					aload_2;
+					sload 6;
+					sload 7;
+					invokevirtual 25;		// javacard/framework/OwnerPIN.update([BSB)V
+					return;
+		}
+
+		.method private VerifyPIN(Ljavacard/framework/APDU;[B)V {
+			.stack 4;
+			.locals 3;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_2;
+					baload;
+					sstore_3;
+					sload_3;
+					iflt L2;
+				L1:	sload_3;
+					bspush 8;
+					if_scmplt L3;
+				L2:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L3:	getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sload_3;
+					aaload;
+					astore 4;
+					aload 4;
+					ifnonnull L5;
+				L4:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L5:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L7;
+				L6:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore 5;
+					sload 5;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L9;
+				L8:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L9:	aload_0;
+					aload_2;
+					sconst_5;
+					sload 5;
+					s2b;
+					invokespecial 23;		// com/sun/javacard/samples/CardEdge/CardEdge.CheckPINPolicy([BSB)Z
+					ifne L11;
+				L10:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L11:	aload 4;
+					invokevirtual 117;		// javacard/framework/OwnerPIN.getTriesRemaining()B
+					ifne L13;
+				L12:	sspush -25588;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L13:	aload 4;
+					aload_2;
+					sconst_5;
+					sload 5;
+					s2b;
+					invokevirtual 118;		// javacard/framework/OwnerPIN.check([BSB)Z
+					ifne L15;
+				L14:	aload_0;
+					sload_3;
+					invokespecial 119;		// com/sun/javacard/samples/CardEdge/CardEdge.LogoutIdentity(B)V
+					sspush -25598;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L15:	aload_0;
+					dup;
+					getfield_s 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					sconst_1;
+					sload_3;
+					sshl;
+					sor;
+					putfield_s 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					return;
+		}
+
+		.method private ChangePIN(Ljavacard/framework/APDU;[B)V {
+			.stack 5;
+			.locals 5;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_2;
+					baload;
+					sstore_3;
+					sload_3;
+					iflt L2;
+				L1:	sload_3;
+					bspush 8;
+					if_scmplt L3;
+				L2:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L3:	getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sload_3;
+					aaload;
+					astore 4;
+					aload 4;
+					ifnonnull L5;
+				L4:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L5:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L7;
+				L6:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore 5;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					sload 5;
+					if_scmpeq L9;
+				L8:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L9:	sload 5;
+					sconst_4;
+					if_scmpge L11;
+				L10:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L11:	aload_2;
+					sconst_5;
+					baload;
+					sstore 6;
+					sload 5;
+					sconst_1;
+					sload 6;
+					sadd;
+					sconst_1;
+					sadd;
+					if_scmpge L13;
+				L12:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L13:	aload_0;
+					aload_2;
+					bspush 6;
+					sload 6;
+					invokespecial 23;		// com/sun/javacard/samples/CardEdge/CardEdge.CheckPINPolicy([BSB)Z
+					ifne L15;
+				L14:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L15:	aload_2;
+					bspush 6;
+					sload 6;
+					sadd;
+					baload;
+					sstore 7;
+					sload 5;
+					sconst_1;
+					sload 6;
+					sadd;
+					sconst_1;
+					sadd;
+					sload 7;
+					sadd;
+					if_scmpge L17;
+				L16:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L17:	aload_0;
+					aload_2;
+					bspush 6;
+					sload 6;
+					sadd;
+					sconst_1;
+					sadd;
+					sload 7;
+					invokespecial 23;		// com/sun/javacard/samples/CardEdge/CardEdge.CheckPINPolicy([BSB)Z
+					ifne L19;
+				L18:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L19:	aload 4;
+					invokevirtual 117;		// javacard/framework/OwnerPIN.getTriesRemaining()B
+					ifne L21;
+				L20:	sspush -25588;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L21:	aload 4;
+					aload_2;
+					bspush 6;
+					sload 6;
+					invokevirtual 118;		// javacard/framework/OwnerPIN.check([BSB)Z
+					ifne L23;
+				L22:	aload_0;
+					sload_3;
+					invokespecial 119;		// com/sun/javacard/samples/CardEdge/CardEdge.LogoutIdentity(B)V
+					sspush -25598;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L23:	aload 4;
+					aload_2;
+					bspush 6;
+					sload 6;
+					sadd;
+					sconst_1;
+					sadd;
+					sload 7;
+					invokevirtual 25;		// javacard/framework/OwnerPIN.update([BSB)V
+					aload_0;
+					dup;
+					getfield_s 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					sconst_m1;
+					sconst_1;
+					sload_3;
+					sshl;
+					sxor;
+					sand;
+					putfield_s 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					return;
+		}
+
+		.method private UnblockPIN(Ljavacard/framework/APDU;[B)V {
+			.stack 4;
+			.locals 4;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_2;
+					baload;
+					sstore_3;
+					sload_3;
+					iflt L2;
+				L1:	sload_3;
+					bspush 8;
+					if_scmplt L3;
+				L2:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L3:	getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sload_3;
+					aaload;
+					astore 4;
+					getfield_a_this 10;		// reference com/sun/javacard/samples/CardEdge/CardEdge.ublk_pins
+					sload_3;
+					aaload;
+					astore 5;
+					aload 4;
+					ifnonnull L5;
+				L4:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L5:	aload 5;
+					ifnonnull L7;
+				L6:	sspush -25345;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	aload 4;
+					invokevirtual 117;		// javacard/framework/OwnerPIN.getTriesRemaining()B
+					ifeq L9;
+				L8:	sspush -25597;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L9:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L11;
+				L10:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L11:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore 6;
+					sload 6;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L13;
+				L12:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L13:	aload_0;
+					aload_2;
+					sconst_5;
+					sload 6;
+					s2b;
+					invokespecial 23;		// com/sun/javacard/samples/CardEdge/CardEdge.CheckPINPolicy([BSB)Z
+					ifne L15;
+				L14:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L15:	aload 5;
+					aload_2;
+					sconst_5;
+					sload 6;
+					s2b;
+					invokevirtual 118;		// javacard/framework/OwnerPIN.check([BSB)Z
+					ifne L17;
+				L16:	sspush -25598;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L17:	aload 4;
+					invokevirtual 120;		// javacard/framework/OwnerPIN.resetAndUnblock()V
+					return;
+		}
+
+		.method private CreateObject(Ljavacard/framework/APDU;[B)V {
+			.stack 6;
+			.locals 3;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L2;
+				L1:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	sload_3;
+					bspush 14;
+					if_scmpeq L4;
+				L3:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_2;
+					sconst_2;
+					baload;
+					ifeq L6;
+				L5:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L8;
+				L7:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	aload_2;
+					sconst_5;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 4;
+					aload_2;
+					bspush 7;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 4;
+					sload 5;
+					invokevirtual 121;		// com/sun/javacard/samples/CardEdge/ObjectManager.exists(SS)Z
+					ifeq L10;
+				L9:	sspush -25592;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L10:	aload_2;
+					bspush 9;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					ifne L12;
+				L11:	aload_2;
+					bspush 11;
+					baload;
+					ifge L13;
+				L12:	sspush -25599;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L13:	aload_2;
+					bspush 11;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					ifne L15;
+				L14:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L15:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 4;
+					sload 5;
+					aload_2;
+					bspush 11;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					aload_2;
+					bspush 13;
+					invokevirtual 82;		// com/sun/javacard/samples/CardEdge/ObjectManager.createObject(SSS[BS)S
+					pop;
+					return;
+		}
+
+		.method private DeleteObject(Ljavacard/framework/APDU;[B)V {
+			.stack 5;
+			.locals 4;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_2;
+					baload;
+					ifeq L2;
+				L1:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L5;
+				L3:	aload_2;
+					sconst_3;
+					baload;
+					sconst_1;
+					if_scmpeq L5;
+				L4:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L5:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L7;
+				L6:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L7:	sload_3;
+					sconst_4;
+					if_scmpeq L9;
+				L8:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L9:	aload_2;
+					sconst_5;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 4;
+					aload_2;
+					bspush 7;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 4;
+					sload 5;
+					invokevirtual 71;		// com/sun/javacard/samples/CardEdge/ObjectManager.getBaseAddress(SS)S
+					sstore 6;
+					sload 6;
+					sconst_m1;
+					if_scmpne L11;
+				L10:	sspush -25593;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L11:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 6;
+					getfield_s_this 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					invokevirtual 122;		// com/sun/javacard/samples/CardEdge/ObjectManager.authorizeDeleteFromAddress(SS)Z
+					ifne L13;
+				L12:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L13:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 4;
+					sload 5;
+					aload_2;
+					sconst_3;
+					baload;
+					sconst_1;
+					if_scmpne L15;
+				L14:	sconst_1;
+					goto L16;
+				L15:	sconst_0;
+				L16:	invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					return;
+		}
+
+		.method private ReadObject(Ljavacard/framework/APDU;[B)V {
+			.stack 5;
+			.locals 6;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_2;
+					baload;
+					ifeq L2;
+				L1:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L4;
+				L3:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L6;
+				L5:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	sload_3;
+					bspush 9;
+					if_scmpeq L8;
+				L7:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	aload_2;
+					sconst_5;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 4;
+					aload_2;
+					bspush 7;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					aload_2;
+					bspush 11;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 6;
+					sconst_0;
+					aload_2;
+					bspush 13;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore 7;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 4;
+					sload 5;
+					invokevirtual 71;		// com/sun/javacard/samples/CardEdge/ObjectManager.getBaseAddress(SS)S
+					sstore 8;
+					sload 8;
+					sconst_m1;
+					if_scmpne L10;
+				L9:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L10:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 8;
+					getfield_s_this 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					invokevirtual 123;		// com/sun/javacard/samples/CardEdge/ObjectManager.authorizeReadFromAddress(SS)Z
+					ifne L12;
+				L11:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L12:	sload 6;
+					sload 7;
+					sadd;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 8;
+					invokevirtual 72;		// com/sun/javacard/samples/CardEdge/ObjectManager.getSizeFromAddress(S)S
+					if_scmple L14;
+				L13:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L14:	aload_0;
+					aload_1;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 8;
+					sload 6;
+					sadd;
+					sload 7;
+					invokespecial 85;		// com/sun/javacard/samples/CardEdge/CardEdge.sendData(Ljavacard/framework/APDU;[BSS)V
+					return;
+		}
+
+		.method private WriteObject(Ljavacard/framework/APDU;[B)V {
+			.stack 6;
+			.locals 6;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_2;
+					baload;
+					ifeq L2;
+				L1:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L4;
+				L3:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L6;
+				L5:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	aload_2;
+					sconst_5;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 4;
+					aload_2;
+					bspush 7;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					aload_2;
+					bspush 11;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 6;
+					sconst_0;
+					aload_2;
+					bspush 13;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore 7;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 4;
+					sload 5;
+					invokevirtual 71;		// com/sun/javacard/samples/CardEdge/ObjectManager.getBaseAddress(SS)S
+					sstore 8;
+					sload 8;
+					sconst_m1;
+					if_scmpne L8;
+				L7:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 8;
+					getfield_s_this 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					invokevirtual 124;		// com/sun/javacard/samples/CardEdge/ObjectManager.authorizeWriteFromAddress(SS)Z
+					ifne L10;
+				L9:	sspush -25594;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L10:	sload 6;
+					sload 7;
+					sadd;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 8;
+					invokevirtual 72;		// com/sun/javacard/samples/CardEdge/ObjectManager.getSizeFromAddress(S)S
+					if_scmple L12;
+				L11:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L12:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 8;
+					sload 6;
+					aload_2;
+					bspush 14;
+					sload 7;
+					invokevirtual 125;		// com/sun/javacard/samples/CardEdge/MemoryManager.setBytes(SS[BSS)V
+					return;
+		}
+
+		.method private LogOutAll()V {
+			.stack 2;
+			.locals 1;
+
+				L0:	aload_0;
+					sconst_0;
+					putfield_s 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					sconst_0;
+					sstore_1;
+					goto L4;
+				L1:	getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sload_1;
+					aaload;
+					ifnull L3;
+				L2:	getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sload_1;
+					aaload;
+					invokevirtual 126;		// javacard/framework/OwnerPIN.reset()V
+				L3:	sload_1;
+					sconst_1;
+					sadd;
+					s2b;
+					sstore_1;
+				L4:	sload_1;
+					bspush 8;
+					if_scmplt L1;
+				L5:	return;
+		}
+
+		.method private ListPINs(Ljavacard/framework/APDU;[B)V {
+			.stack 3;
+			.locals 3;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_2;
+					baload;
+					ifeq L2;
+				L1:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L4;
+				L3:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_2;
+					sconst_4;
+					baload;
+					sstore_3;
+					sload_3;
+					sconst_2;
+					if_scmpeq L6;
+				L5:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	sconst_0;
+					sstore 4;
+					sconst_0;
+					sstore 5;
+					goto L10;
+				L7:	getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sload 5;
+					aaload;
+					ifnull L9;
+				L8:	sload 4;
+					sconst_1;
+					sload 5;
+					sshl;
+					sor;
+					sstore 4;
+				L9:	sinc 5 1;
+				L10:	sload 5;
+					bspush 8;
+					if_scmplt L7;
+				L11:	aload_2;
+					sconst_0;
+					sload 4;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					aload_1;
+					sconst_0;
+					sconst_2;
+					invokevirtual 58;		// javacard/framework/APDU.setOutgoingAndSend(SS)V
+					return;
+		}
+
+		.method private ListObjects(Ljavacard/framework/APDU;[B)V {
+			.stack 3;
+			.locals 2;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L2;
+				L1:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_2;
+					sconst_4;
+					baload;
+					sstore_3;
+					sload_3;
+					bspush 14;
+					if_scmpge L4;
+				L3:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	sconst_0;
+					sstore 4;
+					aload_2;
+					sconst_2;
+					baload;
+					ifne L6;
+				L5:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					aload_2;
+					sconst_0;
+					invokevirtual 127;		// com/sun/javacard/samples/CardEdge/ObjectManager.getFirstRecord([BS)Z
+					sstore 4;
+					goto L9;
+				L6:	aload_2;
+					sconst_2;
+					baload;
+					sconst_1;
+					if_scmpeq L8;
+				L7:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					goto L9;
+				L8:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					aload_2;
+					sconst_0;
+					invokevirtual 128;		// com/sun/javacard/samples/CardEdge/ObjectManager.getNextRecord([BS)Z
+					sstore 4;
+				L9:	sload 4;
+					ifeq L11;
+				L10:	aload_1;
+					sconst_0;
+					bspush 14;
+					invokevirtual 58;		// javacard/framework/APDU.setOutgoingAndSend(SS)V
+					goto L12;
+				L11:	sspush -25582;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L12:	return;
+		}
+
+		.method private ListKeys(Ljavacard/framework/APDU;[B)V {
+			.stack 5;
+			.locals 2;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L2;
+				L1:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					bspush 11;
+					if_scmpeq L4;
+				L3:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_2;
+					sconst_2;
+					baload;
+					ifne L6;
+				L5:	aload_0;
+					sconst_0;
+					putfield_b 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					goto L9;
+				L6:	aload_2;
+					sconst_2;
+					baload;
+					sconst_1;
+					if_scmpeq L9;
+				L7:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					goto L9;
+				L8:	aload_0;
+					dup;
+					getfield_b 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					sconst_1;
+					sadd;
+					s2b;
+					putfield_b 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+				L9:	getfield_b_this 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					bspush 8;
+					if_scmpge L12;
+				L10:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					getfield_b_this 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					aaload;
+					ifnull L8;
+				L11:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					getfield_b_this 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					aaload;
+					invokeinterface 1 141 3;		// javacard/security/Key
+					ifeq L8;
+				L12:	getfield_b_this 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					bspush 8;
+					if_scmpge L14;
+				L13:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					getfield_b_this 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					aaload;
+					astore 4;
+					aload_2;
+					sconst_0;
+					getfield_b_this 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					bastore;
+					aload_2;
+					sconst_1;
+					aload_0;
+					aload 4;
+					invokespecial 114;		// com/sun/javacard/samples/CardEdge/CardEdge.getKeyType(Ljavacard/security/Key;)B
+					bastore;
+					aload_2;
+					sconst_2;
+					sconst_m1;
+					bastore;
+					aload_2;
+					sconst_3;
+					aload 4;
+					invokeinterface 1 141 1;		// javacard/security/Key
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					getfield_a_this 3;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyACLs
+					getfield_b_this 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					bspush 6;
+					smul;
+					aload_2;
+					sconst_5;
+					bspush 6;
+					invokestatic 57;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					aload_0;
+					dup;
+					getfield_b 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					sconst_1;
+					sadd;
+					s2b;
+					putfield_b 14;		// byte com/sun/javacard/samples/CardEdge/CardEdge.key_it
+					aload_1;
+					sconst_0;
+					bspush 11;
+					invokevirtual 58;		// javacard/framework/APDU.setOutgoingAndSend(SS)V
+				L14:	return;
+		}
+
+		.method private GetChallenge(Ljavacard/framework/APDU;[B)V {
+			.stack 6;
+			.locals 5;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_2;
+					baload;
+					ifeq L2;
+				L1:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L4;
+				L3:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	sload_3;
+					sconst_4;
+					if_scmpge L6;
+				L5:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L6:	aload_2;
+					sconst_5;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 4;
+					aload_2;
+					bspush 7;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					sload_3;
+					sload 5;
+					sconst_4;
+					sadd;
+					if_scmpeq L8;
+				L7:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	aload_2;
+					sconst_3;
+					baload;
+					sstore 6;
+					sload 6;
+					sconst_1;
+					if_scmpeq L11;
+				L9:	sload 6;
+					sconst_2;
+					if_scmpeq L11;
+				L10:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L11:	getfield_a_this 13;		// reference com/sun/javacard/samples/CardEdge/CardEdge.randomData
+					ifnonnull L13;
+				L12:	aload_0;
+					sconst_2;
+					invokestatic 130;		// javacard/security/RandomData.getInstance(B)Ljavacard/security/RandomData;
+					putfield_a 13;		// reference com/sun/javacard/samples/CardEdge/CardEdge.randomData
+				L13:	sload 5;
+					ifeq L15;
+				L14:	getfield_a_this 13;		// reference com/sun/javacard/samples/CardEdge/CardEdge.randomData
+					aload_2;
+					bspush 9;
+					sload 5;
+					invokevirtual 131;		// javacard/security/RandomData.setSeed([BSS)V
+				L15:	sload 4;
+					ifeq L18;
+				L16:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sload 4;
+					sconst_2;
+					sadd;
+					aload_0;
+					invokevirtual 132;		// com/sun/javacard/samples/CardEdge/CardEdge.getRestrictedACL()[B
+					sconst_0;
+					invokevirtual 82;		// com/sun/javacard/samples/CardEdge/ObjectManager.createObject(SSS[BS)S
+					sstore 7;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 7;
+					sload 4;
+					invokevirtual 84;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SS)V
+					getfield_a_this 13;		// reference com/sun/javacard/samples/CardEdge/CardEdge.randomData
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 7;
+					sconst_2;
+					sadd;
+					sload 4;
+					invokevirtual 133;		// javacard/security/RandomData.generateData([BSS)V
+					aload_0;
+					sconst_1;
+					putfield_b 12;		// boolean com/sun/javacard/samples/CardEdge/CardEdge.getChallengeDone
+					sload 6;
+					sconst_1;
+					if_scmpne L18;
+				L17:	aload_0;
+					aload_1;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 7;
+					sload 4;
+					sconst_2;
+					sadd;
+					invokespecial 85;		// com/sun/javacard/samples/CardEdge/CardEdge.sendData(Ljavacard/framework/APDU;[BSS)V
+				L18:	return;
+		}
+
+		.method private ExternalAuthenticate(Ljavacard/framework/APDU;[B)V {
+			.stack 7;
+			.locals 20;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L2;
+				L1:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	sconst_0;
+					aload_2;
+					sconst_4;
+					baload;
+					invokestatic 67;		// javacard/framework/Util.makeShort(BB)S
+					sstore_3;
+					sload_3;
+					aload_1;
+					invokevirtual 68;		// javacard/framework/APDU.setIncomingAndReceive()S
+					if_scmpeq L4;
+				L3:	sspush 26368;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	aload_2;
+					sconst_2;
+					baload;
+					sstore 4;
+					sload 4;
+					iflt L7;
+				L5:	sload 4;
+					bspush 6;
+					if_scmpge L7;
+				L6:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload 4;
+					aaload;
+					ifnonnull L8;
+				L7:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L8:	sload_3;
+					sconst_3;
+					if_scmpge L10;
+				L9:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L10:	getfield_b_this 12;		// boolean com/sun/javacard/samples/CardEdge/CardEdge.getChallengeDone
+					ifne L12;
+				L11:	sspush -25597;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L12:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					invokevirtual 71;		// com/sun/javacard/samples/CardEdge/ObjectManager.getBaseAddress(SS)S
+					sstore 5;
+					sload 5;
+					sconst_m1;
+					if_scmpne L14;
+				L13:	sspush -25597;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L14:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 5;
+					invokevirtual 72;		// com/sun/javacard/samples/CardEdge/ObjectManager.getSizeFromAddress(S)S
+					sstore 6;
+					sload 6;
+					sconst_3;
+					if_scmpge L16;
+				L15:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L16:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 5;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sstore 7;
+					sload 6;
+					sconst_2;
+					sload 7;
+					sadd;
+					if_scmpeq L18;
+				L17:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L18:	aload_2;
+					sconst_5;
+					baload;
+					sstore 8;
+					aload_2;
+					bspush 6;
+					baload;
+					sstore 9;
+					aload_2;
+					bspush 7;
+					baload;
+					slookupswitch L23 2 1 L19 2 L20;
+				L19:	aload_2;
+					astore 10;
+					bspush 8;
+					sstore 11;
+					sload_3;
+					sconst_3;
+					ssub;
+					sstore 12;
+					goto L24;
+				L20:	getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					invokevirtual 71;		// com/sun/javacard/samples/CardEdge/ObjectManager.getBaseAddress(SS)S
+					sstore 11;
+					sload 11;
+					aload_0;
+					pop;
+					sconst_m1;
+					if_scmpne L22;
+				L21:	sspush -25593;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L22:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					astore 10;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sload 11;
+					invokevirtual 72;		// com/sun/javacard/samples/CardEdge/ObjectManager.getSizeFromAddress(S)S
+					sstore 12;
+				L23:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L24:	sload 12;
+					sconst_2;
+					if_scmpge L26;
+				L25:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L26:	aload 10;
+					sload 11;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 13;
+					sload 12;
+					sload 13;
+					sconst_2;
+					sadd;
+					if_scmpge L28;
+				L27:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L28:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload 4;
+					aaload;
+					astore 14;
+					getfield_a_this 4;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyTries
+					sload 4;
+					baload;
+					ifne L30;
+				L29:	sspush -25588;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L30:	aload 14;
+					invokeinterface 1 141 2;		// javacard/security/Key
+					sstore 15;
+					sconst_0;
+					sstore 16;
+					sload 9;
+					slookupswitch L60 2 2 L53 4 L31;
+				L31:	sload 8;
+					slookupswitch L44 4 0 L32 1 L35 32 L38 33 L41;
+				L32:	sload 15;
+					sconst_4;
+					if_scmpeq L34;
+				L33:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L34:	bspush 12;
+					sstore 17;
+					goto L45;
+				L35:	sload 15;
+					sconst_4;
+					if_scmpeq L37;
+				L36:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L37:	bspush 10;
+					sstore 17;
+					goto L45;
+				L38:	sload 15;
+					sconst_3;
+					if_scmpeq L40;
+				L39:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L40:	sconst_1;
+					sstore 17;
+					goto L45;
+				L41:	sload 15;
+					sconst_3;
+					if_scmpeq L43;
+				L42:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L43:	sconst_5;
+					sstore 17;
+					goto L45;
+				L44:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L45:	aload_0;
+					sload 4;
+					sload 17;
+					invokespecial 76;		// com/sun/javacard/samples/CardEdge/CardEdge.getCipher(BB)Ljavacardx/crypto/Cipher;
+					astore 18;
+					aload 18;
+					aload 14;
+					sconst_1;
+					invokevirtual 77;		// javacardx/crypto/Cipher.init(Ljavacard/security/Key;B)V
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 7;
+					invokevirtual 134;		// com/sun/javacard/samples/CardEdge/MemoryManager.alloc(S)S
+					sstore 19;
+					sload 19;
+					sconst_m1;
+					if_scmpne L47;
+				L46:	sspush -25599;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L47:	aload 18;
+					aload 10;
+					sload 11;
+					sconst_2;
+					sadd;
+					sload 13;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 19;
+					invokevirtual 88;		// javacardx/crypto/Cipher.doFinal([BSS[BS)S
+					sstore 20;
+					sload 20;
+					sload 7;
+					if_scmple L49;
+				L48:	sspush -25345;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L49:	sload 20;
+					sload 7;
+					if_scmpne L52;
+				L50:	getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 19;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sconst_2;
+					sadd;
+					sload 7;
+					invokestatic 135;		// javacard/framework/Util.arrayCompare([BS[BSS)B
+					ifne L52;
+				L51:	sconst_1;
+					sstore 16;
+				L52:	aload_0;
+					aload_1;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 19;
+					sload 20;
+					invokespecial 85;		// com/sun/javacard/samples/CardEdge/CardEdge.sendData(Ljavacard/framework/APDU;[BSS)V
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					sload 19;
+					invokevirtual 136;		// com/sun/javacard/samples/CardEdge/MemoryManager.free(S)V
+					goto L61;
+				L53:	sload 8;
+					slookupswitch L57 1 16 L54;
+				L54:	sload 15;
+					bspush 7;
+					if_scmpeq L56;
+				L55:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L56:	bspush 14;
+					sstore 21;
+					goto L58;
+				L57:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+					return;
+				L58:	aload_0;
+					sload 4;
+					sload 21;
+					invokespecial 73;		// com/sun/javacard/samples/CardEdge/CardEdge.getSignature(BB)Ljavacard/security/Signature;
+					astore 22;
+					aload 22;
+					aload 14;
+					sconst_2;
+					invokevirtual 74;		// javacard/security/Signature.init(Ljavacard/security/Key;B)V
+					aload 22;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 5;
+					sconst_2;
+					sadd;
+					sload 7;
+					aload 10;
+					sload 11;
+					sconst_2;
+					sadd;
+					sload 13;
+					invokevirtual 86;		// javacard/security/Signature.verify([BSS[BSS)Z
+					ifeq L61;
+				L59:	sconst_1;
+					sstore 16;
+					goto L61;
+				L60:	sspush -25585;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L61:	sload 16;
+					ifeq L63;
+				L62:	aload_0;
+					sload 4;
+					invokespecial 137;		// com/sun/javacard/samples/CardEdge/CardEdge.LoginStrongIdentity(B)V
+					getfield_a_this 4;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyTries
+					sload 4;
+					sconst_5;
+					bastore;
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					goto L64;
+				L63:	getfield_a_this 4;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keyTries
+					sload 4;
+					dup2;
+					baload;
+					sconst_1;
+					ssub;
+					s2b;
+					bastore;
+					aload_0;
+					sload 4;
+					bspush 8;
+					sadd;
+					s2b;
+					invokespecial 119;		// com/sun/javacard/samples/CardEdge/CardEdge.LogoutIdentity(B)V
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					bspush -2;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					getfield_a_this 1;		// reference com/sun/javacard/samples/CardEdge/CardEdge.om
+					sconst_m1;
+					sconst_m1;
+					sconst_1;
+					invokevirtual 35;		// com/sun/javacard/samples/CardEdge/ObjectManager.destroyObject(SSZ)V
+					sspush -25598;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L64:	return;
+		}
+
+		.method private GetStatus(Ljavacard/framework/APDU;[B)V {
+			.stack 4;
+			.locals 4;
+
+			.descriptor	Ljavacard/framework/APDU;	0.10;
+
+				L0:	aload_2;
+					sconst_2;
+					baload;
+					ifeq L2;
+				L1:	sspush -25584;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_2;
+					sconst_3;
+					baload;
+					ifeq L4;
+				L3:	sspush -25583;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L4:	sconst_0;
+					sstore_3;
+					aload_2;
+					sload_3;
+					sinc 3 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload_3;
+					sinc 3 1;
+					sconst_1;
+					bastore;
+					aload_2;
+					sload_3;
+					sinc 3 1;
+					sconst_0;
+					bastore;
+					aload_2;
+					sload_3;
+					sinc 3 1;
+					sconst_5;
+					bastore;
+					aload_2;
+					sload_3;
+					sconst_0;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sinc 3 2;
+					aload_2;
+					sload_3;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					arraylength;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sinc 3 2;
+					aload_2;
+					sload_3;
+					sconst_0;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sinc 3 2;
+					aload_2;
+					sload_3;
+					getfield_a_this 0;		// reference com/sun/javacard/samples/CardEdge/CardEdge.mem
+					invokevirtual 138;		// com/sun/javacard/samples/CardEdge/MemoryManager.freemem()S
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sinc 3 2;
+					sconst_0;
+					sstore 4;
+					sconst_0;
+					sstore 5;
+					goto L8;
+				L5:	getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					sload 5;
+					aaload;
+					ifnull L7;
+				L6:	sload 4;
+					sconst_1;
+					sadd;
+					s2b;
+					sstore 4;
+				L7:	sinc 5 1;
+				L8:	sload 5;
+					getfield_a_this 9;		// reference com/sun/javacard/samples/CardEdge/CardEdge.pins
+					arraylength;
+					if_scmplt L5;
+				L9:	aload_2;
+					sload_3;
+					sinc 3 1;
+					sload 4;
+					bastore;
+					sconst_0;
+					sstore 4;
+					sconst_0;
+					sstore 6;
+					goto L13;
+				L10:	getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					sload 6;
+					aaload;
+					ifnull L12;
+				L11:	sload 4;
+					sconst_1;
+					sadd;
+					s2b;
+					sstore 4;
+				L12:	sinc 6 1;
+				L13:	sload 6;
+					getfield_a_this 2;		// reference com/sun/javacard/samples/CardEdge/CardEdge.keys
+					arraylength;
+					if_scmplt L10;
+				L14:	aload_2;
+					sload_3;
+					sinc 3 1;
+					sload 4;
+					bastore;
+					aload_2;
+					sload_3;
+					getfield_s_this 11;		// short com/sun/javacard/samples/CardEdge/CardEdge.logged_ids
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sinc 3 2;
+					aload_1;
+					sconst_0;
+					sload_3;
+					invokevirtual 58;		// javacard/framework/APDU.setOutgoingAndSend(SS)V
+					return;
+		}
+
+	}
+
+	.class public MemoryManager 1 extends 3.0 {		// extends java/lang/Object
+
+		.fields {
+			private byte[] ptr 0;		// [B
+			private short free_head 1;		// S
+			public static final short NULL_OFFSET = -1;		// S
+			private static final byte NODE_SIZE = 4;		// B
+		}
+
+		.publicMethodTable 1 {
+			equals(Ljava/lang/Object;)Z;
+			alloc(S)S;
+			getMaxSize()S;
+			free(S)V;
+			getBlockSize(S)S;
+			freemem()S;
+			realloc(SS)Z;
+			setByte(SSB)V;
+			setByte(SB)V;
+			getByte(SS)B;
+			getByte(S)B;
+			setShort(SSS)V;
+			setShort(SS)V;
+			getShort(SS)S;
+			getShort(S)S;
+			setBytes(SS[BSS)V;
+			getBytes([BSSSS)V;
+			getBuffer()[B;
+		}
+
+		.packageMethodTable 0 {
+		}
+
+		.method public <init>(S)V 0 {
+			.stack 2;
+			.locals 0;
+
+				L0:	aload_0;
+					invokespecial 139;		// java/lang/Object.<init>()V
+					aload_0;
+					aconst_null;
+					putfield_a 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					aload_0;
+					sconst_m1;
+					putfield_s 16;		// short com/sun/javacard/samples/CardEdge/MemoryManager.free_head
+					aload_0;
+					sload_1;
+					invokespecial 142;		// com/sun/javacard/samples/CardEdge/MemoryManager.Init(S)V
+					return;
+		}
+
+		.method private Init(S)V {
+			.stack 3;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					ifnull L2;
+				L1:	return;
+				L2:	aload_0;
+					sload_1;
+					newarray 11;
+					putfield_a 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sconst_0;
+					sload_1;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sconst_2;
+					sconst_m1;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					aload_0;
+					sconst_0;
+					putfield_s 16;		// short com/sun/javacard/samples/CardEdge/MemoryManager.free_head
+					return;
+		}
+
+		.method public alloc(S)S 1 {
+			.stack 3;
+			.locals 5;
+
+				L0:	getfield_s_this 16;		// short com/sun/javacard/samples/CardEdge/MemoryManager.free_head
+					sstore_2;
+					sconst_m1;
+					sstore_3;
+					sinc 1 2;
+					sload_1;
+					sconst_4;
+					if_scmpge L10;
+				L1:	sconst_4;
+					sstore_1;
+					goto L10;
+				L2:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_2;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 4;
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_2;
+					sconst_2;
+					sadd;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 5;
+					sload 4;
+					sload_1;
+					if_scmplt L9;
+				L3:	sload 4;
+					sload_1;
+					ssub;
+					sstore 6;
+					sload 6;
+					sconst_4;
+					if_scmplt L5;
+				L4:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_2;
+					sload 6;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					goto L8;
+				L5:	sload 4;
+					sstore_1;
+					sconst_0;
+					sstore 6;
+					sload_3;
+					sconst_m1;
+					if_scmpne L7;
+				L6:	aload_0;
+					sload 5;
+					putfield_s 16;		// short com/sun/javacard/samples/CardEdge/MemoryManager.free_head
+					goto L8;
+				L7:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_3;
+					sconst_2;
+					sadd;
+					sload 5;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+				L8:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_2;
+					sload 6;
+					sadd;
+					sload_1;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sload_2;
+					sload 6;
+					sadd;
+					sconst_2;
+					sadd;
+					sreturn;
+				L9:	sload_2;
+					sstore_3;
+					sload 5;
+					sstore_2;
+				L10:	sload_2;
+					sconst_m1;
+					if_scmpne L2;
+				L11:	sconst_m1;
+					sreturn;
+		}
+
+		.method public getMaxSize()S 2 {
+			.stack 3;
+			.locals 3;
+
+				L0:	sconst_2;
+					sstore_1;
+					getfield_s_this 16;		// short com/sun/javacard/samples/CardEdge/MemoryManager.free_head
+					sstore_2;
+					goto L4;
+				L1:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_2;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore_3;
+					sload_3;
+					sload_1;
+					if_scmple L3;
+				L2:	sload_3;
+					sstore_1;
+				L3:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_2;
+					sconst_2;
+					sadd;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore_2;
+				L4:	sload_2;
+					sconst_m1;
+					if_scmpne L1;
+				L5:	sload_1;
+					sconst_2;
+					ssub;
+					sreturn;
+		}
+
+		.method public free(S)V 3 {
+			.stack 4;
+			.locals 6;
+
+				L0:	sinc 1 -2;
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore_2;
+					sconst_m1;
+					sstore_3;
+					getfield_s_this 16;		// short com/sun/javacard/samples/CardEdge/MemoryManager.free_head
+					sstore 4;
+					sconst_0;
+					sstore 5;
+					sconst_0;
+					sstore 6;
+					goto L4;
+				L1:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload 4;
+					sconst_2;
+					sadd;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 6;
+					sload_1;
+					sload 4;
+					if_scmpge L3;
+				L2:	sconst_1;
+					sstore 5;
+					goto L5;
+				L3:	sload 4;
+					sstore_3;
+					sload 6;
+					sstore 4;
+				L4:	sload 4;
+					sconst_m1;
+					if_scmpne L1;
+				L5:	sload 5;
+					ifeq L11;
+				L6:	sload_1;
+					sload_2;
+					sadd;
+					sload 4;
+					if_scmpne L11;
+				L7:	sload_2;
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload 4;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sadd;
+					sstore_2;
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sload_2;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					sload_3;
+					sconst_m1;
+					if_scmpeq L9;
+				L8:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_3;
+					sconst_2;
+					sadd;
+					sload 6;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					goto L10;
+				L9:	aload_0;
+					sload 6;
+					putfield_s 16;		// short com/sun/javacard/samples/CardEdge/MemoryManager.free_head
+				L10:	sload 6;
+					sstore 4;
+				L11:	sload_3;
+					sconst_m1;
+					if_scmpeq L16;
+				L12:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_3;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore 7;
+					sload_3;
+					sload 7;
+					sadd;
+					sload_1;
+					if_scmpne L14;
+				L13:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_3;
+					sload 7;
+					sload_2;
+					sadd;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					goto L15;
+				L14:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sconst_2;
+					sadd;
+					sload 4;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_3;
+					sconst_2;
+					sadd;
+					sload_1;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+				L15:	goto L17;
+				L16:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sconst_2;
+					sadd;
+					sload 4;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					aload_0;
+					sload_1;
+					putfield_s 16;		// short com/sun/javacard/samples/CardEdge/MemoryManager.free_head
+				L17:	return;
+		}
+
+		.method public getBlockSize(S)S 4 {
+			.stack 3;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sconst_2;
+					ssub;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sconst_2;
+					ssub;
+					sreturn;
+		}
+
+		.method public freemem()S 5 {
+			.stack 3;
+			.locals 2;
+
+				L0:	getfield_s_this 16;		// short com/sun/javacard/samples/CardEdge/MemoryManager.free_head
+					sstore_1;
+					sconst_0;
+					sstore_2;
+					goto L2;
+				L1:	sload_2;
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sadd;
+					sconst_2;
+					ssub;
+					sstore_2;
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sconst_2;
+					sadd;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore_1;
+				L2:	sload_1;
+					sconst_m1;
+					if_scmpne L1;
+				L3:	sload_2;
+					sreturn;
+		}
+
+		.method public realloc(SS)Z 6 {
+			.stack 4;
+			.locals 1;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sconst_2;
+					ssub;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sstore_3;
+					sinc 2 2;
+					sload_2;
+					sconst_3;
+					if_scmplt L2;
+				L1:	sload_3;
+					sload_2;
+					ssub;
+					sconst_4;
+					if_scmpge L3;
+				L2:	sconst_0;
+					sreturn;
+				L3:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sconst_2;
+					ssub;
+					sload_2;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sload_2;
+					sadd;
+					sconst_2;
+					ssub;
+					sload_3;
+					sload_2;
+					ssub;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					aload_0;
+					sload_1;
+					sload_2;
+					sadd;
+					invokevirtual 136;		// com/sun/javacard/samples/CardEdge/MemoryManager.free(S)V
+					sconst_1;
+					sreturn;
+		}
+
+		.method public setByte(SSB)V 7 {
+			.stack 3;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sload_2;
+					sadd;
+					sload_3;
+					bastore;
+					return;
+		}
+
+		.method public setByte(SB)V 8 {
+			.stack 3;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sload_2;
+					bastore;
+					return;
+		}
+
+		.method public getByte(SS)B 9 {
+			.stack 3;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sload_2;
+					sadd;
+					baload;
+					sreturn;
+		}
+
+		.method public getByte(S)B 10 {
+			.stack 2;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					baload;
+					sreturn;
+		}
+
+		.method public setShort(SSS)V 11 {
+			.stack 3;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sload_2;
+					sadd;
+					sload_3;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					return;
+		}
+
+		.method public setShort(SS)V 12 {
+			.stack 3;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sload_2;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					return;
+		}
+
+		.method public getShort(SS)S 13 {
+			.stack 3;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sload_2;
+					sadd;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sreturn;
+		}
+
+		.method public getShort(S)S 14 {
+			.stack 2;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					invokestatic 65;		// javacard/framework/Util.getShort([BS)S
+					sreturn;
+		}
+
+		.method public setBytes(SS[BSS)V 15 {
+			.stack 5;
+			.locals 0;
+
+				L0:	aload_3;
+					sload 4;
+					getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_1;
+					sload_2;
+					sadd;
+					sload 5;
+					invokestatic 95;		// javacard/framework/Util.arrayCopy([BS[BSS)S
+					pop;
+					return;
+		}
+
+		.method public getBytes([BSSSS)V 16 {
+			.stack 5;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					sload_3;
+					sload 4;
+					sadd;
+					aload_1;
+					sload_2;
+					sload 5;
+					invokestatic 95;		// javacard/framework/Util.arrayCopy([BS[BSS)S
+					pop;
+					return;
+		}
+
+		.method public getBuffer()[B 17 {
+			.stack 1;
+			.locals 0;
+
+				L0:	getfield_a_this 15;		// reference com/sun/javacard/samples/CardEdge/MemoryManager.ptr
+					areturn;
+		}
+
+	}
+
+	.class public ObjectManager 2 extends 3.0 {		// extends java/lang/Object
+
+		.fields {
+			private MemoryManager mem 0;		// Lcom/sun/javacard/samples/CardEdge/MemoryManager;
+			private short it 1;		// S
+			private short obj_list_head 2;		// S
+			public static final byte OBJ_ACL_SIZE = 6;		// B
+			public static final short SW_NO_MEMORY_LEFT = -25599;		// S
+			public static final short RECORD_SIZE = 14;		// S
+			private static final byte OBJ_HEADER_SIZE = 14;		// B
+			private static final byte OBJ_H_NEXT = 0;		// B
+			private static final byte OBJ_H_CLASS = 2;		// B
+			private static final byte OBJ_H_ID = 4;		// B
+			private static final byte OBJ_H_ACL = 6;		// B
+			private static final byte OBJ_H_SIZE = 12;		// B
+			private static final byte OBJ_H_DATA = 14;		// B
+		}
+
+		.publicMethodTable 1 {
+			equals(Ljava/lang/Object;)Z;
+			createObject(SSS[BS)S;
+			createObjectMax(SS[BS)S;
+			clampObject(SSS)Z;
+			authorizeReadFromAddress(SS)Z;
+			authorizeWriteFromAddress(SS)Z;
+			authorizeDeleteFromAddress(SS)Z;
+			destroyObject(SSZ)V;
+			getBaseAddress(SS)S;
+			exists(SS)Z;
+			getSizeFromAddress(S)S;
+			getFirstRecord([BS)Z;
+			getNextRecord([BS)Z;
+			compareACLFromAddress(S[B)Z;
+		}
+
+		.packageMethodTable 0 {
+		}
+
+		.method public <init>(Lcom/sun/javacard/samples/CardEdge/MemoryManager;)V 0 {
+			.stack 2;
+			.locals 0;
+
+				L0:	aload_0;
+					invokespecial 139;		// java/lang/Object.<init>()V
+					aload_0;
+					aconst_null;
+					putfield_a 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					aload_0;
+					sconst_m1;
+					putfield_s 18;		// short com/sun/javacard/samples/CardEdge/ObjectManager.obj_list_head
+					aload_0;
+					aload_1;
+					putfield_a 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					aload_0;
+					sconst_m1;
+					putfield_s 18;		// short com/sun/javacard/samples/CardEdge/ObjectManager.obj_list_head
+					return;
+		}
+
+		.method public createObject(SSS[BS)S 1 {
+			.stack 6;
+			.locals 1;
+
+				L0:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload_3;
+					bspush 14;
+					sadd;
+					invokevirtual 134;		// com/sun/javacard/samples/CardEdge/MemoryManager.alloc(S)S
+					sstore 6;
+					sload 6;
+					sconst_m1;
+					if_scmpne L2;
+				L1:	sspush -25599;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 6;
+					sconst_0;
+					getfield_s_this 18;		// short com/sun/javacard/samples/CardEdge/ObjectManager.obj_list_head
+					invokevirtual 145;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SSS)V
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 6;
+					sconst_2;
+					sload_1;
+					invokevirtual 145;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SSS)V
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 6;
+					sconst_4;
+					sload_2;
+					invokevirtual 145;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SSS)V
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 6;
+					bspush 12;
+					sload_3;
+					invokevirtual 145;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SSS)V
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 6;
+					bspush 6;
+					aload 4;
+					sload 5;
+					bspush 6;
+					invokevirtual 125;		// com/sun/javacard/samples/CardEdge/MemoryManager.setBytes(SS[BSS)V
+					aload_0;
+					sload 6;
+					putfield_s 18;		// short com/sun/javacard/samples/CardEdge/ObjectManager.obj_list_head
+					sload 6;
+					bspush 14;
+					sadd;
+					sreturn;
+		}
+
+		.method public createObjectMax(SS[BS)S 2 {
+			.stack 6;
+			.locals 1;
+
+				L0:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					invokevirtual 146;		// com/sun/javacard/samples/CardEdge/MemoryManager.getMaxSize()S
+					sstore 5;
+					sload 5;
+					ifne L2;
+				L1:	sspush -25599;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	aload_0;
+					sload_1;
+					sload_2;
+					sload 5;
+					bspush 14;
+					ssub;
+					aload_3;
+					sload 4;
+					invokevirtual 82;		// com/sun/javacard/samples/CardEdge/ObjectManager.createObject(SSS[BS)S
+					sreturn;
+		}
+
+		.method public clampObject(SSS)Z 3 {
+			.stack 4;
+			.locals 1;
+
+				L0:	aload_0;
+					sload_1;
+					sload_2;
+					invokespecial 147;		// com/sun/javacard/samples/CardEdge/ObjectManager.getEntry(SS)S
+					sstore 4;
+					sload 4;
+					sconst_m1;
+					if_scmpne L2;
+				L1:	sspush -25593;
+					invokestatic 24;		// javacard/framework/ISOException.throwIt(S)V
+				L2:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 4;
+					sload_3;
+					bspush 14;
+					sadd;
+					invokevirtual 148;		// com/sun/javacard/samples/CardEdge/MemoryManager.realloc(SS)Z
+					ifeq L4;
+				L3:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 4;
+					bspush 12;
+					sload_3;
+					invokevirtual 145;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SSS)V
+					sconst_1;
+					sreturn;
+				L4:	sconst_0;
+					sreturn;
+		}
+
+		.method private setACL(SS[BS)V {
+			.stack 6;
+			.locals 1;
+
+				L0:	aload_0;
+					sload_1;
+					sload_2;
+					invokespecial 147;		// com/sun/javacard/samples/CardEdge/ObjectManager.getEntry(SS)S
+					sstore 5;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 5;
+					bspush 6;
+					aload_3;
+					sload 4;
+					bspush 6;
+					invokevirtual 125;		// com/sun/javacard/samples/CardEdge/MemoryManager.setBytes(SS[BSS)V
+					return;
+		}
+
+		.method public authorizeReadFromAddress(SS)Z 4 {
+			.stack 4;
+			.locals 0;
+
+				L0:	aload_0;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload_1;
+					bspush -8;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					sload_2;
+					invokespecial 150;		// com/sun/javacard/samples/CardEdge/ObjectManager.authorizeOp(SS)Z
+					sreturn;
+		}
+
+		.method public authorizeWriteFromAddress(SS)Z 5 {
+			.stack 4;
+			.locals 0;
+
+				L0:	aload_0;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload_1;
+					bspush -6;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					sload_2;
+					invokespecial 150;		// com/sun/javacard/samples/CardEdge/ObjectManager.authorizeOp(SS)Z
+					sreturn;
+		}
+
+		.method public authorizeDeleteFromAddress(SS)Z 6 {
+			.stack 4;
+			.locals 0;
+
+				L0:	aload_0;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload_1;
+					bspush -4;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					sload_2;
+					invokespecial 150;		// com/sun/javacard/samples/CardEdge/ObjectManager.authorizeOp(SS)Z
+					sreturn;
+		}
+
+		.method private authorizeOp(SS)Z {
+			.stack 2;
+			.locals 0;
+
+				L0:	sload_1;
+					sconst_m1;
+					if_scmpeq L3;
+				L1:	sload_1;
+					sload_2;
+					sand;
+					sload_1;
+					if_scmpne L3;
+				L2:	sconst_1;
+					goto L4;
+				L3:	sconst_0;
+				L4:	sreturn;
+		}
+
+		.method public destroyObject(SSZ)V 7 {
+			.stack 6;
+			.locals 3;
+
+				L0:	getfield_s_this 18;		// short com/sun/javacard/samples/CardEdge/ObjectManager.obj_list_head
+					sstore 4;
+					sconst_m1;
+					sstore 5;
+					sconst_0;
+					sstore 6;
+					goto L5;
+				L1:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 4;
+					sconst_2;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					sload_1;
+					if_scmpne L4;
+				L2:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 4;
+					sconst_4;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					sload_2;
+					if_scmpne L4;
+				L3:	sconst_1;
+					sstore 6;
+					goto L5;
+				L4:	sload 4;
+					sstore 5;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 4;
+					sconst_0;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					sstore 4;
+				L5:	sload 6;
+					ifne L7;
+				L6:	sload 4;
+					sconst_m1;
+					if_scmpne L1;
+				L7:	sload 6;
+					ifeq L14;
+				L8:	sload 5;
+					sconst_m1;
+					if_scmpeq L10;
+				L9:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 5;
+					sconst_0;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 4;
+					sconst_0;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					invokevirtual 145;		// com/sun/javacard/samples/CardEdge/MemoryManager.setShort(SSS)V
+					goto L11;
+				L10:	aload_0;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 4;
+					sconst_0;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					putfield_s 18;		// short com/sun/javacard/samples/CardEdge/ObjectManager.obj_list_head
+				L11:	sload_3;
+					ifeq L13;
+				L12:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload 4;
+					bspush 14;
+					sadd;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 4;
+					bspush 12;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					sconst_0;
+					invokestatic 151;		// javacard/framework/Util.arrayFillNonAtomic([BSSB)S
+					pop;
+				L13:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload 4;
+					invokevirtual 136;		// com/sun/javacard/samples/CardEdge/MemoryManager.free(S)V
+				L14:	return;
+		}
+
+		.method private getEntry(SS)S {
+			.stack 3;
+			.locals 1;
+
+				L0:	getfield_s_this 18;		// short com/sun/javacard/samples/CardEdge/ObjectManager.obj_list_head
+					sstore_3;
+					goto L5;
+				L1:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload_3;
+					sconst_2;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					sload_1;
+					if_scmpne L4;
+				L2:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload_3;
+					sconst_4;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					sload_2;
+					if_scmpne L4;
+				L3:	sload_3;
+					sreturn;
+				L4:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload_3;
+					sconst_0;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					sstore_3;
+				L5:	sload_3;
+					sconst_m1;
+					if_scmpne L1;
+				L6:	sconst_m1;
+					sreturn;
+		}
+
+		.method public getBaseAddress(SS)S 8 {
+			.stack 3;
+			.locals 1;
+
+				L0:	aload_0;
+					sload_1;
+					sload_2;
+					invokespecial 147;		// com/sun/javacard/samples/CardEdge/ObjectManager.getEntry(SS)S
+					sstore_3;
+					sload_3;
+					sconst_m1;
+					if_scmpne L2;
+				L1:	sconst_m1;
+					sreturn;
+				L2:	sload_3;
+					bspush 14;
+					sadd;
+					sreturn;
+		}
+
+		.method public exists(SS)Z 9 {
+			.stack 3;
+			.locals 1;
+
+				L0:	aload_0;
+					sload_1;
+					sload_2;
+					invokespecial 147;		// com/sun/javacard/samples/CardEdge/ObjectManager.getEntry(SS)S
+					sstore_3;
+					sload_3;
+					sconst_m1;
+					if_scmpeq L2;
+				L1:	sconst_1;
+					goto L3;
+				L2:	sconst_0;
+				L3:	sreturn;
+		}
+
+		.method public getSizeFromAddress(S)S 10 {
+			.stack 3;
+			.locals 0;
+
+				L0:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					sload_1;
+					bspush 14;
+					ssub;
+					bspush 12;
+					sadd;
+					invokevirtual 106;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(S)S
+					sreturn;
+		}
+
+		.method public getFirstRecord([BS)Z 11 {
+			.stack 3;
+			.locals 0;
+
+				L0:	aload_0;
+					getfield_s_this 18;		// short com/sun/javacard/samples/CardEdge/ObjectManager.obj_list_head
+					putfield_s 19;		// short com/sun/javacard/samples/CardEdge/ObjectManager.it
+					aload_0;
+					aload_1;
+					sload_2;
+					invokevirtual 128;		// com/sun/javacard/samples/CardEdge/ObjectManager.getNextRecord([BS)Z
+					sreturn;
+		}
+
+		.method public getNextRecord([BS)Z 12 {
+			.stack 5;
+			.locals 0;
+
+				L0:	getfield_s_this 19;		// short com/sun/javacard/samples/CardEdge/ObjectManager.it
+					sconst_m1;
+					if_scmpne L2;
+				L1:	sconst_0;
+					sreturn;
+				L2:	aload_1;
+					sload_2;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					getfield_s_this 19;		// short com/sun/javacard/samples/CardEdge/ObjectManager.it
+					sconst_2;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					aload_1;
+					sload_2;
+					sconst_2;
+					sadd;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					getfield_s_this 19;		// short com/sun/javacard/samples/CardEdge/ObjectManager.it
+					sconst_4;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					aload_1;
+					sload_2;
+					sconst_4;
+					sadd;
+					sconst_0;
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					aload_1;
+					sload_2;
+					bspush 6;
+					sadd;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					getfield_s_this 19;		// short com/sun/javacard/samples/CardEdge/ObjectManager.it
+					bspush 12;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					invokestatic 30;		// javacard/framework/Util.setShort([BSS)S
+					pop;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					getfield_s_this 19;		// short com/sun/javacard/samples/CardEdge/ObjectManager.it
+					bspush 6;
+					sadd;
+					aload_1;
+					sload_2;
+					bspush 8;
+					sadd;
+					bspush 6;
+					invokestatic 57;		// javacard/framework/Util.arrayCopyNonAtomic([BS[BSS)S
+					pop;
+					aload_0;
+					getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					getfield_s_this 19;		// short com/sun/javacard/samples/CardEdge/ObjectManager.it
+					sconst_0;
+					invokevirtual 149;		// com/sun/javacard/samples/CardEdge/MemoryManager.getShort(SS)S
+					putfield_s 19;		// short com/sun/javacard/samples/CardEdge/ObjectManager.it
+					sconst_1;
+					sreturn;
+		}
+
+		.method public compareACLFromAddress(S[B)Z 13 {
+			.stack 5;
+			.locals 0;
+
+				L0:	getfield_a_this 17;		// reference com/sun/javacard/samples/CardEdge/ObjectManager.mem
+					invokevirtual 70;		// com/sun/javacard/samples/CardEdge/MemoryManager.getBuffer()[B
+					sload_1;
+					bspush 14;
+					ssub;
+					bspush 6;
+					sadd;
+					aload_2;
+					sconst_0;
+					bspush 6;
+					invokestatic 135;		// javacard/framework/Util.arrayCompare([BS[BSS)B
+					ifne L2;
+				L1:	sconst_1;
+					goto L3;
+				L2:	sconst_0;
+				L3:	sreturn;
+		}
+
+	}
+
+}
