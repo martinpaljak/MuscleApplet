@@ -411,32 +411,187 @@ public class CardEdge extends Applet
 	 */
  	private void OpInit(APDU apdu, byte buffer[], short bytesLeft,
 		byte key_nb, byte op, Key key)
-        {
-                        if (bytesLeft < 3)
-				ISOException.throwIt((short)SW_INVALID_PARAMETER);
+	{
+		if (bytesLeft < 3)
+			ISOException.throwIt((short)SW_INVALID_PARAMETER);
 
-			byte ciph_mode = buffer[ISO7816.OFFSET_CDATA];
-			byte ciph_dir = buffer[ISO7816.OFFSET_CDATA+1];
-			byte data_location = buffer[ISO7816.OFFSET_CDATA+2];
+		byte ciph_mode = buffer[ISO7816.OFFSET_CDATA];
+		byte ciph_dir = buffer[ISO7816.OFFSET_CDATA+1];
+		byte data_location = buffer[ISO7816.OFFSET_CDATA+2];
+		byte src_buff[];
+		short src_base;
+		short src_avail;
+
+		switch(data_location)
+		{
+		case 1:
+			src_buff = buffer;
+			src_base = 8;
+			src_avail = (short)(bytesLeft - 3);
+			break;
+
+		case 2:
+			src_buff = mem.getBuffer();
+			src_base = om.getBaseAddress((short)-1, (short)-2);
+
+			if (src_base == -1)
+				ISOException.throwIt((short)SW_OBJECT_NOT_FOUND);
+
+			src_avail = om.getSizeFromAddress(src_base);
+			break;
+
+		default:
+			ISOException.throwIt((short)SW_INVALID_PARAMETER);
+			return;
+		}
+
+		if (src_avail < 2)
+			ISOException.throwIt((short)SW_INVALID_PARAMETER);
+
+		short size = Util.getShort(src_buff, src_base);
+
+		if (src_avail < (short)(2 + size))
+			ISOException.throwIt((short)SW_INVALID_PARAMETER);
+
+		switch(ciph_dir)
+		{
+		case CD_SIGN:
+		case CD_VERIFY:
+		{
+			byte ciph_alg_id;
+
+			switch(key.getType())
+			{
+			case KEY_DSA_PUBLIC:
+			case KEY_DSA_PRIVATE:
+				ciph_alg_id = Cipher.ALG_RSA_ISO9796;
+				ISOException.throwIt((short)SW_UNSUPPORTED_FEATURE);
+				break;
+
+			case KEY_3DES:
+			case KEY_3DES3:
+				ISOException.throwIt((short)SW_UNSUPPORTED_FEATURE);
+				return;
+
+			case KEY_DES:
+			default:
+				ISOException.throwIt((short)SW_INCORRECT_ALG);
+				return;
+			}
+
+			Signature sign = getSignature(key_nb, ciph_alg_id);
+			if (size == 0)
+				sign.init(key, (byte)(ciph_dir == 1 ? 1 : 2));
+			else
+				sign.init(key, (byte)(ciph_dir == 1 ? 1 : 2), src_buff, (short)(src_base + 2), size);
+
+			ciph_dirs[key_nb] = ciph_dir;
+			break;
+		}
+
+		case CD_ENCRYPT:
+		case CD_DECRYPT:
+		{
+			byte ciph_alg_id;
+
+			switch(key.getType())
+			{
+			case KEY_DSA_PUBLIC:
+			case KEY_DSA_PRIVATE:
+			case KEY_DES:
+				if (ciph_mode == CM_RSA_NOPAD)
+				{
+					ciph_alg_id = Cipher.ALG_RSA_NOPAD;
+					break;
+				}
+				if (ciph_mode == CM_RSA_PAD_PKCS1)
+				{
+					ciph_alg_id = Cipher.ALG_RSA_PKCS1;
+				} else
+				{
+					ISOException.throwIt((short)SW_INVALID_PARAMETER);
+					return;
+				}
+				break;
+
+			case KEY_RSA_PRIVATE_CRT:
+				if (ciph_mode == CM_DES_CBC_NOPAD)
+				{
+					ciph_alg_id = Cipher.ALG_DES_CBC_NOPAD;
+					break;
+				}
+				if (ciph_mode == CM_DES_ECB_NOPAD)
+				{
+					ciph_alg_id = Cipher.ALG_DES_ECB_NOPAD;
+				} else
+				{
+					ISOException.throwIt((short)SW_INVALID_PARAMETER);
+					return;
+				}
+				break;
+
+			case KEY_3DES:
+			case KEY_3DES3:
+				ISOException.throwIt((short)SW_INVALID_PARAMETER);
+				return;
+
+			default:
+				ISOException.throwIt((short)SW_INTERNAL_ERROR);
+				return;
+			}
+
+			Cipher ciph = getCipher(key_nb, ciph_alg_id);
+
+			if (size == 0)
+				ciph.init(key, (byte)(ciph_dir == 3 ? 2 : 1));
+			else
+				ciph.init(key, (byte)(ciph_dir == 3 ? 2 : 1), src_buff, (short)(src_base + 2), size);
+
+			ciph_dirs[key_nb] = ciph_dir;
+			break;
+		}
+
+		default:
+		{
+			ISOException.throwIt((short)SW_INVALID_PARAMETER);
+			break;
+		}
+		}
+	}
+
+	/**
+	 * OP Process or Finilize
+	 */
+	private void OpProcessFinalize(APDU apdu, byte buffer[],
+		short bytesLeft, byte key_nb, byte op, Key key)
+	{
+		byte ciph_dir = ciph_dirs[key_nb];
+
+		switch(ciph_dir)
+		{
+		case CD_SIGN:
+		case CD_VERIFY:
+		{
+			Signature sign = signatures[key_nb];
+			if (sign == null)
+				ISOException.throwIt((short)ISO7816.SW_INCORRECT_P1P2);
+			byte data_location = buffer[ISO7816.OFFSET_CDATA];
 			byte src_buff[];
 			short src_base;
 			short src_avail;
-
 			switch(data_location)
 			{
-			case 1:
-				src_buff = buffer;
-				src_base = 8;
-				src_avail = (short)(bytesLeft - 3);
+			case DL_APDU:
+				src_buff = mem.getBuffer();
+				src_base = 6;
+				src_avail = (short)(bytesLeft - 1);
 				break;
 
-			case 2:
+			case DL_OBJECT:
 				src_buff = mem.getBuffer();
 				src_base = om.getBaseAddress((short)-1, (short)-2);
-
 				if (src_base == -1)
 					ISOException.throwIt((short)SW_OBJECT_NOT_FOUND);
-
 				src_avail = om.getSizeFromAddress(src_base);
 				break;
 
@@ -444,273 +599,119 @@ public class CardEdge extends Applet
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
 				return;
 			}
+			if (src_avail < 2)
+				ISOException.throwIt((short)SW_INVALID_PARAMETER);
+			short size = Util.getShort(src_buff, src_base);
+			if (src_avail < (short)(2 + size))
+				ISOException.throwIt((short)SW_INVALID_PARAMETER);
+			if (op == 2)
+			{
+				sign.update(src_buff, (short)(src_base + 2), size);
+				return;
+			}
+			if (ciph_dir == 1)
+			{
+				om.destroyObject((short)-1, (short)-1, true);
+				short dst_base = om.createObject((short)-1, (short)-1, (short)(sign.getLength() + 2), getCurrentACL(), (short)0);
 
+				if (dst_base == -1)
+					ISOException.throwIt((short)SW_NO_MEMORY_LEFT);
+
+				short sign_size = sign.sign(src_buff, (short)(src_base + 2), size, mem.getBuffer(), (short)(dst_base + 2));
+
+				if (sign_size > sign.getLength())
+					ISOException.throwIt((short)SW_INTERNAL_ERROR);
+
+				mem.setShort(dst_base, sign_size);
+				if (data_location == 1)
+				{
+					sendData(apdu, mem.getBuffer(), dst_base, (short)(sign_size + 2));
+					om.destroyObject((short)-1, (short)-1, true);
+				}
+				return;
+			}
+			if (src_avail < (short)(2 + size + 2))
+				ISOException.throwIt((short)SW_INVALID_PARAMETER);
+
+			short sign_size = Util.getShort(src_buff, (short)(src_base + 2 + size));
+			if (src_avail < (short)(2 + size + 2 + sign_size))
+				ISOException.throwIt((short)SW_INVALID_PARAMETER);
+
+			if (sign_size != sign.getLength())
+				ISOException.throwIt((short)SW_INVALID_PARAMETER);
+
+			if (!sign.verify(src_buff, (short)(src_base + 2), size, src_buff, (short)(src_base + 2 + size + 2), sign_size))
+				ISOException.throwIt((short)SW_SIGNATURE_INVALID);
+
+			return;
+		}
+
+		case CD_ENCRYPT:
+		case CD_DECRYPT:
+		{
+			Cipher ciph = ciphers[key_nb];
+
+			if (ciph == null)
+				ISOException.throwIt((short)ISO7816.SW_INCORRECT_P1P2);
+
+			byte data_location = buffer[ISO7816.OFFSET_CDATA];
+			byte src_buff[];
+			short src_base;
+			short src_avail;
+
+			switch(data_location)
+			{
+			case DL_APDU:
+				src_buff = buffer;
+				src_base = 6;
+				src_avail = (short)(bytesLeft - 1);
+				break;
+
+			case DL_OBJECT:
+				src_buff = mem.getBuffer();
+				src_base = om.getBaseAddress((short)-1, (short)-2);
+				if (src_base == -1)
+					ISOException.throwIt((short)SW_OBJECT_NOT_FOUND);
+				src_avail = om.getSizeFromAddress(src_base);
+				break;
+
+			default:
+				ISOException.throwIt((short)SW_INVALID_PARAMETER);
+				return;
+			}
 			if (src_avail < 2)
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
 
 			short size = Util.getShort(src_buff, src_base);
-
 			if (src_avail < (short)(2 + size))
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
 
-			switch(ciph_dir)
+			om.destroyObject((short)-1, (short)-1, true);
+			short dst_base = om.createObject((short)-1, (short)-1, (short)(size + 2), getCurrentACL(), (short)0);
+			if (dst_base == -1)
+				ISOException.throwIt((short)SW_NO_MEMORY_LEFT);
+
+			mem.setShort(dst_base, size);
+			if (op == 2)
+				ciph.update(src_buff, (short)(src_base + 2), size, mem.getBuffer(), (short)(dst_base + 2));
+			else
+				ciph.doFinal(src_buff, (short)(src_base + 2), size, mem.getBuffer(), (short)(dst_base + 2));
+			if (data_location == 1)
 			{
-			case CD_SIGN:
-			case CD_VERIFY:
-			{
-				byte ciph_alg_id;
-
-				switch(key.getType())
-				{
-				case KEY_DSA_PUBLIC:
-				case KEY_DSA_PRIVATE:
-					ciph_alg_id = Cipher.ALG_RSA_ISO9796;
-					ISOException.throwIt((short)SW_UNSUPPORTED_FEATURE);
-					break;
-
-				case KEY_3DES:
-				case KEY_3DES3:
-					ISOException.throwIt((short)SW_UNSUPPORTED_FEATURE);
-					return;
-
-				case KEY_DES:
-				default:
-					ISOException.throwIt((short)SW_INCORRECT_ALG);
-					return;
-				}
-
-				Signature sign = getSignature(key_nb, ciph_alg_id);
-				if (size == 0)
-					sign.init(key, (byte)(ciph_dir == 1 ? 1 : 2));
-				else
-					sign.init(key, (byte)(ciph_dir == 1 ? 1 : 2), src_buff, (short)(src_base + 2), size);
-
-				ciph_dirs[key_nb] = ciph_dir;
-				break;
-			}
-
-			case CD_ENCRYPT:
-			case CD_DECRYPT:
-			{
-				byte ciph_alg_id;
-
-				switch(key.getType())
-				{
-				case KEY_DSA_PUBLIC:
-				case KEY_DSA_PRIVATE:
-				case KEY_DES:
-					if (ciph_mode == CM_RSA_NOPAD)
-					{
-						ciph_alg_id = Cipher.ALG_RSA_NOPAD;
-						break;
-					}
-					if (ciph_mode == CM_RSA_PAD_PKCS1)
-					{
-						ciph_alg_id = Cipher.ALG_RSA_PKCS1;
-					} else
-					{
-						ISOException.throwIt((short)SW_INVALID_PARAMETER);
-						return;
-					}
-					break;
-
-				case KEY_RSA_PRIVATE_CRT:
-					if (ciph_mode == CM_DES_CBC_NOPAD)
-					{
-						ciph_alg_id = Cipher.ALG_DES_CBC_NOPAD;
-						break;
-					}
-					if (ciph_mode == CM_DES_ECB_NOPAD)
-					{
-						ciph_alg_id = Cipher.ALG_DES_ECB_NOPAD;
-					} else
-					{
-						ISOException.throwIt((short)SW_INVALID_PARAMETER);
-						return;
-					}
-					break;
-
-				case KEY_3DES:
-				case KEY_3DES3:
-					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-					return;
-
-				default:
-					ISOException.throwIt((short)SW_INTERNAL_ERROR);
-					return;
-				}
-
-				Cipher ciph = getCipher(key_nb, ciph_alg_id);
-
-				if (size == 0)
-					ciph.init(key, (byte)(ciph_dir == 3 ? 2 : 1));
-				else
-					ciph.init(key, (byte)(ciph_dir == 3 ? 2 : 1), src_buff, (short)(src_base + 2), size);
-
-				ciph_dirs[key_nb] = ciph_dir;
-				break;
-			}
-
-			default:
-			{
-				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-				break;
-			}
-			}
-        }
-
-	/**
-	 * OP Process or Finilize
-	 */
-	private void OpProcessFinalize(APDU apdu, byte buffer[],
-		short bytesLeft, byte key_nb, byte op, Key key)
-        {
-			byte ciph_dir = ciph_dirs[key_nb];
-			switch(ciph_dir)
-			{
-			case CD_SIGN:
-			case CD_VERIFY:
-			{
-				Signature sign = signatures[key_nb];
-				if (sign == null)
-					ISOException.throwIt((short)ISO7816.SW_INCORRECT_P1P2);
-				byte data_location = buffer[ISO7816.OFFSET_CDATA];
-				byte src_buff[];
-				short src_base;
-				short src_avail;
-				switch(data_location)
-				{
-				case DL_APDU:
-					src_buff = mem.getBuffer();
-					src_base = 6;
-					src_avail = (short)(bytesLeft - 1);
-					break;
-
-				case DL_OBJECT:
-					src_buff = mem.getBuffer();
-					src_base = om.getBaseAddress((short)-1, (short)-2);
-					if (src_base == -1)
-						ISOException.throwIt((short)SW_OBJECT_NOT_FOUND);
-					src_avail = om.getSizeFromAddress(src_base);
-					break;
-
-				default:
-					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-					return;
-				}
-				if (src_avail < 2)
-					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-				short size = Util.getShort(src_buff, src_base);
-				if (src_avail < (short)(2 + size))
-					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-				if (op == 2)
-				{
-					sign.update(src_buff, (short)(src_base + 2), size);
-					return;
-				}
-				if (ciph_dir == 1)
-				{
-					om.destroyObject((short)-1, (short)-1, true);
-					short dst_base = om.createObject((short)-1, (short)-1, (short)(sign.getLength() + 2), getCurrentACL(), (short)0);
-
-					if (dst_base == -1)
-						ISOException.throwIt((short)SW_NO_MEMORY_LEFT);
-
-					short sign_size = sign.sign(src_buff, (short)(src_base + 2), size, mem.getBuffer(), (short)(dst_base + 2));
-
-					if (sign_size > sign.getLength())
-						ISOException.throwIt((short)SW_INTERNAL_ERROR);
-
-					mem.setShort(dst_base, sign_size);
-					if (data_location == 1)
-					{
-						sendData(apdu, mem.getBuffer(), dst_base, (short)(sign_size + 2));
-						om.destroyObject((short)-1, (short)-1, true);
-					}
-					return;
-				}
-				if (src_avail < (short)(2 + size + 2))
-					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-
-				short sign_size = Util.getShort(src_buff, (short)(src_base + 2 + size));
-				if (src_avail < (short)(2 + size + 2 + sign_size))
-					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-
-				if (sign_size != sign.getLength())
-					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-
-				if (!sign.verify(src_buff, (short)(src_base + 2), size, src_buff, (short)(src_base + 2 + size + 2), sign_size))
-					ISOException.throwIt((short)SW_SIGNATURE_INVALID);
-
-				return;
-			}
-
-			case CD_ENCRYPT:
-			case CD_DECRYPT:
-			{
-				Cipher ciph = ciphers[key_nb];
-
-				if (ciph == null)
-					ISOException.throwIt((short)ISO7816.SW_INCORRECT_P1P2);
-
-				byte data_location = buffer[ISO7816.OFFSET_CDATA];
-				byte src_buff[];
-				short src_base;
-				short src_avail;
-
-				switch(data_location)
-				{
-				case DL_APDU:
-					src_buff = buffer;
-					src_base = 6;
-					src_avail = (short)(bytesLeft - 1);
-					break;
-
-				case DL_OBJECT:
-					src_buff = mem.getBuffer();
-					src_base = om.getBaseAddress((short)-1, (short)-2);
-					if (src_base == -1)
-						ISOException.throwIt((short)SW_OBJECT_NOT_FOUND);
-					src_avail = om.getSizeFromAddress(src_base);
-					break;
-
-				default:
-					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-					return;
-				}
-				if (src_avail < 2)
-					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-
-				short size = Util.getShort(src_buff, src_base);
-				if (src_avail < (short)(2 + size))
-					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-
+				Util.arrayCopyNonAtomic(mem.getBuffer(), dst_base, buffer, (short)0, (short)(size + 2));
 				om.destroyObject((short)-1, (short)-1, true);
-				short dst_base = om.createObject((short)-1, (short)-1, (short)(size + 2), getCurrentACL(), (short)0);
-				if (dst_base == -1)
-					ISOException.throwIt((short)SW_NO_MEMORY_LEFT);
+				sendData(apdu, buffer, (short)0, (short)(size + 2));
+			}
+			break;
+		}
 
-				mem.setShort(dst_base, size);
-				if (op == 2)
-					ciph.update(src_buff, (short)(src_base + 2), size, mem.getBuffer(), (short)(dst_base + 2));
-				else
-					ciph.doFinal(src_buff, (short)(src_base + 2), size, mem.getBuffer(), (short)(dst_base + 2));
-				if (data_location == 1)
-				{
-					Util.arrayCopyNonAtomic(mem.getBuffer(), dst_base, buffer, (short)0, (short)(size + 2));
-					om.destroyObject((short)-1, (short)-1, true);
-					sendData(apdu, buffer, (short)0, (short)(size + 2));
-				}
-				break;
-			}
-
-			default:
-			{
-				ISOException.throwIt((short)SW_INTERNAL_ERROR);
-				break;
-			}
-			}
-        }
+		default:
+		{
+			ISOException.throwIt((short)SW_INTERNAL_ERROR);
+			break;
+		}
+		}
+	}
 
 
 	/**
