@@ -1444,6 +1444,8 @@ public class CardEdge extends Applet
 			key_it++;
 			apdu.setOutgoingAndSend((short)0, (short)11);
 		}
+		else
+			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
 	}
 
 	private void ListObjects(APDU apdu, byte buffer[])
