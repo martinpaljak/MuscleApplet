@@ -29,7 +29,7 @@ OUTPUT_DIR=./out
 JAVA_HOME=${JAVA_HOME:-/usr/local/tools/jdk/j2sdk1.3.1}
 export JAVA_HOME
 
-JC21=${JC21:-/usr/local/tools/jdk/java_card_kit-2_1_2}
+JC21=${JC21:-/usr/local/tools/JavaCard/java_card_kit-2_1_2}
 JC21BIN=$JC21/bin
 
 VERIFYCAP=$JC21BIN/verifycap
