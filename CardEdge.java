@@ -823,6 +823,9 @@ public class CardEdge extends javacard.framework.Applet {
             rsa_pub_key.setExponent(mem.getBuffer(), base, size);
             base += size;
             avail -= size;
+
+            // set the ACL value
+            Util.arrayCopy(buffer, (short)5, keyACLs, (short)(key_nb * KEY_ACL_SIZE), (short)KEY_ACL_SIZE);
             break;
         case KEY_RSA_PRIVATE:
             RSAPrivateKey rsa_prv_key =
@@ -845,6 +848,9 @@ public class CardEdge extends javacard.framework.Applet {
             rsa_prv_key.setExponent(mem.getBuffer(), base, size);
             base += size;
             avail -= size;
+
+            // set the ACL value
+            Util.arrayCopy(buffer, (short)5, keyACLs, (short)(key_nb * KEY_ACL_SIZE), (short)KEY_ACL_SIZE);
             break;
         case KEY_RSA_PRIVATE_CRT:
             RSAPrivateCrtKey rsa_prv_key_crt =
@@ -891,6 +897,9 @@ public class CardEdge extends javacard.framework.Applet {
             rsa_prv_key_crt.setDQ1(mem.getBuffer(), base, size);
             base += size;
             avail -= size;
+
+            // set the ACL value
+            Util.arrayCopy(buffer, (short)5, keyACLs, (short)(key_nb * KEY_ACL_SIZE), (short)KEY_ACL_SIZE);
             break;
         case KEY_DSA_PRIVATE:
         case KEY_DSA_PUBLIC:
@@ -914,6 +923,7 @@ public class CardEdge extends javacard.framework.Applet {
             ISOException.throwIt(SW_INCORRECT_ALG);
         }
         om.destroyObject(IN_OBJECT_CLA, IN_OBJECT_ID, true);
+
     }
     private void ExportKey(APDU apdu, byte[] buffer) {
         if (buffer[ISO7816.OFFSET_P2] != (byte) 0x00)
