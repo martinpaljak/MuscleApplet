@@ -14,7 +14,11 @@ PACKAGE=CardEdgeApplet
 # Name of Java Card Applet
 JAVA_APPLET=CardEdge
 # Package into which Applet resides
-JAVA_PACKAGE=com.sun.javacard.samples.$(JAVA_APPLET)
+JAVA_PACKAGE=com.musclecard.$(JAVA_APPLET)
+
+#   Selectively enable templates of code (USE_CRYPTO => USE_AUTH)
+# CPPFLAGS += -DUSE_OBJ -DUSE_AUTH -DUSE_CRYPTO
+CPPFLAGS += -DUSE_OBJ -DUSE_CRYPTO
 
 #   Selectively enable algorithms (what is disabled returns SW_UNSUPPORTED_FEATURE)
 # CPPFLAGS += -DWITH_DSA -DWITH_RSA -DWITH_DES -DWITH_3DES -DWITH_3DES3
@@ -30,6 +34,9 @@ CPPFLAGS += -DWITH_ENCRYPT -DWITH_DECRYPT -DWITH_SIGN
 #   Disable PIN Policy enforcement, if unneeded and more space is required on board
 CPPFLAGS += -UWITH_PIN_POLICY
 
+# allow for GCC
+JAVAC=javac
+
 # =======================> End of customizations
 
 JAVA_DIR=`echo $(JAVA_PACKAGE) | sed -e 's/\./\//g'`
@@ -42,7 +49,7 @@ DIST_DOC_FILES=README LICENSE AUTHORS
 JAVADOC_OUTPUT_DIR=doc
 
 # Don't generate #line directives
-CPPFLAGS += -P
+CPPFLAGS += -P -C
 # Enable redundant debug checks (increases Applet size, decreases performance)
 # When such a check fails, we get a SW_INTERNAL_ERROR
 #CPPFLAGS += -DAPPLET_DEBUG=1
@@ -61,16 +68,24 @@ CPPFLAGS += -DJAVA_PACKAGE=$(JAVA_PACKAGE)
 CPPFLAGS += -DJAVA_APPLET=$(JAVA_APPLET)
 
 JCFLAGS=-g
-JCCLASSPATH=-classpath /home/ehersked/jc211/bin/jc_api_21.jar:$(shell pwd)
+JCCLASSPATH=-classpath $(HOME)/jc211/bin/jc_api_21.jar:$(shell pwd)
 
-all: CardEdge.java MemoryManager.java ObjectManager.java
+# For Muscle Distribution Mechanism; see create-distrib.sh for conditions
+# 'make clean; SRCTARGET=./src/ make all; create-distrib.sh. Requires final /'
+SRCTARGET=./
+
+
+all: $(SRCTARGET)CardEdge.java $(SRCTARGET)MemoryManager.java \
+	$(SRCTARGET)ObjectManager.java
+
+allc:	CardEdge.class MemoryManager.class ObjectManager.class
 
 test: $(patsubst %.java, %.class, $(wildcard test*.java))
 
-%.class: %.java
-	javac $(JCFLAGS) $(JCCLASSPATH) $<
+%.class: $(SRCTARGET)%.java
+	$(JAVAC) $(JCFLAGS) $(JCCLASSPATH) $<
 
-%.java : %.src Makefile
+$(SRCTARGET)%.java : %.src Makefile
 	cpp $(CPPFLAGS) -o $@ $<
 #	sed -e 's/#.*//g' < /tmp/file.tmp > $@
 
@@ -84,29 +99,30 @@ dist-bin:
 	cp -a $(DIST_DOC_FILES) /tmp/$(DIST_ARCHIVE)
 	cd /tmp && tar -czf $(DIST_ARCHIVE).tgz $(DIST_ARCHIVE)
 	rm -rf /tmp/$(DIST_ARCHIVE)
-	echo ""
-	echo "Built binary distribution package: /tmp/$(DIST_ARCHIVE).tgz"
-	echo ""
+	@echo ""
+	@echo "Built binary distribution package: /tmp/$(DIST_ARCHIVE).tgz"
+	@echo ""
 
 dist-src:
 	rm -rf /tmp/$(SRCDIST_ARCHIVE) /tmp/$(SRCDIST_ARCHIVE).tgz
 	mkdir -p /tmp/$(SRCDIST_ARCHIVE)/$(JAVA_DIR)
-	cp -a * /tmp/$(SRCDIST_ARCHIVE)/$(JAVA_DIR)
+	cp -a * $(SRCTARGET)* /tmp/$(SRCDIST_ARCHIVE)/$(JAVA_DIR)
 	cd /tmp/$(SRCDIST_ARCHIVE)/$(JAVA_DIR) && make clean
 	cd /tmp && tar -czf $(SRCDIST_ARCHIVE).tgz $(SRCDIST_ARCHIVE)
 	rm -rf /tmp/$(SRCDIST_ARCHIVE)
-	echo ""
-	echo "Built souce package: /tmp/$(SRCDIST_ARCHIVE).tgz"
-	echo ""
+	@echo ""
+	@echo "Built souce package: /tmp/$(SRCDIST_ARCHIVE).tgz"
+	@echo ""
 
 dist:
-	echo "Type one of 'make dist-src' or 'make dist-bin'"
+	@echo "Type one of 'make dist-src' or 'make dist-bin'"
 
 clean:
-	rm -f *~ *.class *.nodef
+	rm -f *~ *.class *.nodef $(SRCTARGET)*.java
 
 %.nodef : %.src Makefile
-	sed -e 's/^\#.*$\//g' -e s/JAVA_APPLET/$(JAVA_APPLET)/g < $< > $@
+	sed -e 's/^\#.*$\//g' -e s/JAVA_APPLET/$(JAVA_APPLET)/g \
+	    -e s/JAVA_PACKAGE/$(JAVA_PACKAGE)/g < $< > $@
 
 jdoc: $(patsubst %.src, %.nodef, $(wildcard *.src))
 	javadoc -private -d $(JAVADOC_OUTPUT_DIR) $^
