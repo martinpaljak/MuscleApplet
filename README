@@ -16,24 +16,32 @@
 
 HISTORY
 ============================================================
-0.9.10: 20 Sep 2002
+0.9.11 - 19 Dec 2003
+  - Modify two INS to be ISO7816 compliant. This caused bugs with some
+    ifdhandlers following the ISO
+  - scripts to compile, convert and verify the applet
+  - The ListKeys command sends a ISO7816.SW_WRONG_LENGTH if the
+    specified key is not found. Thanks to Patrick Biget for the bug
+    report and the patch
+
+0.9.10 - 20 Sep 2002
    Correct a security bug: When importing a certificate (from
    Mozilla) the keys were created with read, write and use set to
    ALWAYS.
 
-0.9.9: 8 Sep 2002
+0.9.9 - 8 Sep 2002
    Include Java source code
 
-0.9.8: Jul 2002
+0.9.8 - Jul 2002
    Include the converted CAP file
 
-0.9.7: Mar 2002
+0.9.7 - Mar 2002
    Inclusion of GemXpressoRADIII support
 
-0.9.6: Nov 2001
+0.9.6 - Nov 2001
    Split the packages
 
-0.9.5:
+0.9.5 -
    First release
 
 
