@@ -17,26 +17,17 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# $Id$
-
 # Applet dependent data
 APPLET=com.musclecard.CardEdge
 
 OUTPUT_DIR=./out
 
 
-# System dependent data
-JAVA_HOME=${JAVA_HOME:-/usr/local/tools/jdk/j2sdk1.3.1}
-export JAVA_HOME
-
-JC21=${JC21:-/usr/local/tools/JavaCard/java_card_kit-2_1_2}
-JC21BIN=$JC21/bin
-
-VERIFYCAP=$JC21BIN/verifycap
+source Java.conf
 
 # applet name with '.' converted in '/'
 # com.sun.javacard.samples.CardEdge -> com/sun/javacard/samples/CardEdge
-APPLET_SLASH=$(echo $APPLET | sed -e 's/\./\//g' )
+APPLET_SLASH=$(ConvertDotInSlash $APPLET)
 
 # last element of applet name
 # com.sun.javacard.samples.CardEdge -> CardEdge
@@ -45,10 +36,10 @@ APPLET_NAME=$(basename $APPLET_SLASH)
 # print executed commands
 set -x
 
-$VERIFYCAP -verbose $JC21/api21_export_files/java/lang/javacard/lang.exp \
-  $JC21/api21_export_files/javacard/framework/javacard/framework.exp \
-  $JC21/api21_export_files/javacardx/crypto/javacard/crypto.exp \
-  $JC21/api21_export_files/javacard/security/javacard/security.exp \
+$VERIFYCAP -verbose $APIDIR/java/lang/javacard/lang.exp \
+  $APIDIR/javacard/framework/javacard/framework.exp \
+  $APIDIR/javacardx/crypto/javacard/crypto.exp \
+  $APIDIR/javacard/security/javacard/security.exp \
   \
   $OUTPUT_DIR/$APPLET_SLASH/javacard/$APPLET_NAME.exp \
   $OUTPUT_DIR/$APPLET_SLASH/javacard/$APPLET_NAME.jar

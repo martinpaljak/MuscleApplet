@@ -17,8 +17,6 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-# $Id$
-
 # Applet dependent data
 PACKAGE_AID="0xA0:00:00:00:01"
 APPLET_AID=$PACKAGE_AID:01
@@ -27,23 +25,14 @@ APPLET=com.musclecard.CardEdge
 
 OUTPUT_DIR=./out
 
-
-# System dependent data
-JAVA_HOME=${JAVA_HOME:-/usr/local/tools/jdk/j2sdk1.3.1}
-export JAVA_HOME
-
-JC21=${JC21:-/usr/local/tools/JavaCard/java_card_kit-2_1_2}
-JC21BIN=$JC21/bin
-
-CONVERTER=$JC21BIN/converter
-CAPGEN=$JC21BIN/capgen
+source Java.conf
 
 # applet name with '.' converted in '/'
-# com.sun.javacard.samples.CardEdge -> com/sun/javacard/samples/CardEdge
-APPLET_SLASH=$(echo $APPLET | sed -e 's/\./\//g' )
+# com.musclecard.CardEdge -> com/musclecard/CardEdge
+APPLET_SLASH=$(ConvertDotInSlash $APPLET)
 
 # last element of applet name
-# com.sun.javacard.samples.CardEdge -> CardEdge
+# com.musclecard.CardEdge -> CardEdge
 APPLET_NAME=$(basename $APPLET_SLASH)
 
 # exit on the first error
