@@ -5,6 +5,8 @@
 	Description:	CardEdge implementation with JavaCard
 	Authors:	Tommaso Cucinotta <cucinotta@sssup.it>
 			David Corcoran <corcoran@linuxnet.com>
+	Modified:
+			Eirik Herskedal <ehersked@cs.purdue.edu>
 			See AUTHORS file for further details
 	Date:		October 2001
 	License:	See LICENSE file
