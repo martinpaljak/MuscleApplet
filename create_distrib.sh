@@ -2,11 +2,7 @@
 
 # $Id$
 
-# create a new directory named after the current directory name
-# the directory name should be in the form foo-bar.x.y.z
-# the use of "_" is not recommanded since it is a problem for Debian
-
-dir=$(basename $(pwd))
+dir=$(basename $(pwd))-$(perl -ne 'if (m/^\d.\d.\d/) { s/ .*//; print; exit;}' README)
 
 echo -e "Using $dir as directory name\n"
 
@@ -28,14 +24,11 @@ fi
 #make clean &> /dev/null
 #echo "done"
 
-# doc
-echo -n "Generating documentation..."
-( cd doc  && ./generate.sh &> /dev/null )
-echo "done"
+set -e
 
 # CVS
 echo -n "Generating CVS Changelog..."
-rcs2log > Changelog.cvs
+#rcs2log > Changelog.cvs
 echo "done"
 
 present_files=$(tempfile)
@@ -77,6 +70,15 @@ do
 	echo "cp $i $dir/$i"
 	cp -a $i $dir/$i
 done
+
+# copy src
+mkdir -p $dir/src/com/musclecard/CardEdge
+cp src/*.java $dir/src/com/musclecard/CardEdge
+
+# doc
+echo -n "Generating documentation..."
+( cd $dir && ./DocGenerate.sh  &> /dev/null )
+echo "done"
 
 tar czvf ../$dir.tar.gz $dir
 rm -r $dir
