@@ -8,7 +8,7 @@
 //                        David Corcoran <corcoran@linuxnet.com>
 //      Modified:
 //                        Eirik Herskedal <ehersked@cs.purdue.edu>
-//      License:          See LICENSE file                       
+//      License:          See LICENSE file
 //
 //      $Id$
 

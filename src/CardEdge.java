@@ -8,7 +8,7 @@
 //                        David Corcoran <corcoran@linuxnet.com>
 //      Modified:
 //                        Eirik Herskedal <ehersked@cs.purdue.edu>
-//      License:          See LICENSE file                       
+//      License:          See LICENSE file
 //
 //      $Id$
 
@@ -23,13 +23,13 @@ import javacardx.crypto.Cipher;
 
 /**
  * Implements MUSCLE's Card Edge Specification.
- * 
+ *
  * <p>TODO:
- * 
+ *
  * <ul>
  *  <li>Allows maximum number of keys and PINs and total mem to be
  *  specified at the instantiation moment.</li>
- * 
+ *
  *  <li>How do transactions fit in the methods?</li>
  *  <li>Where should we issue begin/end transaction?</li>
  *  <li>Should we ever abort transaction? Where?</li>
@@ -37,9 +37,9 @@ import javacardx.crypto.Cipher;
  *  <tt>ThrowDeleteObjects()</tt>.</li>
  * </ul>
  * </p>
- * 
+ *
  * <p>NOTES:
- * 
+ *
  * <ul>
  *  <li>C preprocessor flags:
  *   <ul>
@@ -68,7 +68,7 @@ public class CardEdge extends Applet
 	private static final byte MAX_NUM_KEYS = 8;
 	private static final byte MAX_NUM_PINS = 8;
 	private static final byte MAX_NUM_AUTH_KEYS = 6;
-	
+
 	private static final byte VERSION_PROTOCOL_MAJOR = 0;
 	private static final byte VERSION_PROTOCOL_MINOR = 1;
 	private static final byte VERSION_APPLET_MAJOR = 0;
@@ -128,11 +128,11 @@ public class CardEdge extends Applet
 	 * PIN must at least contain 1 char from each char set
 	 */
 	private static final byte PIN_MIXED_ALL = 4;
-	
+
 	private static final byte pinPolicies = 7;
 	private static final byte pinMinSize = 4;
 	private static final byte pinMaxSize = 16;
-	
+
 	private static final byte MAX_KEY_TRIES = 5;
 	private static byte PIN_INIT_VALUE[];
 	private static final short IN_OBJECT_CLA = -1;
@@ -142,7 +142,7 @@ public class CardEdge extends Applet
 	private static final byte KEY_ACL_SIZE = 6;
 	private static byte STD_PUBLIC_ACL[];
 	private static byte acl[];
-	
+
 	private static final byte CardEdge_CLA = (byte)0xB0;
 	private static final byte INS_SETUP = (byte)0x2A;
 	/**
@@ -167,7 +167,7 @@ public class CardEdge extends Applet
 	private static final byte INS_LIST_PINS = (byte)0x48;
 	private static final byte INS_LIST_KEYS = (byte)0x3A;
 	private static final byte INS_GET_STATUS = (byte)0x3C;
-	
+
 	/**
 	 * There have been memory problems on the card
 	 */
@@ -255,7 +255,7 @@ public class CardEdge extends Applet
 	private static final byte ALG_DES = 3;
 	private static final byte ALG_3DES = 4;
 	private static final byte ALG_3DES3 = 5;
-	
+
 	private static final byte KEY_RSA_PUBLIC = 1;
 	private static final byte KEY_RSA_PRIVATE = 2;
 	private static final byte KEY_RSA_PRIVATE_CRT = 3;
@@ -357,38 +357,38 @@ public class CardEdge extends Applet
 
 		if (pin_nb < 0 || pin_nb >= MAX_NUM_PINS)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		OwnerPIN pin = pins[pin_nb];
 		if (pin == null)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		short avail = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
 		if (apdu.setIncomingAndReceive() != avail)
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		if (avail < 4)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		byte pin_size = buffer[ISO7816.OFFSET_CDATA];
 		if (avail < (short)(1 + pin_size + 1))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (!CheckPINPolicy(buffer, (short)6, pin_size))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		byte new_pin_size = buffer[(short)(6 + pin_size)];
 		if (avail < (short)(1 + pin_size + 1 + new_pin_size))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (!CheckPINPolicy(buffer, (short)(6 + pin_size + 1), new_pin_size))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (pin.getTriesRemaining() == 0)
 			ISOException.throwIt((short)SW_IDENTITY_BLOCKED);
-		
+
 		if (!pin.check(buffer, (short)6, pin_size))
 		{
 			LogoutIdentity(pin_nb);
@@ -412,18 +412,18 @@ public class CardEdge extends Applet
 	private void ComputeCrypt(APDU apdu, byte buffer[])
 	{
 		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		byte key_nb = buffer[ISO7816.OFFSET_P1];
-		
+
 		if (key_nb < 0 || key_nb >= MAX_NUM_KEYS || keys[key_nb] == null)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (!authorizeKeyUse(key_nb))
 			ISOException.throwIt((short)SW_UNAUTHORIZED);
-		
+
 		byte op = buffer[ISO7816.OFFSET_P2];
 		Key key = keys[key_nb];
 label0:
@@ -433,14 +433,14 @@ label0:
 		{
 			if (bytesLeft < 3)
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 			byte ciph_mode = buffer[ISO7816.OFFSET_CDATA];
 			byte ciph_dir = buffer[ISO7816.OFFSET_CDATA+1];
 			byte data_location = buffer[ISO7816.OFFSET_CDATA+2];
 			byte src_buff[];
 			short src_base;
 			short src_avail;
-			
+
 			switch(data_location)
 			{
 			case 1:
@@ -452,10 +452,10 @@ label0:
 			case 2:
 				src_buff = mem.getBuffer();
 				src_base = om.getBaseAddress((short)-1, (short)-2);
-				
+
 				if (src_base == -1)
 					ISOException.throwIt((short)SW_OBJECT_NOT_FOUND);
-				
+
 				src_avail = om.getSizeFromAddress(src_base);
 				break;
 
@@ -463,15 +463,15 @@ label0:
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
 				return;
 			}
-			
+
 			if (src_avail < 2)
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			short size = Util.getShort(src_buff, src_base);
-			
+
 			if (src_avail < (short)(2 + size))
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			switch(ciph_dir)
 			{
 			case CD_SIGN:
@@ -558,14 +558,14 @@ label0:
 					ISOException.throwIt((short)SW_INTERNAL_ERROR);
 					return;
 				}
-				
+
 				Cipher ciph = getCipher(key_nb, ciph_alg_id);
-				
+
 				if (size == 0)
 					ciph.init(key, (byte)(ciph_dir == 3 ? 2 : 1));
 				else
 					ciph.init(key, (byte)(ciph_dir == 3 ? 2 : 1), src_buff, (short)(src_base + 2), size);
-				
+
 				ciph_dirs[key_nb] = ciph_dir;
 				break;
 			}
@@ -634,10 +634,10 @@ label0:
 						ISOException.throwIt((short)SW_NO_MEMORY_LEFT);
 
 					short sign_size = sign.sign(src_buff, (short)(src_base + 2), size, mem.getBuffer(), (short)(dst_base + 2));
-					
+
 					if (sign_size > sign.getLength())
 						ISOException.throwIt((short)SW_INTERNAL_ERROR);
-					
+
 					mem.setShort(dst_base, sign_size);
 					if (data_location == 1)
 					{
@@ -648,17 +648,17 @@ label0:
 				}
 				if (src_avail < (short)(2 + size + 2))
 					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-				
+
 				short sign_size = Util.getShort(src_buff, (short)(src_base + 2 + size));
 				if (src_avail < (short)(2 + size + 2 + sign_size))
 					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-				
+
 				if (sign_size != sign.getLength())
 					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-				
+
 				if (!sign.verify(src_buff, (short)(src_base + 2), size, src_buff, (short)(src_base + 2 + size + 2), sign_size))
 					ISOException.throwIt((short)SW_SIGNATURE_INVALID);
-				
+
 				break label0;
 			}
 
@@ -669,12 +669,12 @@ label0:
 
 				if (ciph == null)
 					ISOException.throwIt((short)ISO7816.SW_INCORRECT_P1P2);
-				
+
 				byte data_location = buffer[ISO7816.OFFSET_CDATA];
 				byte src_buff[];
 				short src_base;
 				short src_avail;
-				
+
 				switch(data_location)
 				{
 				case DL_APDU:
@@ -701,12 +701,12 @@ label0:
 				short size = Util.getShort(src_buff, src_base);
 				if (src_avail < (short)(2 + size))
 					ISOException.throwIt((short)SW_INVALID_PARAMETER);
-				
+
 				om.destroyObject((short)-1, (short)-1, true);
 				short dst_base = om.createObject((short)-1, (short)-1, (short)(size + 2), getCurrentACL(), (short)0);
 				if (dst_base == -1)
 					ISOException.throwIt((short)SW_NO_MEMORY_LEFT);
-				
+
 				mem.setShort(dst_base, size);
 				if (op == 2)
 					ciph.update(src_buff, (short)(src_base + 2), size, mem.getBuffer(), (short)(dst_base + 2));
@@ -743,31 +743,31 @@ label0:
 		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		if (create_object_ACL == -1 || (logged_ids & create_object_ACL) == 0 && create_object_ACL != 0)
 			ISOException.throwIt((short)SW_UNAUTHORIZED);
-		
+
 		if (bytesLeft != 14)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (buffer[ISO7816.OFFSET_P1] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		short obj_class = Util.getShort(buffer, (short)5);
 		short obj_id = Util.getShort(buffer, (short)7);
-		
+
 		if (om.exists(obj_class, obj_id))
 			ISOException.throwIt((short)SW_OBJECT_EXISTS);
-		
+
 		if (Util.getShort(buffer, (short)9) != 0 || buffer[11] < 0)
 			ISOException.throwIt((short)SW_NO_MEMORY_LEFT);
-		
+
 		if (Util.getShort(buffer, (short)11) == 0)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		om.createObject(obj_class, obj_id, Util.getShort(buffer, (short)11), buffer, (short)13);
 	}
 
@@ -778,34 +778,34 @@ label0:
 
 		if (create_pin_ACL == -1 || (logged_ids & create_pin_ACL) == 0 && create_pin_ACL != 0)
 			ISOException.throwIt((short)SW_UNAUTHORIZED);
-		
+
 		if (pin_nb < 0 || pin_nb >= MAX_NUM_PINS || pins[pin_nb] != null)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		short avail = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (apdu.setIncomingAndReceive() != avail)
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		if (avail < 4)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		byte pin_size = buffer[ISO7816.OFFSET_CDATA];
-		
+
 		if (avail < (short)(1 + pin_size + 1))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (!CheckPINPolicy(buffer, (short)6, pin_size))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		byte ucode_size = buffer[(short)(6 + pin_size)];
-		
+
 		if (avail != (short)(1 + pin_size + 1 + ucode_size))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (!CheckPINPolicy(buffer, (short)(6 + pin_size + 1), ucode_size))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		pins[pin_nb] = new OwnerPIN(num_tries, (byte)pinMaxSize);
 		pins[pin_nb].update(buffer, (short)6, pin_size);
 		ublk_pins[pin_nb] = new OwnerPIN((byte)3, (byte)pinMaxSize);
@@ -817,28 +817,28 @@ label0:
 	{
 		if (buffer[ISO7816.OFFSET_P1] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (buffer[ISO7816.OFFSET_P2] != 0 && buffer[ISO7816.OFFSET_P2] != 1)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		if (bytesLeft != 4)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		short obj_class = Util.getShort(buffer, (short)5);
 		short obj_id = Util.getShort(buffer, (short)7);
 		short base = om.getBaseAddress(obj_class, obj_id);
-		
+
 		if (base == -1)
 			ISOException.throwIt((short)SW_OBJECT_NOT_FOUND);
-		
+
 		if (!om.authorizeDeleteFromAddress(base, logged_ids))
 			ISOException.throwIt((short)SW_UNAUTHORIZED);
-		
+
 		om.destroyObject(obj_class, obj_id, buffer[ISO7816.OFFSET_P2] == 1);
 	}
 
@@ -846,36 +846,36 @@ label0:
 	{
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		byte key_nb = buffer[ISO7816.OFFSET_P1];
-		
+
 		if (key_nb < 0 || key_nb >= MAX_NUM_KEYS)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		Key key = keys[key_nb];
-		
+
 		if (key == null || !key.isInitialized())
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (!authorizeKeyRead(key_nb))
 			ISOException.throwIt((short)SW_UNAUTHORIZED);
-		
+
 		om.destroyObject((short)-1, (short)-1, true);
 		short base = om.createObjectMax((short)-1, (short)-1, getCurrentACL(), (short)0);
 		short buffer_size = om.getSizeFromAddress(base);
 		short avail = buffer_size;
-		
+
 		if (buffer[ISO7816.OFFSET_CDATA] != 0)
 			ISOException.throwIt((short)SW_UNSUPPORTED_FEATURE);
-		
+
 		if (avail < 4)
 			ThrowDeleteObjects((short)SW_NO_MEMORY_LEFT);
-		
+
 		mem.setByte(base, (byte)0);
 		base++;
 		byte key_type = key.getType();
@@ -891,18 +891,18 @@ label0:
 		case KeyBuilder.TYPE_RSA_PUBLIC:
 		{
 			RSAPublicKey pub_key = (RSAPublicKey)key;
-			
+
 			if (avail < bn_size)
 				ThrowDeleteObjects((short)SW_NO_MEMORY_LEFT);
-			
+
 			short size = pub_key.getModulus(mem.getBuffer(), (short)(base + 2));
 			mem.setShort(base, size);
 			base += (short)(2 + size);
 			avail -= (short)(2 + size);
-			
+
 			if (avail < bn_size)
 				ThrowDeleteObjects((short)SW_NO_MEMORY_LEFT);
-			
+
 			size = pub_key.getExponent(mem.getBuffer(), (short)(base + 2));
 			mem.setShort(base, size);
 			base += (short)(2 + size);
@@ -913,18 +913,18 @@ label0:
 		case KeyBuilder.TYPE_RSA_PRIVATE:
 		{
 			RSAPrivateKey prv_key = (RSAPrivateKey)key;
-			
+
 			if (avail < bn_size)
 				ISOException.throwIt((short)SW_NO_MEMORY_LEFT);
-			
+
 			short size = prv_key.getModulus(mem.getBuffer(), (short)(base + 2));
 			mem.setShort(base, size);
 			base += (short)(2 + size);
 			avail -= (short)(2 + size);
-			
+
 			if (avail < bn_size)
 				ThrowDeleteObjects((short)SW_NO_MEMORY_LEFT);
-			
+
 			size = prv_key.getExponent(mem.getBuffer(), (short)(base + 2));
 			mem.setShort(base, size);
 			base += (short)(2 + size);
@@ -935,42 +935,42 @@ label0:
 		case KeyBuilder.TYPE_RSA_CRT_PRIVATE:
 		{
 			RSAPrivateCrtKey prv_key_crt = (RSAPrivateCrtKey)key;
-			
+
 			if (avail < bn_size)
 				ThrowDeleteObjects((short)SW_NO_MEMORY_LEFT);
-			
+
 			short size = prv_key_crt.getP(mem.getBuffer(), (short)(base + 2));
 			mem.setShort(base, size);
 			base += (short)(2 + size);
 			avail -= (short)(2 + size);
-			
+
 			if (avail < bn_size)
 				ThrowDeleteObjects((short)SW_NO_MEMORY_LEFT);
-			
+
 			size = prv_key_crt.getQ(mem.getBuffer(), (short)(base + 2));
 			mem.setShort(base, size);
 			base += (short)(2 + size);
 			avail -= (short)(2 + size);
-			
+
 			if (avail < bn_size)
 				ThrowDeleteObjects((short)SW_NO_MEMORY_LEFT);
-			
+
 			size = prv_key_crt.getPQ(mem.getBuffer(), (short)(base + 2));
 			mem.setShort(base, size);
 			base += (short)(2 + size);
 			avail -= (short)(2 + size);
-			
+
 			if (avail < bn_size)
 				ThrowDeleteObjects((short)SW_NO_MEMORY_LEFT);
-			
+
 			size = prv_key_crt.getDP1(mem.getBuffer(), (short)(base + 2));
 			mem.setShort(base, size);
 			base += (short)(2 + size);
 			avail -= (short)(2 + size);
-			
+
 			if (avail < bn_size)
 				ThrowDeleteObjects((short)SW_NO_MEMORY_LEFT);
-			
+
 			size = prv_key_crt.getDQ1(mem.getBuffer(), (short)(base + 2));
 			mem.setShort(base, size);
 			base += (short)(2 + size);
@@ -981,10 +981,10 @@ label0:
 		case KeyBuilder.TYPE_DES:
 		{
 			DESKey des_key = (DESKey)key;
-			
+
 			if (avail < bn_size)
 				ThrowDeleteObjects((short)SW_NO_MEMORY_LEFT);
-			
+
 			short size = des_key.getKey(mem.getBuffer(), (short)(base + 2));
 			mem.setShort(base, size);
 			base += (short)(2 + size);
@@ -1004,12 +1004,12 @@ label0:
 	private void GenerateKeyPair(APDU apdu, byte buffer[])
 	{
 		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		byte alg_id = buffer[ISO7816.OFFSET_CDATA];
-		
+
 		switch(alg_id)
 		{
 		case ALG_RSA:
@@ -1030,31 +1030,31 @@ label0:
 	private void GenerateKeyPairRSA(byte buffer[])
 	{
 		byte prv_key_nb = buffer[ISO7816.OFFSET_P1];
-		
+
 		if (prv_key_nb < 0 || prv_key_nb >= MAX_NUM_KEYS)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		byte pub_key_nb = buffer[ISO7816.OFFSET_P2];
-		
+
 		if (pub_key_nb < 0 || pub_key_nb >= MAX_NUM_KEYS)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		if (pub_key_nb == prv_key_nb)
 			ISOException.throwIt((short)ISO7816.SW_INCORRECT_P1P2);
-		
+
 		byte alg_id = buffer[ISO7816.OFFSET_CDATA];
 		short key_size = Util.getShort(buffer, (short)(ISO7816.OFFSET_CDATA+1));
 		byte options = buffer[20];
 		RSAPublicKey pub_key = (RSAPublicKey)getKey(pub_key_nb, KEY_RSA_PUBLIC, key_size);
 		PrivateKey prv_key = (PrivateKey)getKey(prv_key_nb, (byte)(alg_id == 0 ? KEY_RSA_PRIVATE : KEY_RSA_PRIVATE_CRT), key_size);
-		
+
 		/* If we're going to overwrite a keyPair's contents, check ACL */
 		if (pub_key.isInitialized() && !authorizeKeyWrite(pub_key_nb))
 			ISOException.throwIt((short)SW_UNAUTHORIZED);
-		
+
 		if (prv_key.isInitialized() && !authorizeKeyWrite(prv_key_nb))
 			ISOException.throwIt((short)SW_UNAUTHORIZED);
-		
+
 		/* Store private key ACL */
 		Util.arrayCopy(buffer, OFFSET_GENKEY_PRV_ACL, keyACLs, (short)(prv_key_nb * KEY_ACL_SIZE), (short)KEY_ACL_SIZE);
 		/* Store public key ACL */
@@ -1098,11 +1098,11 @@ label0:
 		if (keyPairs[pub_key_nb] != keyPairs[prv_key_nb])
 			ISOException.throwIt((short)SW_OPERATION_NOT_ALLOWED);
 		KeyPair kp = keyPairs[pub_key_nb];
-		
+
 		if (kp.getPublic() != pub_key || kp.getPrivate() != prv_key)
 			// This should never happen according with this Applet policies
 			ISOException.throwIt((short)SW_INTERNAL_ERROR);
-		
+
 		// We Rely on genKeyPair() to make all necessary checks about types
 		kp.genKeyPair();
 	}
@@ -1111,32 +1111,32 @@ label0:
 	{
 		if (buffer[ISO7816.OFFSET_P1] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		if (bytesLeft < 4)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		short size = Util.getShort(buffer, (short)5);
 		short seed_size = Util.getShort(buffer, (short)7);
-		
+
 		if (bytesLeft != (short)(seed_size + 4))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		byte data_loc = buffer[ISO7816.OFFSET_P2];
-		
+
 		if (data_loc != 1 && data_loc != 2)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (randomData == null)
 			randomData = RandomData.getInstance((byte)2);
-		
+
 		if (seed_size != 0)
 			randomData.setSeed(buffer, (short)9, seed_size);
-		
+
 		if (size != 0)
 		{
 			short base = om.createObject((short)-1, (short)-1, (short)(size + 2), getRestrictedACL(), (short)0);
@@ -1155,12 +1155,12 @@ label0:
 	{
 		if (buffer[ISO7816.OFFSET_P1] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		short pos = 0;
-		
+
 		buffer[pos++] = (byte)VERSION_PROTOCOL_MAJOR;
 		buffer[pos++] = (byte)VERSION_PROTOCOL_MINOR;
 		buffer[pos++] = (byte)VERSION_APPLET_MAJOR;
@@ -1203,33 +1203,33 @@ label0:
 	{
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		byte key_nb = buffer[ISO7816.OFFSET_P1];
-		
+
 		if (key_nb < 0 || key_nb >= MAX_NUM_KEYS)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (keys[key_nb] != null && keys[key_nb].isInitialized() && !authorizeKeyWrite(key_nb))
 			ISOException.throwIt((short)SW_UNAUTHORIZED);
-		
+
 		short base = om.getBaseAddress((short)-1, (short)-2);
-		
+
 		if (base == -1)
 			ISOException.throwIt((short)SW_OBJECT_NOT_FOUND);
-		
+
 		short avail = om.getSizeFromAddress(base);
-		
+
 		if (avail < 4)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (mem.getByte(base) != 0)
 			ISOException.throwIt((short)SW_UNSUPPORTED_FEATURE);
-		
+
 		base++;
 		avail--;
 		byte key_type = mem.getByte(base);
@@ -1238,7 +1238,7 @@ label0:
 		short key_size = mem.getShort(base);
 		base += 2;
 		avail -= 2;
-		
+
 		switch(key_type)
 		{
 		case KEY_RSA_PUBLIC:
@@ -1246,13 +1246,13 @@ label0:
 			RSAPublicKey rsa_pub_key = (RSAPublicKey)getKey(key_nb, key_type, key_size);
 			if (avail < 2)
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			short size = mem.getShort(base);
 			base += 2;
 			avail -= 2;
 			if (avail < (short)(size + 2))
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			rsa_pub_key.setModulus(mem.getBuffer(), base, size);
 			base += size;
 			avail -= size;
@@ -1261,7 +1261,7 @@ label0:
 			avail -= 2;
 			if (avail < size)
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			rsa_pub_key.setExponent(mem.getBuffer(), base, size);
 
 			base += size;
@@ -1283,7 +1283,7 @@ label0:
 			avail -= 2;
 			if (avail < (short)(size + 2))
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			rsa_prv_key.setModulus(mem.getBuffer(), base, size);
 			base += size;
 			avail -= size;
@@ -1292,9 +1292,9 @@ label0:
 			avail -= 2;
 			if (avail < size)
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			rsa_prv_key.setExponent(mem.getBuffer(), base, size);
-			
+
 			base += size;
 			avail -= size;
 
@@ -1309,13 +1309,13 @@ label0:
 			RSAPrivateCrtKey rsa_prv_key_crt = (RSAPrivateCrtKey)getKey(key_nb, key_type, key_size);
 			if (avail < 2)
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			short size = mem.getShort(base);
 			base += 2;
 			avail -= 2;
 			if (avail < (short)(size + 2))
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			rsa_prv_key_crt.setP(mem.getBuffer(), base, size);
 
 			base += size;
@@ -1327,7 +1327,7 @@ label0:
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
 
 			rsa_prv_key_crt.setQ(mem.getBuffer(), base, size);
-			
+
 			base += size;
 			avail -= size;
 			size = mem.getShort(base);
@@ -1337,7 +1337,7 @@ label0:
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
 
 			rsa_prv_key_crt.setPQ(mem.getBuffer(), base, size);
-			
+
 			base += size;
 			avail -= size;
 			size = mem.getShort(base);
@@ -1345,9 +1345,9 @@ label0:
 			avail -= 2;
 			if (avail < (short)(size + 2))
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			rsa_prv_key_crt.setDP1(mem.getBuffer(), base, size);
-			
+
 			base += size;
 			avail -= size;
 			size = mem.getShort(base);
@@ -1355,9 +1355,9 @@ label0:
 			avail -= 2;
 			if (avail < size)
 				ISOException.throwIt((short)SW_INVALID_PARAMETER);
-			
+
 			rsa_prv_key_crt.setDQ1(mem.getBuffer(), base, size);
-			
+
 			base += size;
 			avail -= size;
 
@@ -1430,14 +1430,14 @@ label0:
 	{
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		byte expectedBytes = buffer[ISO7816.OFFSET_LC];
-		
+
 		if (expectedBytes < 14)
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		boolean found = false;
-		
+
 		if (buffer[ISO7816.OFFSET_P1] == 0)
 			found = om.getFirstRecord(buffer, (short)0);
 		else
@@ -1455,17 +1455,17 @@ label0:
 	{
 		if (buffer[ISO7816.OFFSET_P1] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		byte expectedBytes = buffer[ISO7816.OFFSET_LC];
-		
+
 		if (expectedBytes != 2)
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		short mask = 0;
-		
+
 		for(short b = 0; b < MAX_NUM_PINS; b++)
 			if (pins[b] != null)
 				mask |= (short)(1 << b);
@@ -1506,33 +1506,33 @@ label0:
 	{
 		if (buffer[ISO7816.OFFSET_P1] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		if (bytesLeft != 9)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		short obj_class = Util.getShort(buffer, (short)5);
 		short obj_id = Util.getShort(buffer, (short)7);
 		short offset = Util.getShort(buffer, (short)11);
 		short size = Util.makeShort((byte)0, buffer[13]);
 		short base = om.getBaseAddress(obj_class, obj_id);
-		
+
 		if (base == -1)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (!om.authorizeReadFromAddress(base, logged_ids))
 			ISOException.throwIt((short)SW_UNAUTHORIZED);
-		
+
 		if ((short)(offset + size) > om.getSizeFromAddress(base))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		sendData(apdu, mem.getBuffer(), (short)(base + offset), size);
 	}
 
@@ -1555,59 +1555,59 @@ label0:
 			ISOException.throwIt((short)SW_INCORRECT_P1);
 		OwnerPIN pin = pins[pin_nb];
 		OwnerPIN ublk_pin = ublk_pins[pin_nb];
-		
+
 		if (pin == null)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (ublk_pin == null)
 			ISOException.throwIt((short)SW_INTERNAL_ERROR);
-		
+
 		if (pin.getTriesRemaining() != 0)
 			ISOException.throwIt((short)SW_OPERATION_NOT_ALLOWED);
-		
+
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		short numBytes = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (numBytes != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		if (!CheckPINPolicy(buffer, (short)5, (byte)numBytes))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (!ublk_pin.check(buffer, (short)5, (byte)numBytes))
 			ISOException.throwIt((short)SW_AUTH_FAILED);
-		
+
 		pin.resetAndUnblock();
 	}
 
 	private void VerifyPIN(APDU apdu, byte buffer[])
 	{
 		byte pin_nb = buffer[ISO7816.OFFSET_P1];
-		
+
 		if (pin_nb < 0 || pin_nb >= MAX_NUM_PINS)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		OwnerPIN pin = pins[pin_nb];
-		
+
 		if (pin == null)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		short numBytes = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (numBytes != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		if (!CheckPINPolicy(buffer, (short)5, (byte)numBytes))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (pin.getTriesRemaining() == 0)
 			ISOException.throwIt((short)SW_IDENTITY_BLOCKED);
-		
+
 		if (!pin.check(buffer, (short)5, (byte)numBytes))
 		{
 			LogoutIdentity(pin_nb);
@@ -1620,30 +1620,30 @@ label0:
 	{
 		if (buffer[ISO7816.OFFSET_P1] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P1);
-		
+
 		if (buffer[ISO7816.OFFSET_P2] != 0)
 			ISOException.throwIt((short)SW_INCORRECT_P2);
-		
+
 		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		short obj_class = Util.getShort(buffer, (short)5);
 		short obj_id = Util.getShort(buffer, (short)7);
 		short offset = Util.getShort(buffer, (short)11);
 		short size = Util.makeShort((byte)0, buffer[13]);
 		short base = om.getBaseAddress(obj_class, obj_id);
-		
+
 		if (base == -1)
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (!om.authorizeWriteFromAddress(base, logged_ids))
 			ISOException.throwIt((short)SW_UNAUTHORIZED);
-		
+
 		if ((short)(offset + size) > om.getSizeFromAddress(base))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		mem.setBytes(base, offset, buffer, (short)14, size);
 	}
 
@@ -1834,21 +1834,21 @@ label0:
 			ISOException.throwIt((short)ISO7816.SW_NO_ERROR);
 
 		byte buffer[] = apdu.getBuffer();
-		
+
 		if (buffer[ISO7816.OFFSET_CLA] == 0 && buffer[ISO7816.OFFSET_INS] == (byte)0xA4)
 			return;
-		
+
 		if (buffer[ISO7816.OFFSET_CLA] != (byte)CardEdge_CLA)
 			ISOException.throwIt((short)ISO7816.SW_CLA_NOT_SUPPORTED);
-		
+
 		byte ins = buffer[ISO7816.OFFSET_INS];
-		
+
 		if (!setupDone && ins != (byte)INS_SETUP)
 			ISOException.throwIt((short)SW_UNSUPPORTED_FEATURE);
-		
+
 		if (setupDone && ins == (byte)INS_SETUP)
 			ISOException.throwIt((short)ISO7816.SW_INS_NOT_SUPPORTED);
-		
+
 		switch(ins)
 		{
 		case INS_SETUP:
@@ -1962,57 +1962,57 @@ label0:
 	private void setup(APDU apdu, byte buffer[])
 	{
 		short bytesLeft = Util.makeShort((byte)0, buffer[ISO7816.OFFSET_LC]);
-		
+
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt((short)ISO7816.SW_WRONG_LENGTH);
-		
+
 		short base = 5;
 		byte numBytes = buffer[base++];
 		OwnerPIN pin = pins[0];
-		
+
 		if (!CheckPINPolicy(buffer, base, numBytes))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		if (pin.getTriesRemaining() == 0)
 			ISOException.throwIt((short)SW_IDENTITY_BLOCKED);
-		
+
 		if (!pin.check(buffer, base, numBytes))
 			ISOException.throwIt((short)SW_AUTH_FAILED);
-		
+
 		base += numBytes;
 		byte pin_tries = buffer[base++];
 		byte ublk_tries = buffer[base++];
 		numBytes = buffer[base++];
-		
+
 		if (!CheckPINPolicy(buffer, base, numBytes))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		pins[0] = new OwnerPIN(pin_tries, (byte)pinMaxSize);
 		pins[0].update(buffer, base, numBytes);
 		base += numBytes;
 		numBytes = buffer[base++];
-		
+
 		if (!CheckPINPolicy(buffer, base, numBytes))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		ublk_pins[0] = new OwnerPIN(ublk_tries, (byte)pinMaxSize);
 		ublk_pins[0].update(buffer, base, numBytes);
 		base += numBytes;
 		pin_tries = buffer[base++];
 		ublk_tries = buffer[base++];
 		numBytes = buffer[base++];
-		
+
 		if (!CheckPINPolicy(buffer, base, numBytes))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		pins[1] = new OwnerPIN(pin_tries, (byte)pinMaxSize);
 		pins[1].update(buffer, base, numBytes);
 		base += numBytes;
 		numBytes = buffer[base++];
-		
+
 		if (!CheckPINPolicy(buffer, base, numBytes))
 			ISOException.throwIt((short)SW_INVALID_PARAMETER);
-		
+
 		ublk_pins[1] = new OwnerPIN(ublk_tries, (byte)pinMaxSize);
 		ublk_pins[1].update(buffer, base, numBytes);
 		base += numBytes;
