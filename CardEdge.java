@@ -341,14 +341,14 @@ public class CardEdge  extends javacard.framework.Applet {
 	PIN_INIT_VALUE = new byte[8];
 
 	 
-	PIN_INIT_VALUE[0] = 'M';
-	PIN_INIT_VALUE[1] = 'u';
-	PIN_INIT_VALUE[2] = 's';
-	PIN_INIT_VALUE[3] = 'c';
-	PIN_INIT_VALUE[4] = 'l';
-	PIN_INIT_VALUE[5] = 'e';
-	PIN_INIT_VALUE[6] = '0';
-	PIN_INIT_VALUE[7] = '0';
+	PIN_INIT_VALUE[0] = (byte)'M';
+	PIN_INIT_VALUE[1] = (byte)'u';
+	PIN_INIT_VALUE[2] = (byte)'s';
+	PIN_INIT_VALUE[3] = (byte)'c';
+	PIN_INIT_VALUE[4] = (byte)'l';
+	PIN_INIT_VALUE[5] = (byte)'e';
+	PIN_INIT_VALUE[6] = (byte)'0';
+	PIN_INIT_VALUE[7] = (byte)'0';
 
 	 
 	if (! CheckPINPolicy(PIN_INIT_VALUE, (short) 0, (byte) PIN_INIT_VALUE.length))
@@ -357,7 +357,7 @@ public class CardEdge  extends javacard.framework.Applet {
 	pins[0].update(PIN_INIT_VALUE, (short) 0, (byte) PIN_INIT_VALUE.length);
 
 	 
-	PIN_INIT_VALUE[7] = '1';
+	PIN_INIT_VALUE[7] = (byte)'1';
 	ublk_pins[0] = new OwnerPIN((byte) 5, pinMaxSize);
 	 
 	if (! CheckPINPolicy(PIN_INIT_VALUE, (short) 0, (byte) PIN_INIT_VALUE.length))
@@ -659,7 +659,7 @@ public class CardEdge  extends javacard.framework.Applet {
 	if (acl == null)
 	    acl = new byte[KEY_ACL_SIZE];
 	byte i;
-	for (i = (short) 0; i < KEY_ACL_SIZE; i += (short) 2)
+	for (i = (byte) 0; i < KEY_ACL_SIZE; i += (byte) 2)
 	    Util.setShort(acl, i, logged_ids);
 	return acl;
     }
@@ -669,7 +669,7 @@ public class CardEdge  extends javacard.framework.Applet {
 	if (acl == null)
 	    acl = new byte[KEY_ACL_SIZE];
 	byte i;
-	for (i = (short) 0; i < KEY_ACL_SIZE; i += (short) 2)
+	for (i = (byte) 0; i < KEY_ACL_SIZE; i += (byte) 2)
 	    Util.setShort(acl, i, (short) 0xFFFF);
 	return acl;
     }
