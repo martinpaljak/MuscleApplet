@@ -346,10 +346,10 @@ public class ObjectManager
      *
      * @see #getNextRecord(byte[], short)
      */
-    public boolean getFirstRecord(byte buffer[], short offset)
+    public boolean getFirstRecord(byte buffer[], short offset, short logged_ids)
     {
         it = obj_list_head;
-        return getNextRecord(buffer, offset);
+        return getNextRecord(buffer, offset, logged_ids);
     }
 
     /**
@@ -364,21 +364,23 @@ public class ObjectManager
      *
      * @see #getFirstRecord(byte[], short)
      */
-    public boolean getNextRecord(byte buffer[], short offset)
+    public boolean getNextRecord(byte buffer[], short offset, short logged_ids)
     {
-        if(it == -1)
-        {
-            return false;
-        } else
-        {
-            Util.setShort(buffer, offset, mem.getShort(it, (short)2));
-            Util.setShort(buffer, (short)(offset + 2), mem.getShort(it, (short)4));
-            Util.setShort(buffer, (short)(offset + 4), (short)0);
-            Util.setShort(buffer, (short)(offset + 6), mem.getShort(it, (short)12));
-            Util.arrayCopyNonAtomic(mem.getBuffer(), (short)(it + 6), buffer, (short)(offset + 8), (short)6);
-            it = mem.getShort(it, (short)0);
-            return true;
-        }
+        while (it != -1)
+		{
+			if (authorizeReadFromAddress((short)(it + 14), logged_ids))
+			{
+				Util.setShort(buffer, offset, mem.getShort(it, (short)2));
+				Util.setShort(buffer, (short)(offset + 2), mem.getShort(it, (short)4));
+				Util.setShort(buffer, (short)(offset + 4), (short)0);
+				Util.setShort(buffer, (short)(offset + 6), mem.getShort(it, (short)12));
+				Util.arrayCopyNonAtomic(mem.getBuffer(), (short)(it + 6), buffer, (short)(offset + 8), (short)6);
+				it = mem.getShort(it, (short)0);
+				return true;
+			}
+			it = mem.getShort(it, (short)0);
+		}
+		return false;
     }
 
     /**

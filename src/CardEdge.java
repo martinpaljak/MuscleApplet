@@ -1394,7 +1394,7 @@ label0:
         else
         if (buffer[ISO7816.OFFSET_P1] != 1)
             ISOException.throwIt((short)SW_INCORRECT_P1);
-        for(; key_it < MAX_NUM_KEYS && (keys[key_it] == null || !keys[key_it].isInitialized()); key_it++);
+        for(; key_it < MAX_NUM_KEYS && (keys[key_it] == null || !keys[key_it].isInitialized() || (!authorizeKeyUse(key_it) && !authorizeKeyRead(key_it) && !authorizeKeyWrite(key_it))); key_it++);
         if (key_it < MAX_NUM_KEYS)
         {
             Key key = keys[key_it];
@@ -1421,12 +1421,12 @@ label0:
         boolean found = false;
         
         if (buffer[ISO7816.OFFSET_P1] == 0)
-            found = om.getFirstRecord(buffer, (short)0);
+            found = om.getFirstRecord(buffer, (short)0, logged_ids);
         else
         if (buffer[ISO7816.OFFSET_P1] != 1)
             ISOException.throwIt((short)SW_INCORRECT_P1);
         else
-            found = om.getNextRecord(buffer, (short)0);
+            found = om.getNextRecord(buffer, (short)0, logged_ids);
         if (found)
             apdu.setOutgoingAndSend((short)0, (short)14);
         else
