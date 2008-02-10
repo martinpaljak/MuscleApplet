@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<project default="JCOP" name="MCardApplet" basedir=".">
+
+ <target name="Cflex">
+  <ant antfile="common.xml" target="makeTransformedIJC">
+   <property file="Cflex.properties"/>
+  </ant>
+ </target>
+ 
+ <target name="Cflex-Clean">
+  <ant antfile="common.xml" target="clean">
+   <property file="Cflex.properties"/>
+  </ant>
+ </target>
+ 
+ <target name="JCOP">
+  <ant antfile="common.xml">
+   <property file="JCOP.properties"/>
+  </ant>
+ </target>
+ 
+ <target name="JCOP-Clean">
+  <ant antfile="common.xml" target="clean">
+   <property file="JCOP.properties"/>
+  </ant>
+ </target>
+ 
+ <target name="GD">
+  <ant antfile="common.xml">
+   <property file="GD.properties"/>
+  </ant>
+ </target>
+ 
+ <target name="GD-Clean">
+  <ant antfile="common.xml" target="clean">
+   <property file="GD.properties"/>
+  </ant>
+ </target>
+
+ <target name="Custom">
+  <ant antfile="common.xml">
+   <property file="Custom.properties"/>
+  </ant>
+ </target>
+ 
+ <target name="Custom-Clean">
+  <ant antfile="common.xml" target="clean">
+   <property file="Custom.properties"/>
+  </ant>
+ </target>
+ 
+</project>

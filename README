@@ -8,14 +8,18 @@
                         Ludovic Rousseau <ludovic.rousseau@free.fr>
         Modified:
                         Eirik Herskedal <ehersked@cs.purdue.edu>
+                        Karsten Ohme <k_o_@users.sourceforge.net>
                         See AUTHORS file for further details
-        Date:           October 2001 - October 2002
+        Date:           October 2001 - February 2008
         License:        See LICENSE file
 ************************************************************/
 
 
 HISTORY
 ============================================================
+0.9.12 - 09 Feb 2008
+  - Ant buildfile to compile, convert and verify the applet
+
 0.9.11 - 19 Dec 2003
   - Modify two INS to be ISO7816 compliant. This caused bugs with some
     ifdhandlers following the ISO
