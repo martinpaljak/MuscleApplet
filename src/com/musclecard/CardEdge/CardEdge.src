@@ -17,6 +17,9 @@ package JAVA_PACKAGE;
 import javacard.framework.*;
 import javacard.security.*;
 import javacardx.crypto.*;
+#ifdef WITH_EXT_APDU
+import javacardx.apdu.ExtendedLength;
+#endif
 
 /**
  * Implements MUSCLE's Card Edge Specification.<p>
@@ -40,6 +43,8 @@ import javacardx.crypto.*;
  *             WITH_EXT_AUTH
  *        <li> Enable/Disable PIN Policy enforcement:
  *             WITH_PIN_POLICY
+ *        <li> Enable/Disable Extended APDU support:
+ *             WITH_EXT_APDU
  *      </ul>
  * <li> C preprocessor defines<ul>
  *        <li> JAVA_PACKAGE:	The name of Java package for this Applet
@@ -48,7 +53,11 @@ import javacardx.crypto.*;
  * </ul>
  */
 
+#ifdef WITH_EXT_APDU
+public class JAVA_APPLET extends javacard.framework.Applet implements ExtendedLength {
+#else
 public class JAVA_APPLET extends javacard.framework.Applet {
+#endif
 
     /* constants declaration */
 
@@ -61,6 +70,10 @@ public class JAVA_APPLET extends javacard.framework.Applet {
     private final static byte MAX_NUM_AUTH_KEYS = (byte) 6;
 
 
+#ifdef WITH_EXT_APDU
+    // Maximum size for the extended APDU buffer
+    private final static short EXT_APDU_BUFFER_SIZE = (short) 512;
+#endif
     /* Pin policies constants (OR-ed in var pinPolicies) */
     /** Enable pin size check		*/
     private final static byte PIN_POLICY_SIZE		= (byte) 0x01;
@@ -313,6 +326,9 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 
     // OwnerPIN objects, allocated on demand
     private OwnerPIN[] pins, ublk_pins;
+
+    // Buffer for storing extended APDUs
+    private byte[] recvBuffer;   
 
     /* Logged identities: this is used for faster access	*
      * control, so we don't have to ping each PIN object	*/
@@ -589,22 +605,47 @@ public class JAVA_APPLET extends javacard.framework.Applet {
   	STD_PUBLIC_ACL = new byte[KEY_ACL_SIZE];
   	for (byte i = (byte) 0; i < (byte) KEY_ACL_SIZE; i += (short) 2)
   	    Util.setShort(STD_PUBLIC_ACL, i, (short)0x0000);
+#ifdef WITH_EXT_APDU
+	// Initialize the extended APDU buffer
+	recvBuffer = new byte[EXT_APDU_BUFFER_SIZE];	
+#endif
 
 	setupDone = true;
     }
 
     /********** UTILITY FUNCTIONS **********/
 
-    /* SendData() wraps the setGoing(), setLength(), .. stuff
-     *   that could be necessary to be fully JavaCard compliant
-     *   (the setOutgoingAndSend() could not work with all cards ?!?)	*/
+    /* SendData() wraps the setGoing(), setLength(), .. stuff		*
+     *   that could be necessary to be fully JavaCard compliant. 	*/
     private void sendData(APDU apdu, byte[] data, short offset, short size) {
+#ifdef WITH_EXT_APDU
+	if (size > EXT_APDU_BUFFER_SIZE)
+#else
 	if (size > 255)
+#endif
 	    ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
-	Util.arrayCopyNonAtomic(data, offset, apdu.getBuffer(), (short) 0, size);
-	apdu.setOutgoingAndSend((short) 0, size);
+	apdu.setOutgoing();
+	apdu.setOutgoingLength(size);
+	apdu.sendBytesLong(data, offset, size);		
     }
 
+#ifdef WITH_EXT_APDU
+    /* Retrieves the full contents from the apdu object in case of	*/
+    /*    an extended APDU.						*/
+    private void getData(APDU apdu, byte[] src, short bytesRead, byte[] dst) {
+	short recvLen = 0;
+	short apduOffset = bytesRead;
+
+	Util.arrayCopyNonAtomic(src, (short) 0, dst, (short) 0, apduOffset);
+	do {
+		recvLen = apdu.receiveBytes((short) 0);
+		Util.arrayCopyNonAtomic(src, (short) 0, dst, apduOffset, recvLen);
+		apduOffset += recvLen;  	
+	} while(recvLen > 0);	
+	
+    }
+
+#endif
     /* Retrieves the Cipher object to be used w/ the specified key	*
      *   and algorithm id (Cipher.ALG_XX).				*
      *   If exists, check it has the proper algorithm and throws	*
@@ -866,11 +907,29 @@ public class JAVA_APPLET extends javacard.framework.Applet {
      *            APDU handlers             *
      ****************************************/
 
-    private void ComputeCrypt(APDU apdu, byte[] buffer) {
+    private void ComputeCrypt(APDU apdu, byte[] apduBuffer) {
+	/* Buffer pointer */
+	byte[] buffer = apduBuffer;
+	short dataOffset = apdu.getOffsetCdata();
+#ifdef WITH_EXT_APDU	
+	short LC = apdu.getIncomingLength();
+	short bytesLeft = apdu.setIncomingAndReceive(); 
+
+	if((short) (LC + dataOffset) > EXT_APDU_BUFFER_SIZE)
+		ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
+	
+	/* Is this an extended APDU? */
+	if(bytesLeft != LC) { 
+		getData(apdu, apduBuffer, (short) (dataOffset + bytesLeft), recvBuffer);
+		buffer = recvBuffer;
+		bytesLeft = LC;
+	}
+#else
 	short bytesLeft = Util.makeShort((byte) 0x00,
 			    buffer[ISO7816.OFFSET_LC]);
 	if (bytesLeft != apdu.setIncomingAndReceive())
 	    ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
+#endif	
 
 	byte key_nb = buffer[ISO7816.OFFSET_P1];
 
@@ -895,14 +954,14 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 	case OP_INIT:
 	    if (bytesLeft < 3)
 		ISOException.throwIt(SW_INVALID_PARAMETER);
-	    byte ciph_mode = buffer[ISO7816.OFFSET_CDATA];
-	    ciph_dir = buffer[(short) (ISO7816.OFFSET_CDATA + 1)];
+	    byte ciph_mode = buffer[dataOffset];
+	    ciph_dir = buffer[(short) (dataOffset + 1)];
 	    byte ciph_alg_id;
-	    data_location = buffer[(short) (ISO7816.OFFSET_CDATA + 2)];
+	    data_location = buffer[(short) (dataOffset + 2)];
 	    switch (data_location) {
 	    case DL_APDU:
 		src_buff = buffer;
-		src_base = (short) (ISO7816.OFFSET_CDATA + 3);
+		src_base = (short) (dataOffset + 3);
 		src_avail = (short) (bytesLeft - 3);
 		break;
 	    case DL_OBJECT:
@@ -1025,13 +1084,13 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 		    /* Don't know what is incorrect: just say incorrect parameters
 		     *  we guess it was specified a wrong key number */
 		    ISOException.throwIt(ISO7816.SW_INCORRECT_P1P2);
-		data_location = buffer[ISO7816.OFFSET_CDATA];
+		data_location = buffer[dataOffset];
 
 		switch (data_location) {
 		case DL_APDU:
 		    src_buff = mem.getBuffer();
 		    // Skip Data Location byte.
-		    src_base = (short) (ISO7816.OFFSET_CDATA + 1);
+		    src_base = (short) (dataOffset + 1);
 		    src_avail = (short) (bytesLeft - 1);
 		    break;
 		case DL_OBJECT:
@@ -1100,11 +1159,11 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 		    /* Don't know what is incorrect: just say incorrect parameters
 		     *  we guess it was specified a wrong key number */
 		    ISOException.throwIt(ISO7816.SW_INCORRECT_P1P2);
-		data_location = buffer[ISO7816.OFFSET_CDATA];
+		data_location = buffer[dataOffset];
 		switch (data_location) {
 		case DL_APDU:
 		    src_buff = buffer;
-		    src_base = (short) (ISO7816.OFFSET_CDATA + 1);
+		    src_base = (short) (dataOffset + 1);
 		    src_avail = (short) (bytesLeft - 1);
 		    break;
 		case DL_OBJECT:

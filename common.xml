@@ -22,7 +22,8 @@
 	<!-- The package name -->
     <property name="PACKAGE_NAME" value="${JAVA_PACKAGE}"/>
 	<!--The AID of the package -->
-	<property name="PACKAGE_AID" value="0xA0:00:00:03:0x23:01"/>
+	<!-- <property name="PACKAGE_AID" value="0xA0:00:00:03:0x23:01"/> -->
+	<property name="PACKAGE_AID" value="0xA0:00:00:00:01"/>
 	<!-- The major and minor version of the package -->
 	<property name="VERSION" value="${APPLET_VERSION_MAJOR}.${APPLET_VERSION_MINOR}"/>
 	<!-- The applet AID of the applet -->
