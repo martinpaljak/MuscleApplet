@@ -910,11 +910,12 @@ public class JAVA_APPLET extends javacard.framework.Applet {
     private void ComputeCrypt(APDU apdu, byte[] apduBuffer) {
 	/* Buffer pointer */
 	byte[] buffer = apduBuffer;
-	short dataOffset = apdu.getOffsetCdata();
+	
 #ifdef WITH_EXT_APDU	
-	short LC = apdu.getIncomingLength();
 	short bytesLeft = apdu.setIncomingAndReceive(); 
-
+	short LC = apdu.getIncomingLength();
+	short dataOffset = apdu.getOffsetCdata();
+	
 	if((short) (LC + dataOffset) > EXT_APDU_BUFFER_SIZE)
 		ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 	
@@ -927,6 +928,8 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 #else
 	short bytesLeft = Util.makeShort((byte) 0x00,
 			    buffer[ISO7816.OFFSET_LC]);
+	short dataOffset = ISO7816.OFFSET_CDATA;
+
 	if (bytesLeft != apdu.setIncomingAndReceive())
 	    ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 #endif	
