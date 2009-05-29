@@ -71,8 +71,12 @@ public class JAVA_APPLET extends javacard.framework.Applet {
 
 
 #ifdef WITH_EXT_APDU
-    // Maximum size for the extended APDU buffer
-    private final static short EXT_APDU_BUFFER_SIZE = (short) 512;
+    // Maximum size for the extended APDU buffer for a 2048 bit key:
+    // CLA [1 byte] + INS [1 byte] + P1 [1 byte] + P2 [1 byte] +
+    // LC [3 bytes] + cipher_mode[1 byte] + cipher_direction [1 byte] +
+    // data_location [1 byte] + data_size [2 bytes] + data [256 bytes]
+    // = 268 bytes
+    private final static short EXT_APDU_BUFFER_SIZE = (short) 268;
 #endif
     /* Pin policies constants (OR-ed in var pinPolicies) */
     /** Enable pin size check		*/
@@ -607,7 +611,16 @@ public class JAVA_APPLET extends javacard.framework.Applet {
   	    Util.setShort(STD_PUBLIC_ACL, i, (short)0x0000);
 #ifdef WITH_EXT_APDU
 	// Initialize the extended APDU buffer
-	recvBuffer = new byte[EXT_APDU_BUFFER_SIZE];	
+	try {
+   	 // Try to allocate the extended APDU buffer on RAM memory
+	    recvBuffer = JCSystem.makeTransientByteArray((short)EXT_APDU_BUFFER_SIZE,
+                                               JCSystem.CLEAR_ON_DESELECT);
+	} catch (SystemException e) {
+	    // Allocate the extended APDU buffer on EEPROM memory
+	    // This is the fallback method, but its usage is really not recommended
+	    // as after ~ 100000 writes it will kill the EEPROM cells...
+	    recvBuffer = new byte[EXT_APDU_BUFFER_SIZE];
+	}	
 #endif
 
 	setupDone = true;
