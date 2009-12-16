@@ -61,7 +61,12 @@
 	        fork="true"
 	        executable="${JAVA_BUILD_HOME}/bin/javac"
 	        srcdir="${APPLET_SRC}"
-			destdir="${OUTPUT_DIR}">
+	        destdir="${OUTPUT_DIR}"
+                target="${VM_TARGET_VERSION}"
+                source="${VM_SOURCE_VERSION}">
+                <bootclasspath>
+                    <pathelement location="${BOOTCLASSPATH}"/>
+                </bootclasspath>
 	        <classpath>
 	            <pathelement location="${API_JAR}"/>
 	            <pathelement location="."/>
