@@ -6,19 +6,19 @@
 	<!-- The version information -->
 	<property file="version.properties"/>
 	<!-- The output directory of the compiled files, the CAP, the IJC file, ... -->
-	<property name="OUTPUT_DIR" value=".\${CARD_NAME}"/>
+	<property name="OUTPUT_DIR" value="./${CARD_NAME}"/>
     
     <!-- Necessary parameters for the applet -->    
     <!-- Name of Java Card Applet -->
     <property name="JAVA_APPLET" value="CardEdge"/>
     <!-- Package into which Applet resides -->
     <property name="JAVA_PACKAGE" value="com.musclecard.${JAVA_APPLET}"/>
-    <!-- Same as above . replaced by \ -->
-    <property name="JAVA_PACKAGE_DIR" value="com\musclecard\${JAVA_APPLET}"/>
+    <!-- Same as above . replaced by / -->
+    <property name="JAVA_PACKAGE_DIR" value="com/musclecard/${JAVA_APPLET}"/>
     <!-- The applet name -->
     <property name="APPLET_NAME" value="CardEdge"/>
 	<!-- The source directory of the applet -->
-	<property name="APPLET_SRC" value=".\src\${JAVA_PACKAGE_DIR}"/>
+	<property name="APPLET_SRC" value="./src/${JAVA_PACKAGE_DIR}"/>
 	<!-- The package name -->
     <property name="PACKAGE_NAME" value="${JAVA_PACKAGE}"/>
 	<!--The AID of the package -->
@@ -59,9 +59,9 @@
 	    <javac debug="on"
 	        verbose="on"
 	        fork="true"
-	        executable="${JAVA_BUILD_HOME}\bin\javac"
+	        executable="${JAVA_BUILD_HOME}/bin/javac"
 	        srcdir="${APPLET_SRC}"
-	        destdir="${OUTPUT_DIR}">
+			destdir="${OUTPUT_DIR}">
 	        <classpath>
 	            <pathelement location="${API_JAR}"/>
 	            <pathelement location="."/>
@@ -81,8 +81,8 @@
 	            -applet ${APPLET_AID} ${APPLET_NAME}
 	            ${PACKAGE_NAME} ${PACKAGE_AID} ${VERSION}"/>
 	        <classpath>
-	            <pathelement location="${JC_HOME}\lib\converter.jar"/>
-	            <pathelement location="${JC_HOME}\lib\offcardverifier.jar"/>
+	            <pathelement location="${JC_HOME}/lib/converter.jar"/>
+	            <pathelement location="${JC_HOME}/lib/offcardverifier.jar"/>
 	            <pathelement location="."/>
 	            <pathelement path="${java.class.path}"/>
 	        </classpath>
@@ -92,11 +92,11 @@
 	<target depends="convert" name="capgen">
 	    <java classname="com.sun.javacard.jcasm.cap.Main"
 	        fork="true" failonerror="true">
-	        <arg value="-o${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}.jar"/>
-	        <arg value="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}.jca"/>
+	        <arg value="-o${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}.jar"/>
+	        <arg value="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}.jca"/>
 	        <classpath>
-	            <pathelement location="${JC_HOME}\lib\converter.jar"/>
-	            <pathelement location="${JC_HOME}\lib\offcardverifier.jar"/>
+	            <pathelement location="${JC_HOME}/lib/converter.jar"/>
+	            <pathelement location="${JC_HOME}/lib/offcardverifier.jar"/>
 	            <pathelement location="."/>
 	            <pathelement path="${java.class.path}"/>
 	        </classpath>
@@ -107,14 +107,14 @@
 	    <java classname="com.sun.javacard.offcardverifier.Verifier"
 	        fork="true" failonerror="true">
 	        <arg line="-verbose
-	            ${API_EXPORT_FILES}\java\lang\javacard\lang.exp
-	            ${API_EXPORT_FILES}\javacard\framework\javacard\framework.exp
-	            ${API_EXPORT_FILES}\javacardx\crypto\javacard\crypto.exp
-	            ${API_EXPORT_FILES}\javacard\security\javacard\security.exp
-	            ${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}.exp
-	            ${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}.cap"/>
+	            ${API_EXPORT_FILES}/java/lang/javacard/lang.exp
+	            ${API_EXPORT_FILES}/javacard/framework/javacard/framework.exp
+	            ${API_EXPORT_FILES}/javacardx/crypto/javacard/crypto.exp
+	            ${API_EXPORT_FILES}/javacard/security/javacard/security.exp
+	            ${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}.exp
+	            ${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}.cap"/>
 	        <classpath>
-	            <pathelement location="${JC_HOME}\lib\offcardverifier.jar"/>
+	            <pathelement location="${JC_HOME}/lib/offcardverifier.jar"/>
 	            <pathelement location="."/>
 	            <pathelement path="${java.class.path}"/>
 	        </classpath>
@@ -124,40 +124,40 @@
     <target depends="convert" description="Makes an IJC file" name="makeTransformedIJC">
         <java jar="${CAPTRANS}"
             fork="true" failonerror="true">
-            <arg line="${API_EXPORT_FILES}\javacard\framework\javacard\framework.exp ${API_EXPORT_FILES}\javacard\security\javacard\security.exp ${API_EXPORT_FILES}\java\lang\javacard\lang.exp ${API_EXPORT_FILES}\javacardx\crypto\javacard\crypto.exp -s -noint ${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}.cap"/>
+            <arg line="${API_EXPORT_FILES}/javacard/framework/javacard/framework.exp ${API_EXPORT_FILES}/javacard/security/javacard/security.exp ${API_EXPORT_FILES}/java/lang/javacard/lang.exp ${API_EXPORT_FILES}/javacardx/crypto/javacard/crypto.exp -s -noint ${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}.cap"/>
         </java>
-        <move file="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}.cap.transf" tofile="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}.cap"/>
-        <unjar src="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}.cap"
-            dest="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard"/>
-        <concat binary="true" destfile="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}${CARD_NAME}.ijc">
-            <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+        <move file="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}.cap.transf" tofile="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}.cap"/>
+        <unjar src="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}.cap"
+            dest="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard"/>
+        <concat binary="true" destfile="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}${CARD_NAME}.ijc">
+            <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
                 <include name="Header.cap"/>
             </fileset>
-            <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+            <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
                 <include name="Directory.cap"/>
             </fileset>
-            <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+            <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
                 <include name="Import.cap"/>
             </fileset>
-            <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+            <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
                 <include name="Applet.cap"/>
             </fileset>
-            <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+            <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
                 <include name="Class.cap"/>
             </fileset>
-            <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+            <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
                 <include name="Method.cap"/>
             </fileset>
-            <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+            <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
                 <include name="StaticField.cap"/>
             </fileset>
-            <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+            <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
                 <include name="ConstantPool.cap"/>
             </fileset>
-            <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+            <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
                 <include name="RefLocation.cap"/>
             </fileset>
-            <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+            <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
                 <include name="Descriptor.cap"/>
             </fileset>
         </concat>
@@ -165,37 +165,37 @@
         </target>
         
 	<target depends="convert" description="Makes an IJC file" name="makeIJC">    
-	    <unjar src="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}.cap"
-	        dest="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard"/>
-	    <concat binary="true" destfile="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${APPLET_NAME}${CARD_NAME}.ijc">
-	        <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+	    <unjar src="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}.cap"
+	        dest="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard"/>
+	    <concat binary="true" destfile="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${APPLET_NAME}${CARD_NAME}.ijc">
+	        <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
 	            <include name="Header.cap"/>
 	        </fileset>
-	        <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+	        <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
 	            <include name="Directory.cap"/>
 	        </fileset>
-	        <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+	        <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
 	            <include name="Import.cap"/>
 	        </fileset>
-	        <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+	        <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
 	            <include name="Applet.cap"/>
 	        </fileset>
-	        <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+	        <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
 	            <include name="Class.cap"/>
 	        </fileset>
-	        <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+	        <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
 	            <include name="Method.cap"/>
 	        </fileset>
-	        <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+	        <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
 	            <include name="StaticField.cap"/>
 	        </fileset>
-	        <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+	        <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
 	            <include name="ConstantPool.cap"/>
 	        </fileset>
-	        <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+	        <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
 	            <include name="RefLocation.cap"/>
 	        </fileset>
-	        <fileset dir="${OUTPUT_DIR}\${PACKAGE_NAME_UNPACKAGED}\javacard\${PACKAGE_NAME_UNPACKAGED}\javacard">
+	        <fileset dir="${OUTPUT_DIR}/${PACKAGE_NAME_UNPACKAGED}/javacard/${PACKAGE_NAME_UNPACKAGED}/javacard">
 	            <include name="Descriptor.cap"/>
 	        </fileset>
 	    </concat>
