@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
-<project default="JCOP" name="MCardApplet" basedir=".">
+<project default="Custom" name="MCardApplet" basedir=".">
+ <target name="all" depends="Cflex,JCOP,GD,Custom"/>
 
  <target name="Cflex">
   <ant antfile="common.xml" target="makeTransformedIJC">
