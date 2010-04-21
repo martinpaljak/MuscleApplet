@@ -675,24 +675,15 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			return KeyBuilder.TYPE_RSA_PRIVATE;
 		case KEY_RSA_PRIVATE_CRT:
 			return KeyBuilder.TYPE_RSA_CRT_PRIVATE;
-
 		case KEY_DSA_PUBLIC:
-
 			return KeyBuilder.TYPE_DSA_PUBLIC;
-
 		case KEY_DSA_PRIVATE:
-
 			return KeyBuilder.TYPE_DSA_PUBLIC;
-
 		case KEY_DES:
-
 			return KeyBuilder.TYPE_DES;
-
 		case KEY_3DES:
 		case KEY_3DES3:
-
 			return KeyBuilder.TYPE_DES;
-
 		default:
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		}
@@ -709,22 +700,17 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			return KEY_RSA_PRIVATE;
 		case KeyBuilder.TYPE_RSA_CRT_PRIVATE:
 			return KEY_RSA_PRIVATE_CRT;
-
 		case KeyBuilder.TYPE_DSA_PUBLIC:
 			return KEY_DSA_PUBLIC;
 		case KeyBuilder.TYPE_DSA_PRIVATE:
 			return KEY_DSA_PRIVATE;
-
 		case KeyBuilder.TYPE_DES:
-
 			if (key.getSize() == (short) 64)
 				return KEY_DES;
-
 			if (key.getSize() == (short) 128)
 				return KEY_3DES;
 			if (key.getSize() == (short) 192)
 				return KEY_3DES3;
-
 		default:
 			ISOException.throwIt(SW_INTERNAL_ERROR);
 		}
