@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2001
  * BSD ?
@@ -51,8 +50,7 @@ import javacardx.crypto.Cipher;
  * </ul>
  */
 
-public class CardEdge extends javacard.framework.Applet implements
-		ExtendedLength {
+public class CardEdge extends javacard.framework.Applet implements ExtendedLength {
 
 	/* constants declaration */
 
@@ -102,8 +100,7 @@ public class CardEdge extends javacard.framework.Applet implements
 	private final static byte PIN_MIXED_ALL = (byte) 0x04;
 
 	// Actually enforced PIN Policies
-	private final static byte pinPolicies = (byte) (PIN_POLICY_SIZE
-			| PIN_POLICY_CHARSET | PIN_POLICY_MIXED);
+	private final static byte pinPolicies = (byte) (PIN_POLICY_SIZE | PIN_POLICY_CHARSET | PIN_POLICY_MIXED);
 
 	// Minimum PIN size
 	private final static byte pinMinSize = (byte) 4;
@@ -112,15 +109,14 @@ public class CardEdge extends javacard.framework.Applet implements
 
 	/* Pin policies parameters */
 	// PIN Charset
-	private final static byte pinCharset = (byte) (PIN_CHARSET_NUMBERS
-			| PIN_CHARSET_UC_LETTERS | PIN_CHARSET_LC_LETTERS);
+	private final static byte pinCharset = (byte) (PIN_CHARSET_NUMBERS | PIN_CHARSET_UC_LETTERS | PIN_CHARSET_LC_LETTERS);
 	private final static byte pinMixType = (byte) PIN_MIXED_TWO;
 
 	// Maximum external authentication tries per key
 	private final static byte MAX_KEY_TRIES = (byte) 5;
 
 	// Initial PIN 0 value
-//	private static byte[] PIN_INIT_VALUE;
+	// private static byte[] PIN_INIT_VALUE;
 
 	// Import/Export Object ID
 	private final static short IN_OBJECT_CLA = (short) 0xFFFF;
@@ -258,16 +254,16 @@ public class CardEdge extends javacard.framework.Applet implements
 	private final static byte LIST_OPT_NEXT = (byte) 0x01;
 
 	private final static byte OPT_DEFAULT = (byte) 0x00; // For every algorithm:
-															// use default
-															// JavaCard
-															// generation
-															// parameters
+	// use default
+	// JavaCard
+	// generation
+	// parameters
 	private final static byte OPT_RSA_PUB_EXP = (byte) 0x01; // For RSA: provide
-																// public
-																// exponent
+	// public
+	// exponent
 	private final static byte OPT_DSA_GPQ = (byte) 0x02; // For DSA: provide
-															// p,q,g public key
-															// parameters
+	// p,q,g public key
+	// parameters
 
 	// Offsets in buffer[] for key generation
 	private final static short OFFSET_GENKEY_ALG = (short) (ISO7816.OFFSET_CDATA);
@@ -343,8 +339,7 @@ public class CardEdge extends javacard.framework.Applet implements
 		if (bArray[bOffset] == 0)
 			wal.register();
 		else
-			wal.register(bArray, (short) (bOffset + 1),
-					(byte) (bArray[bOffset]));
+			wal.register(bArray, (short) (bOffset + 1), (byte) (bArray[bOffset]));
 	} // end of install method
 
 	public boolean select() {
@@ -387,8 +382,7 @@ public class CardEdge extends javacard.framework.Applet implements
 
 		byte[] buffer = apdu.getBuffer();
 		// check SELECT APDU command
-		if ((buffer[ISO7816.OFFSET_CLA] == 0)
-				&& (buffer[ISO7816.OFFSET_INS] == (byte) 0xA4))
+		if ((buffer[ISO7816.OFFSET_CLA] == 0) && (buffer[ISO7816.OFFSET_INS] == (byte) 0xA4))
 			return;
 		// verify the rest of commands have the
 		// correct CLA byte, which specifies the
@@ -474,8 +468,7 @@ public class CardEdge extends javacard.framework.Applet implements
 
 	/********** SETUP FUNCTION *********/
 	private void setup(APDU apdu, byte[] buffer) {
-		short bytesLeft = Util
-				.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
+		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 
@@ -571,8 +564,7 @@ public class CardEdge extends javacard.framework.Applet implements
 		// Initialize the extended APDU buffer
 		try {
 			// Try to allocate the extended APDU buffer on RAM memory
-			recvBuffer = JCSystem.makeTransientByteArray(
-					(short) EXT_APDU_BUFFER_SIZE, JCSystem.CLEAR_ON_DESELECT);
+			recvBuffer = JCSystem.makeTransientByteArray((short) EXT_APDU_BUFFER_SIZE, JCSystem.CLEAR_ON_DESELECT);
 		} catch (SystemException e) {
 			// Allocate the extended APDU buffer on EEPROM memory
 			// This is the fallback method, but its usage is really not
@@ -641,9 +633,9 @@ public class CardEdge extends javacard.framework.Applet implements
 	}
 
 	/**
-	 * Retrieves the Key object to be used w/ the specified key number, key
-	 * type (KEY_XX) and size. If exists, check it has the proper key type
-	 * If not, creates it.
+	 * Retrieves the Key object to be used w/ the specified key number, key type
+	 * (KEY_XX) and size. If exists, check it has the proper key type If not,
+	 * creates it.
 	 * 
 	 * @return Retrieved Key object or throws SW_UNATUTHORIZED,
 	 *         SW_OPERATION_NOT_ALLOWED
@@ -666,8 +658,7 @@ public class CardEdge extends javacard.framework.Applet implements
 			 * TODO: As an option, we could just discard and recreate if not of
 			 * the correct type, but creates trash objects
 			 */
-			if ((keys[key_nb].getSize() != key_size)
-					|| (keys[key_nb].getType() != jc_key_type))
+			if ((keys[key_nb].getSize() != key_size) || (keys[key_nb].getType() != jc_key_type))
 				ISOException.throwIt(SW_OPERATION_NOT_ALLOWED);
 		}
 		return keys[key_nb];
@@ -796,8 +787,7 @@ public class CardEdge extends javacard.framework.Applet implements
 	}
 
 	/** Checks if PIN policies are satisfied for a PIN code */
-	private boolean CheckPINPolicy(byte[] pin_buffer, short pin_offset,
-			byte pin_size) {
+	private boolean CheckPINPolicy(byte[] pin_buffer, short pin_offset, byte pin_size) {
 		if ((pinPolicies & PIN_POLICY_SIZE) != (byte) 0x00) {
 			if ((pin_size < pinMinSize) || (pin_size > pinMaxSize))
 				return false;
@@ -813,8 +803,7 @@ public class CardEdge extends javacard.framework.Applet implements
 				pin_mix |= PIN_CHARSET_UC_LETTERS;
 			else if ((ch >= 'a') && (ch <= 'z'))
 				pin_mix |= PIN_CHARSET_LC_LETTERS;
-			else if ((ch == ',') || (ch == '.') || (ch == '?') || (ch == ';')
-					|| (ch == ':'))
+			else if ((ch == ',') || (ch == '.') || (ch == '?') || (ch == ';') || (ch == ':'))
 				pin_mix |= PIN_CHARSET_PUNCT;
 			else
 				pin_mix |= PIN_CHARSET_OTHERS;
@@ -865,8 +854,7 @@ public class CardEdge extends javacard.framework.Applet implements
 
 		/* Is this an extended APDU? */
 		if (bytesLeft != LC) {
-			getData(apdu, apduBuffer, (short) (dataOffset + bytesLeft),
-					recvBuffer);
+			getData(apdu, apduBuffer, (short) (dataOffset + bytesLeft), recvBuffer);
 			buffer = recvBuffer;
 			bytesLeft = LC;
 		}
@@ -934,11 +922,9 @@ public class CardEdge extends javacard.framework.Applet implements
 				}
 				Signature sign = getSignature(key_nb, ciph_alg_id);
 				if (size == (short) 0)
-					sign.init(key, (ciph_dir == CD_SIGN) ? Signature.MODE_SIGN
-							: Signature.MODE_VERIFY);
+					sign.init(key, (ciph_dir == CD_SIGN) ? Signature.MODE_SIGN : Signature.MODE_VERIFY);
 				else
-					sign.init(key, (ciph_dir == CD_SIGN) ? Signature.MODE_SIGN
-							: Signature.MODE_VERIFY, src_buff,
+					sign.init(key, (ciph_dir == CD_SIGN) ? Signature.MODE_SIGN : Signature.MODE_VERIFY, src_buff,
 							(short) (src_base + 2), size);
 				ciph_dirs[key_nb] = ciph_dir;
 				break;
@@ -978,13 +964,9 @@ public class CardEdge extends javacard.framework.Applet implements
 				}
 				Cipher ciph = getCipher(key_nb, ciph_alg_id);
 				if (size == (short) 0)
-					ciph.init(key,
-							(ciph_dir == CD_ENCRYPT) ? Cipher.MODE_ENCRYPT
-									: Cipher.MODE_DECRYPT);
+					ciph.init(key, (ciph_dir == CD_ENCRYPT) ? Cipher.MODE_ENCRYPT : Cipher.MODE_DECRYPT);
 				else
-					ciph.init(key,
-							(ciph_dir == CD_ENCRYPT) ? Cipher.MODE_ENCRYPT
-									: Cipher.MODE_DECRYPT, src_buff,
+					ciph.init(key, (ciph_dir == CD_ENCRYPT) ? Cipher.MODE_ENCRYPT : Cipher.MODE_DECRYPT, src_buff,
 							(short) (src_base + 2), size);
 				ciph_dirs[key_nb] = ciph_dir;
 				break;
@@ -1037,13 +1019,11 @@ public class CardEdge extends javacard.framework.Applet implements
 					// OP_FINALIZE
 					if (ciph_dir == CD_SIGN) {
 						om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, true);
-						short dst_base = om.createObject(OUT_OBJECT_CLA,
-								OUT_OBJECT_ID, (short) (sign.getLength() + 2),
+						short dst_base = om.createObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, (short) (sign.getLength() + 2),
 								getCurrentACL(), (short) 0);
 						if (dst_base == MemoryManager.NULL_OFFSET)
 							ISOException.throwIt(SW_NO_MEMORY_LEFT);
-						short sign_size = sign.sign(src_buff,
-								(short) (src_base + 2), size, mem.getBuffer(),
+						short sign_size = sign.sign(src_buff, (short) (src_base + 2), size, mem.getBuffer(),
 								(short) (dst_base + 2));
 						if (sign_size > sign.getLength())
 							// We got a buffer overflow (unless we were in
@@ -1053,22 +1033,18 @@ public class CardEdge extends javacard.framework.Applet implements
 						// Actually send data back (and clear output buffer)
 						// only if location is APDU
 						if (data_location == DL_APDU) {
-							sendData(apdu, mem.getBuffer(), dst_base,
-									(short) (sign_size + 2));
-							om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID,
-									true);
+							sendData(apdu, mem.getBuffer(), dst_base, (short) (sign_size + 2));
+							om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, true);
 						}
 					} else { // ciph_dir == CD_VERIFY
 						if (src_avail < (short) (2 + size + 2))
 							ISOException.throwIt(SW_INVALID_PARAMETER);
-						short sign_size = Util.getShort(src_buff,
-								(short) (src_base + 2 + size));
+						short sign_size = Util.getShort(src_buff, (short) (src_base + 2 + size));
 						if (src_avail < (short) (2 + size + 2 + sign_size))
 							ISOException.throwIt(SW_INVALID_PARAMETER);
 						if (sign_size != sign.getLength())
 							ISOException.throwIt(SW_INVALID_PARAMETER);
-						if (!sign.verify(src_buff, (short) (src_base + 2),
-								size, src_buff,
+						if (!sign.verify(src_buff, (short) (src_base + 2), size, src_buff,
 								(short) (src_base + 2 + size + 2), sign_size))
 							ISOException.throwIt(SW_SIGNATURE_INVALID);
 					}
@@ -1109,22 +1085,19 @@ public class CardEdge extends javacard.framework.Applet implements
 				// TODO: Don't destroy the out obj every time, but keep it
 				om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, true);
 				// Create object with 2 more bytes for DataChunk Size field
-				short dst_base = om.createObject(OUT_OBJECT_CLA, OUT_OBJECT_ID,
-						(short) (size + 2), getCurrentACL(), (short) 0);
+				short dst_base = om.createObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, (short) (size + 2), getCurrentACL(),
+						(short) 0);
 				if (dst_base == MemoryManager.NULL_OFFSET)
 					ISOException.throwIt(SW_NO_MEMORY_LEFT);
 				mem.setShort(dst_base, size);
 				if (op == OP_PROCESS)
-					ciph.update(src_buff, (short) (src_base + 2), size, mem
-							.getBuffer(), (short) (dst_base + 2));
+					ciph.update(src_buff, (short) (src_base + 2), size, mem.getBuffer(), (short) (dst_base + 2));
 				else
 					/* op == OP_FINAL */
-					ciph.doFinal(src_buff, (short) (src_base + 2), size, mem
-							.getBuffer(), (short) (dst_base + 2));
+					ciph.doFinal(src_buff, (short) (src_base + 2), size, mem.getBuffer(), (short) (dst_base + 2));
 				if (data_location == DL_APDU) {
 					// Also copies the Short size information
-					Util.arrayCopyNonAtomic(mem.getBuffer(), dst_base, buffer,
-							(short) 0, (short) (size + 2));
+					Util.arrayCopyNonAtomic(mem.getBuffer(), dst_base, buffer, (short) 0, (short) (size + 2));
 					om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, true);
 					sendData(apdu, buffer, (short) 0, (short) (size + 2));
 				}
@@ -1140,8 +1113,7 @@ public class CardEdge extends javacard.framework.Applet implements
 	}
 
 	private void GenerateKeyPair(APDU apdu, byte[] buffer) {
-		short bytesLeft = Util
-				.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
+		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		byte alg_id = buffer[OFFSET_GENKEY_ALG];
@@ -1176,10 +1148,8 @@ public class CardEdge extends javacard.framework.Applet implements
 		byte alg_id = buffer[OFFSET_GENKEY_ALG];
 		short key_size = Util.getShort(buffer, OFFSET_GENKEY_SIZE);
 		byte options = buffer[OFFSET_GENKEY_OPTIONS];
-		RSAPublicKey pub_key = (RSAPublicKey) getKey(pub_key_nb,
-				KEY_RSA_PUBLIC, key_size);
-		PrivateKey prv_key = (PrivateKey) getKey(prv_key_nb,
-				alg_id == ALG_RSA ? KEY_RSA_PRIVATE : KEY_RSA_PRIVATE_CRT,
+		RSAPublicKey pub_key = (RSAPublicKey) getKey(pub_key_nb, KEY_RSA_PUBLIC, key_size);
+		PrivateKey prv_key = (PrivateKey) getKey(prv_key_nb, alg_id == ALG_RSA ? KEY_RSA_PRIVATE : KEY_RSA_PRIVATE_CRT,
 				key_size);
 		/* If we're going to overwrite a keyPair's contents, check ACL */
 		if (pub_key.isInitialized() && !authorizeKeyWrite(pub_key_nb))
@@ -1187,11 +1157,9 @@ public class CardEdge extends javacard.framework.Applet implements
 		if (prv_key.isInitialized() && !authorizeKeyWrite(prv_key_nb))
 			ISOException.throwIt(SW_UNAUTHORIZED);
 		/* Store private key ACL */
-		Util.arrayCopy(buffer, OFFSET_GENKEY_PRV_ACL, keyACLs,
-				(short) (prv_key_nb * KEY_ACL_SIZE), KEY_ACL_SIZE);
+		Util.arrayCopy(buffer, OFFSET_GENKEY_PRV_ACL, keyACLs, (short) (prv_key_nb * KEY_ACL_SIZE), KEY_ACL_SIZE);
 		/* Store public key ACL */
-		Util.arrayCopy(buffer, OFFSET_GENKEY_PUB_ACL, keyACLs,
-				(short) (pub_key_nb * KEY_ACL_SIZE), KEY_ACL_SIZE);
+		Util.arrayCopy(buffer, OFFSET_GENKEY_PUB_ACL, keyACLs, (short) (pub_key_nb * KEY_ACL_SIZE), KEY_ACL_SIZE);
 		switch (options) {
 		case OPT_DEFAULT:
 			/*
@@ -1203,10 +1171,8 @@ public class CardEdge extends javacard.framework.Applet implements
 				pub_key.clearKey();
 			break;
 		case OPT_RSA_PUB_EXP:
-			short exp_length = Util.getShort(buffer,
-					OFFSET_GENKEY_RSA_PUB_EXP_LENGTH);
-			pub_key.setExponent(buffer, OFFSET_GENKEY_RSA_PUB_EXP_VALUE,
-					exp_length);
+			short exp_length = Util.getShort(buffer, OFFSET_GENKEY_RSA_PUB_EXP_LENGTH);
+			pub_key.setExponent(buffer, OFFSET_GENKEY_RSA_PUB_EXP_VALUE, exp_length);
 			break;
 		default:
 			ISOException.throwIt(SW_INVALID_PARAMETER);
@@ -1237,16 +1203,14 @@ public class CardEdge extends javacard.framework.Applet implements
 	private void ImportKey(APDU apdu, byte[] buffer) {
 		if (buffer[ISO7816.OFFSET_P2] != (byte) 0x00)
 			ISOException.throwIt(SW_INCORRECT_P2);
-		short bytesLeft = Util
-				.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
+		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		byte key_nb = buffer[ISO7816.OFFSET_P1];
 		if ((key_nb < 0) || (key_nb >= MAX_NUM_KEYS))
 			ISOException.throwIt(SW_INCORRECT_P1);
 		/* If we're going to overwrite a key contents, check ACL */
-		if ((keys[key_nb] != null) && keys[key_nb].isInitialized()
-				&& !authorizeKeyWrite(key_nb))
+		if ((keys[key_nb] != null) && keys[key_nb].isInitialized() && !authorizeKeyWrite(key_nb))
 			ISOException.throwIt(SW_UNAUTHORIZED);
 		// Get memory base offset of the input buffer
 		short base = om.getBaseAddress(IN_OBJECT_CLA, IN_OBJECT_ID);
@@ -1272,8 +1236,7 @@ public class CardEdge extends javacard.framework.Applet implements
 		short size;
 		switch (key_type) {
 		case KEY_RSA_PUBLIC:
-			RSAPublicKey rsa_pub_key = (RSAPublicKey) getKey(key_nb, key_type,
-					key_size);
+			RSAPublicKey rsa_pub_key = (RSAPublicKey) getKey(key_nb, key_type, key_size);
 			if (avail < 2)
 				ISOException.throwIt(SW_INVALID_PARAMETER);
 			size = mem.getShort(base);
@@ -1295,8 +1258,7 @@ public class CardEdge extends javacard.framework.Applet implements
 			avail -= size;
 			break;
 		case KEY_RSA_PRIVATE:
-			RSAPrivateKey rsa_prv_key = (RSAPrivateKey) getKey(key_nb,
-					key_type, key_size);
+			RSAPrivateKey rsa_prv_key = (RSAPrivateKey) getKey(key_nb, key_type, key_size);
 			if (avail < 2)
 				ISOException.throwIt(SW_INVALID_PARAMETER);
 			size = mem.getShort(base);
@@ -1318,8 +1280,7 @@ public class CardEdge extends javacard.framework.Applet implements
 			avail -= size;
 			break;
 		case KEY_RSA_PRIVATE_CRT:
-			RSAPrivateCrtKey rsa_prv_key_crt = (RSAPrivateCrtKey) getKey(
-					key_nb, key_type, key_size);
+			RSAPrivateCrtKey rsa_prv_key_crt = (RSAPrivateCrtKey) getKey(key_nb, key_type, key_size);
 			if (avail < 2)
 				ISOException.throwIt(SW_INVALID_PARAMETER);
 			size = mem.getShort(base);
@@ -1395,8 +1356,7 @@ public class CardEdge extends javacard.framework.Applet implements
 	private void ExportKey(APDU apdu, byte[] buffer) {
 		if (buffer[ISO7816.OFFSET_P2] != (byte) 0x00)
 			ISOException.throwIt(SW_INCORRECT_P2);
-		short bytesLeft = Util
-				.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
+		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		byte key_nb = buffer[ISO7816.OFFSET_P1];
@@ -1411,8 +1371,7 @@ public class CardEdge extends javacard.framework.Applet implements
 		// Destroy output object if already exists
 		om.destroyObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, true);
 		// Automatically throws SW_NO_MEMORY_LEFT
-		short base = om.createObjectMax(OUT_OBJECT_CLA, OUT_OBJECT_ID,
-				getCurrentACL(), (short) 0);
+		short base = om.createObjectMax(OUT_OBJECT_CLA, OUT_OBJECT_ID, getCurrentACL(), (short) 0);
 		short buffer_size = om.getSizeFromAddress(base);
 		short avail = buffer_size; /*
 									 * Initially holds buffer size, after is
@@ -1526,8 +1485,7 @@ public class CardEdge extends javacard.framework.Applet implements
 		}
 		// Eventually clamp buffer to make the export object the exact
 		// size of the exported key blob
-		om.clampObject(OUT_OBJECT_CLA, OUT_OBJECT_ID,
-				(short) (buffer_size - avail));
+		om.clampObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, (short) (buffer_size - avail));
 	}
 
 	private void CreatePIN(APDU apdu, byte[] buffer) {
@@ -1549,18 +1507,15 @@ public class CardEdge extends javacard.framework.Applet implements
 		byte pin_size = buffer[ISO7816.OFFSET_CDATA];
 		if (avail < (short) (1 + pin_size + 1))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
-		if (!CheckPINPolicy(buffer, (short) (ISO7816.OFFSET_CDATA + 1),
-				pin_size))
+		if (!CheckPINPolicy(buffer, (short) (ISO7816.OFFSET_CDATA + 1), pin_size))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		byte ucode_size = buffer[(short) (ISO7816.OFFSET_CDATA + 1 + pin_size)];
 		if (avail != (short) (1 + pin_size + 1 + ucode_size))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
-		if (!CheckPINPolicy(buffer, (short) (ISO7816.OFFSET_CDATA + 1
-				+ pin_size + 1), ucode_size))
+		if (!CheckPINPolicy(buffer, (short) (ISO7816.OFFSET_CDATA + 1 + pin_size + 1), ucode_size))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		pins[pin_nb] = new OwnerPIN(num_tries, pinMaxSize);
-		pins[pin_nb].update(buffer, (short) (ISO7816.OFFSET_CDATA + 1),
-				pin_size);
+		pins[pin_nb].update(buffer, (short) (ISO7816.OFFSET_CDATA + 1), pin_size);
 		ublk_pins[pin_nb] = new OwnerPIN((byte) 3, pinMaxSize);
 		// Recycle variable pin_size
 		pin_size = (byte) (ISO7816.OFFSET_CDATA + 1 + pin_size + 1);
@@ -1619,14 +1574,12 @@ public class CardEdge extends javacard.framework.Applet implements
 		byte pin_size = buffer[ISO7816.OFFSET_CDATA];
 		if (avail < (short) (1 + pin_size + 1))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
-		if (!CheckPINPolicy(buffer, (short) (ISO7816.OFFSET_CDATA + 1),
-				pin_size))
+		if (!CheckPINPolicy(buffer, (short) (ISO7816.OFFSET_CDATA + 1), pin_size))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		byte new_pin_size = buffer[(short) (ISO7816.OFFSET_CDATA + 1 + pin_size)];
 		if (avail < (short) (1 + pin_size + 1 + new_pin_size))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
-		if (!CheckPINPolicy(buffer, (short) (ISO7816.OFFSET_CDATA + 1
-				+ pin_size + 1), new_pin_size))
+		if (!CheckPINPolicy(buffer, (short) (ISO7816.OFFSET_CDATA + 1 + pin_size + 1), new_pin_size))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		if (pin.getTriesRemaining() == (byte) 0x00)
 			ISOException.throwIt(SW_IDENTITY_BLOCKED);
@@ -1634,8 +1587,7 @@ public class CardEdge extends javacard.framework.Applet implements
 			LogoutIdentity(pin_nb);
 			ISOException.throwIt(SW_AUTH_FAILED);
 		}
-		pin.update(buffer, (short) (ISO7816.OFFSET_CDATA + 1 + pin_size + 1),
-				new_pin_size);
+		pin.update(buffer, (short) (ISO7816.OFFSET_CDATA + 1 + pin_size + 1), new_pin_size);
 		// JC specifies this resets the validated flag. So we do.
 		logged_ids &= (short) ((short) 0xFFFF ^ (0x01 << pin_nb));
 	}
@@ -1671,8 +1623,7 @@ public class CardEdge extends javacard.framework.Applet implements
 	}
 
 	private void CreateObject(APDU apdu, byte[] buffer) {
-		short bytesLeft = Util
-				.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
+		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		if ((create_object_ACL == (byte) 0xFF)
@@ -1687,8 +1638,7 @@ public class CardEdge extends javacard.framework.Applet implements
 			ISOException.throwIt(SW_INCORRECT_P2);
 		// Retrieve Object ID.
 		short obj_class = Util.getShort(buffer, ISO7816.OFFSET_CDATA);
-		short obj_id = Util.getShort(buffer,
-				(short) (ISO7816.OFFSET_CDATA + (short) 2));
+		short obj_id = Util.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + (short) 2));
 		// Check if object exists
 		if (om.exists(obj_class, obj_id))
 			ISOException.throwIt(SW_OBJECT_EXISTS);
@@ -1702,26 +1652,22 @@ public class CardEdge extends javacard.framework.Applet implements
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		// Actually create object
 		om.createObject(obj_class, obj_id,
-				// Skip 2 M.S.Bytes of Size (only handle short sizes)
-				Util.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + 6)),
-				buffer, (short) (ISO7816.OFFSET_CDATA + 8));
+		// Skip 2 M.S.Bytes of Size (only handle short sizes)
+				Util.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + 6)), buffer, (short) (ISO7816.OFFSET_CDATA + 8));
 	}
 
 	private void DeleteObject(APDU apdu, byte[] buffer) {
 		if (buffer[ISO7816.OFFSET_P1] != (byte) 0x00)
 			ISOException.throwIt(SW_INCORRECT_P1);
-		if ((buffer[ISO7816.OFFSET_P2] != (byte) 0x00)
-				&& (buffer[ISO7816.OFFSET_P2] != (byte) 0x01))
+		if ((buffer[ISO7816.OFFSET_P2] != (byte) 0x00) && (buffer[ISO7816.OFFSET_P2] != (byte) 0x01))
 			ISOException.throwIt(SW_INCORRECT_P2);
-		short bytesLeft = Util
-				.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
+		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		if (bytesLeft != (short) 0x04)
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		short obj_class = Util.getShort(buffer, ISO7816.OFFSET_CDATA);
-		short obj_id = Util.getShort(buffer,
-				(short) (ISO7816.OFFSET_CDATA + (short) 2));
+		short obj_id = Util.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + (short) 2));
 		// TODO: Here there are 2 object lookups. Optimize, please !
 		// (single destroy function with logged_ids param)
 		short base = om.getBaseAddress(obj_class, obj_id);
@@ -1741,20 +1687,16 @@ public class CardEdge extends javacard.framework.Applet implements
 			ISOException.throwIt(SW_INCORRECT_P1);
 		if (buffer[ISO7816.OFFSET_P2] != (byte) 0x00)
 			ISOException.throwIt(SW_INCORRECT_P2);
-		short bytesLeft = Util
-				.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
+		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		if (bytesLeft != (short) 9)
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		short obj_class = Util.getShort(buffer, ISO7816.OFFSET_CDATA);
-		short obj_id = Util.getShort(buffer,
-				(short) (ISO7816.OFFSET_CDATA + (short) 2));
+		short obj_id = Util.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + (short) 2));
 		// Skip 2 M.S.Bytes of the offset
-		short offset = Util.getShort(buffer,
-				(short) (ISO7816.OFFSET_CDATA + (short) 6));
-		short size = Util.makeShort((byte) 0x00,
-				buffer[(short) ISO7816.OFFSET_CDATA + (short) 8]);
+		short offset = Util.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + (short) 6));
+		short size = Util.makeShort((byte) 0x00, buffer[(short) ISO7816.OFFSET_CDATA + (short) 8]);
 		short base = om.getBaseAddress(obj_class, obj_id);
 		// Verify that object exists
 		if (base == MemoryManager.NULL_OFFSET)
@@ -1778,18 +1720,14 @@ public class CardEdge extends javacard.framework.Applet implements
 			ISOException.throwIt(SW_INCORRECT_P1);
 		if (buffer[ISO7816.OFFSET_P2] != (byte) 0x00)
 			ISOException.throwIt(SW_INCORRECT_P2);
-		short bytesLeft = Util
-				.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
+		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		short obj_class = Util.getShort(buffer, ISO7816.OFFSET_CDATA);
-		short obj_id = Util
-				.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + 2));
+		short obj_id = Util.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + 2));
 		// Skip 2 M.S.Bytes of the offset
-		short offset = Util
-				.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + 6));
-		short size = Util.makeShort((byte) 0x00,
-				buffer[(short) (ISO7816.OFFSET_CDATA + 8)]);
+		short offset = Util.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + 6));
+		short size = Util.makeShort((byte) 0x00, buffer[(short) (ISO7816.OFFSET_CDATA + 8)]);
 		short base = om.getBaseAddress(obj_class, obj_id);
 		// Verify that object exists
 		if (base == MemoryManager.NULL_OFFSET)
@@ -1804,8 +1742,7 @@ public class CardEdge extends javacard.framework.Applet implements
 		if ((short) (offset + size) > om.getSizeFromAddress(base))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		// Update object data
-		mem.setBytes(base, offset, buffer, (short) (ISO7816.OFFSET_CDATA + 9),
-				size);
+		mem.setBytes(base, offset, buffer, (short) (ISO7816.OFFSET_CDATA + 9), size);
 	}
 
 	private void LogOutAll() {
@@ -1852,8 +1789,7 @@ public class CardEdge extends javacard.framework.Applet implements
 		else
 			found = om.getNextRecord(buffer, (short) 0);
 		if (found)
-			apdu.setOutgoingAndSend((short) 0,
-					(short) ObjectManager.RECORD_SIZE);
+			apdu.setOutgoingAndSend((short) 0, (short) ObjectManager.RECORD_SIZE);
 		else
 			ISOException.throwIt(SW_SEQUENCE_END);
 	}
@@ -1862,16 +1798,14 @@ public class CardEdge extends javacard.framework.Applet implements
 		// Checking P2
 		if (buffer[ISO7816.OFFSET_P2] != (byte) 0x00)
 			ISOException.throwIt(SW_INCORRECT_P2);
-		short expectedBytes = Util.makeShort((byte) 0x00,
-				buffer[ISO7816.OFFSET_LC]);
+		short expectedBytes = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (expectedBytes != (short) 0x0B)
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		if (buffer[ISO7816.OFFSET_P1] == LIST_OPT_RESET)
 			key_it = (byte) 0;
 		else if (buffer[ISO7816.OFFSET_P1] != LIST_OPT_NEXT)
 			ISOException.throwIt(SW_INCORRECT_P1);
-		while ((key_it < MAX_NUM_KEYS)
-				&& ((keys[key_it] == null) || !keys[key_it].isInitialized()))
+		while ((key_it < MAX_NUM_KEYS) && ((keys[key_it] == null) || !keys[key_it].isInitialized()))
 			key_it++;
 		if (key_it < MAX_NUM_KEYS) {
 			Key key = keys[key_it];
@@ -1879,8 +1813,7 @@ public class CardEdge extends javacard.framework.Applet implements
 			buffer[(short) 1] = getKeyType(key);
 			buffer[(short) 2] = (byte) 0xFF; // No partner information available
 			Util.setShort(buffer, (short) 3, key.getSize());
-			Util.arrayCopyNonAtomic(keyACLs, (short) (key_it * KEY_ACL_SIZE),
-					buffer, (short) 5, KEY_ACL_SIZE);
+			Util.arrayCopyNonAtomic(keyACLs, (short) (key_it * KEY_ACL_SIZE), buffer, (short) 5, KEY_ACL_SIZE);
 			// Advance iterator
 			key_it++;
 			apdu.setOutgoingAndSend((short) 0, (short) (5 + KEY_ACL_SIZE));
@@ -1890,15 +1823,13 @@ public class CardEdge extends javacard.framework.Applet implements
 	private void GetChallenge(APDU apdu, byte[] buffer) {
 		if (buffer[ISO7816.OFFSET_P1] != (byte) 0x00)
 			ISOException.throwIt(SW_INCORRECT_P1);
-		short bytesLeft = Util
-				.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
+		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		if (bytesLeft < 4)
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		short size = Util.getShort(buffer, ISO7816.OFFSET_CDATA);
-		short seed_size = Util.getShort(buffer,
-				(short) (ISO7816.OFFSET_CDATA + 2));
+		short seed_size = Util.getShort(buffer, (short) (ISO7816.OFFSET_CDATA + 2));
 		if (bytesLeft != (short) (seed_size + 4))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		byte data_loc = buffer[ISO7816.OFFSET_P2];
@@ -1907,13 +1838,12 @@ public class CardEdge extends javacard.framework.Applet implements
 		if (randomData == null)
 			randomData = RandomData.getInstance(RandomData.ALG_SECURE_RANDOM);
 		if (seed_size != (short) 0x0000)
-			randomData.setSeed(buffer, (short) (ISO7816.OFFSET_CDATA + 4),
-					seed_size);
+			randomData.setSeed(buffer, (short) (ISO7816.OFFSET_CDATA + 4), seed_size);
 		// Allow size = 0 for only seeding purposes
 		if (size != (short) 0x0000) {
 			// Automatically throws exception if no memory
-			short base = om.createObject(OUT_OBJECT_CLA, OUT_OBJECT_ID,
-					(short) (size + 2), getRestrictedACL(), (short) 0);
+			short base = om.createObject(OUT_OBJECT_CLA, OUT_OBJECT_ID, (short) (size + 2), getRestrictedACL(),
+					(short) 0);
 			mem.setShort(base, size);
 			randomData.generateData(mem.getBuffer(), (short) (base + 2), size);
 			/*
@@ -1937,13 +1867,11 @@ public class CardEdge extends javacard.framework.Applet implements
 	private void ExternalAuthenticate(APDU apdu, byte[] buffer) {
 		if (buffer[ISO7816.OFFSET_P2] != (byte) 0x00)
 			ISOException.throwIt(SW_INCORRECT_P2);
-		short bytesLeft = Util
-				.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
+		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		byte key_nb = buffer[ISO7816.OFFSET_P1];
-		if ((key_nb < 0) || (key_nb >= MAX_NUM_AUTH_KEYS)
-				|| (keys[key_nb] == null))
+		if ((key_nb < 0) || (key_nb >= MAX_NUM_AUTH_KEYS) || (keys[key_nb] == null))
 			ISOException.throwIt(SW_INCORRECT_P1);
 		if (bytesLeft < 3)
 			ISOException.throwIt(SW_INVALID_PARAMETER);
@@ -2031,16 +1959,14 @@ public class CardEdge extends javacard.framework.Applet implements
 			short temp = mem.alloc(chall_size);
 			if (temp == MemoryManager.NULL_OFFSET)
 				ISOException.throwIt(SW_NO_MEMORY_LEFT);
-			short written_bytes = ciph.doFinal(src_buffer,
-					(short) (src_offset + 2), size, mem.getBuffer(), temp);
+			short written_bytes = ciph.doFinal(src_buffer, (short) (src_offset + 2), size, mem.getBuffer(), temp);
 			/*
 			 * JC specifies that, when decrypting, padding bytes are cut out *
 			 * so after a decrypt we should get the same size as the challenge*
 			 * and they should be less than provided encrypted data
 			 */
 			if ((written_bytes == chall_size)
-					&& (Util.arrayCompare(mem.getBuffer(), temp, mem
-							.getBuffer(), (short) (chall_base + 2), chall_size) == (byte) 0))
+					&& (Util.arrayCompare(mem.getBuffer(), temp, mem.getBuffer(), (short) (chall_base + 2), chall_size) == (byte) 0))
 				result = true;
 			sendData(apdu, mem.getBuffer(), temp, written_bytes);
 			mem.free(temp);
@@ -2094,7 +2020,7 @@ public class CardEdge extends javacard.framework.Applet implements
 		Util.setShort(buffer, pos, (short) 0x00); // Total mem M.S.
 		pos += (short) 2;
 		Util.setShort(buffer, pos, (short) mem.getBuffer().length); // Total mem
-																	// L.S.
+		// L.S.
 		pos += (short) 2;
 		Util.setShort(buffer, pos, (short) 0x00); // Free mem M.S.
 		pos += (short) 2;

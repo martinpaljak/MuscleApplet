@@ -92,8 +92,7 @@ public class ObjectManager {
 	 * @return The memory base address for the object. It can be used in
 	 *         successive calls to xxxFromAddress() methods.
 	 */
-	public short createObject(short type, short id, short size, byte[] acl_buf,
-			short acl_offset) {
+	public short createObject(short type, short id, short size, byte[] acl_buf, short acl_offset) {
 		/* Allocate memory for new object */
 		short base = mem.alloc((short) (size + OBJ_HEADER_SIZE));
 		if (base == MemoryManager.NULL_OFFSET)
@@ -114,8 +113,7 @@ public class ObjectManager {
 	}
 
 	/** Creates an object with the maximum available size */
-	public short createObjectMax(short type, short id, byte[] acl_buf,
-			short acl_offset) {
+	public short createObjectMax(short type, short id, byte[] acl_buf, short acl_offset) {
 		short obj_size = mem.getMaxSize();
 		if (obj_size == (short) 0)
 			ISOException.throwIt(SW_NO_MEMORY_LEFT);
@@ -123,8 +121,7 @@ public class ObjectManager {
 		 * The object's real size must take into account that * extra bytes are
 		 * needed for the header
 		 */
-		return createObject(type, id, (short) (obj_size - OBJ_HEADER_SIZE),
-				acl_buf, acl_offset);
+		return createObject(type, id, (short) (obj_size - OBJ_HEADER_SIZE), acl_buf, acl_offset);
 	}
 
 	/**
@@ -166,8 +163,7 @@ public class ObjectManager {
 	 *            CardEdge.logged_ids
 	 */
 	public boolean authorizeReadFromAddress(short base, short logged_ids) {
-		return authorizeOp(mem.getShort(base,
-				(short) (OBJ_H_ACL - OBJ_HEADER_SIZE)), logged_ids);
+		return authorizeOp(mem.getShort(base, (short) (OBJ_H_ACL - OBJ_HEADER_SIZE)), logged_ids);
 	}
 
 	/**
@@ -180,8 +176,7 @@ public class ObjectManager {
 	 *            CardEdge.logged_ids
 	 */
 	public boolean authorizeWriteFromAddress(short base, short logged_ids) {
-		return authorizeOp(mem.getShort(base,
-				(short) (OBJ_H_ACL + (short) 2 - OBJ_HEADER_SIZE)), logged_ids);
+		return authorizeOp(mem.getShort(base, (short) (OBJ_H_ACL + (short) 2 - OBJ_HEADER_SIZE)), logged_ids);
 	}
 
 	/**
@@ -194,8 +189,7 @@ public class ObjectManager {
 	 *            CardEdge.logged_ids
 	 */
 	public boolean authorizeDeleteFromAddress(short base, short logged_ids) {
-		return authorizeOp(mem.getShort(base,
-				(short) (OBJ_H_ACL + (short) 4 - OBJ_HEADER_SIZE)), logged_ids);
+		return authorizeOp(mem.getShort(base, (short) (OBJ_H_ACL + (short) 4 - OBJ_HEADER_SIZE)), logged_ids);
 	}
 
 	/**
@@ -244,8 +238,7 @@ public class ObjectManager {
 		short prev = MemoryManager.NULL_OFFSET;
 		boolean found = false;
 		while ((!found) && (base != MemoryManager.NULL_OFFSET)) {
-			if ((mem.getShort(base, OBJ_H_CLASS) == type)
-					&& (mem.getShort(base, OBJ_H_ID) == id))
+			if ((mem.getShort(base, OBJ_H_CLASS) == type) && (mem.getShort(base, OBJ_H_ID) == id))
 				found = true;
 			else {
 				prev = base;
@@ -261,9 +254,8 @@ public class ObjectManager {
 			}
 			// Zero memory if required
 			if (secure)
-				Util.arrayFillNonAtomic(mem.getBuffer(),
-						(short) (base + OBJ_HEADER_SIZE), mem.getShort(base,
-								OBJ_H_SIZE), (byte) 0x00);
+				Util.arrayFillNonAtomic(mem.getBuffer(), (short) (base + OBJ_HEADER_SIZE), mem.getShort(base,
+						OBJ_H_SIZE), (byte) 0x00);
 
 			// Free memory
 			mem.free(base);
@@ -293,8 +285,7 @@ public class ObjectManager {
 		 */
 		short base = obj_list_head;
 		while (base != MemoryManager.NULL_OFFSET) {
-			if ((mem.getShort(base, OBJ_H_CLASS) == type)
-					&& (mem.getShort(base, OBJ_H_ID) == id))
+			if ((mem.getShort(base, OBJ_H_CLASS) == type) && (mem.getShort(base, OBJ_H_ID) == id))
 				return base;
 			base = mem.getShort(base, OBJ_H_NEXT);
 		}
@@ -383,11 +374,9 @@ public class ObjectManager {
 		// Setting Size's M.S.Short to zero.
 		Util.setShort(buffer, (short) (offset + 4), (short) 0);
 		// Setting Size's L.S.Short
-		Util.setShort(buffer, (short) (offset + 6), mem.getShort(it,
-				(short) OBJ_H_SIZE));
+		Util.setShort(buffer, (short) (offset + 6), mem.getShort(it, (short) OBJ_H_SIZE));
 		// Setting ACL
-		Util.arrayCopyNonAtomic(mem.getBuffer(), (short) (it + OBJ_H_ACL),
-				buffer, (short) (offset + 8), OBJ_ACL_SIZE);
+		Util.arrayCopyNonAtomic(mem.getBuffer(), (short) (it + OBJ_H_ACL), buffer, (short) (offset + 8), OBJ_ACL_SIZE);
 		// Advance iterator
 		it = mem.getShort(it, OBJ_H_NEXT);
 		return true;
@@ -403,8 +392,8 @@ public class ObjectManager {
 	 * @return True if the ACLs are equal
 	 */
 	public boolean compareACLFromAddress(short base, byte[] acl) {
-		return (Util.arrayCompare(mem.getBuffer(), (short) (base
-				- OBJ_HEADER_SIZE + OBJ_H_ACL), acl, (short) 0, OBJ_ACL_SIZE) == (byte) 0);
+		return (Util.arrayCompare(mem.getBuffer(), (short) (base - OBJ_HEADER_SIZE + OBJ_H_ACL), acl, (short) 0,
+				OBJ_ACL_SIZE) == (byte) 0);
 	}
 
 } // class MemoryManager

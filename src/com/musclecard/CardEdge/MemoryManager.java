@@ -34,7 +34,7 @@ import javacard.framework.Util;
 public class MemoryManager {
 	/** Special offset value used as invalid offset */
 	public final static short NULL_OFFSET = (short) 0xFFFF; // Also used as End
-															// Of List
+	// Of List
 	private final static byte NODE_SIZE = (byte) 4;
 
 	// All the available memory as a byte array
@@ -275,15 +275,13 @@ public class MemoryManager {
 	public boolean realloc(short offset, short new_size) {
 		short actual_size = Util.getShort(ptr, (short) (offset - 2));
 		new_size += (short) 2;
-		if ((new_size < (short) (1 + 2))
-				|| ((short) (actual_size - new_size) < NODE_SIZE))
+		if ((new_size < (short) (1 + 2)) || ((short) (actual_size - new_size) < NODE_SIZE))
 			// Cannot free any memory (really here there are issues...)
 			return false;
 		// Clamp this node
 		Util.setShort(ptr, (short) (offset - 2), new_size);
 		// Create a fake allocated node
-		Util.setShort(ptr, (short) (offset + new_size - 2),
-				(short) (actual_size - new_size));
+		Util.setShort(ptr, (short) (offset + new_size - 2), (short) (actual_size - new_size));
 		// Deallocate the freed memory
 		free((short) (offset + new_size));
 		return true;
@@ -405,10 +403,8 @@ public class MemoryManager {
 	 * @param size
 	 *            The number of bytes to be copied
 	 */
-	public void setBytes(short dst_base, short dst_offset, byte[] src_bytes,
-			short src_offset, short size) {
-		Util.arrayCopy(src_bytes, src_offset, ptr,
-				(short) (dst_base + dst_offset), size);
+	public void setBytes(short dst_base, short dst_offset, byte[] src_bytes, short src_offset, short size) {
+		Util.arrayCopy(src_bytes, src_offset, ptr, (short) (dst_base + dst_offset), size);
 	}
 
 	/**
@@ -426,10 +422,8 @@ public class MemoryManager {
 	 * @param size
 	 *            The number of bytes to be copied
 	 */
-	public void getBytes(byte[] dst_bytes, short dst_offset, short src_base,
-			short src_offset, short size) {
-		Util.arrayCopy(ptr, (short) (src_base + src_offset), dst_bytes,
-				dst_offset, size);
+	public void getBytes(byte[] dst_bytes, short dst_offset, short src_base, short src_offset, short size) {
+		Util.arrayCopy(ptr, (short) (src_base + src_offset), dst_bytes, dst_offset, size);
 	}
 
 	/**
