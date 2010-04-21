@@ -120,12 +120,7 @@ public class CardEdge extends javacard.framework.Applet implements
 	private final static byte MAX_KEY_TRIES = (byte) 5;
 
 	// Initial PIN 0 value
-	private static byte[] PIN_INIT_VALUE; /*
-										 * = { (byte) 0x30, (byte) 0x30, (byte)
-										 * 0x30, (byte) 0x30, (byte) 0x30,
-										 * (byte) 0x30, (byte) 0x30, (byte) 0x30
-										 * };
-										 */
+//	private static byte[] PIN_INIT_VALUE;
 
 	// Import/Export Object ID
 	private final static short IN_OBJECT_CLA = (short) 0xFFFF;
@@ -306,7 +301,7 @@ public class CardEdge extends javacard.framework.Applet implements
 
 	/*
 	 * KeyPair, Cipher and Signature objects * These are allocated on demand *
-	 * TODO: Here we could jave just 1 Object[] and * make proper casts when
+	 * TODO: Here we could have just 1 Object[] and * make proper casts when
 	 * needed
 	 */
 	private Cipher[] ciphers;
@@ -323,7 +318,7 @@ public class CardEdge extends javacard.framework.Applet implements
 	private byte[] recvBuffer;
 
 	/*
-	 * Logged identities: this is used for faster access * control, so we don't
+	 * Logged identities: this is used for faster access control, so we don't
 	 * have to ping each PIN object
 	 */
 	private short logged_ids;
@@ -339,30 +334,6 @@ public class CardEdge extends javacard.framework.Applet implements
 	 ****************************************/
 
 	private CardEdge(byte[] bArray, short bOffset, byte bLength) {
-		PIN_INIT_VALUE = new byte[8];
-
-		/* Muscle00 satisfies all current policies (if charset allows it) */
-		PIN_INIT_VALUE[0] = (byte) 'M';
-		PIN_INIT_VALUE[1] = (byte) 'u';
-		PIN_INIT_VALUE[2] = (byte) 's';
-		PIN_INIT_VALUE[3] = (byte) 'c';
-		PIN_INIT_VALUE[4] = (byte) 'l';
-		PIN_INIT_VALUE[5] = (byte) 'e';
-		PIN_INIT_VALUE[6] = (byte) '0';
-		PIN_INIT_VALUE[7] = (byte) '0';
-
-		/* If init pin code does not satisfy policies, internal error */
-		if (!CheckPINPolicy(PIN_INIT_VALUE, (short) 0,
-				(byte) PIN_INIT_VALUE.length))
-			ISOException.throwIt(SW_INTERNAL_ERROR);
-
-		ublk_pins = new OwnerPIN[MAX_NUM_PINS];
-		pins = new OwnerPIN[MAX_NUM_PINS];
-
-		// TODO: pass in starting PIN setting with instantiation
-		/* Setting initial PIN n.0 value */
-		pins[0] = new OwnerPIN((byte) 3, pinMaxSize);
-		pins[0].update(PIN_INIT_VALUE, (short) 0, (byte) PIN_INIT_VALUE.length);
 
 	} // end of the constructor
 
@@ -419,7 +390,7 @@ public class CardEdge extends javacard.framework.Applet implements
 		if ((buffer[ISO7816.OFFSET_CLA] == 0)
 				&& (buffer[ISO7816.OFFSET_INS] == (byte) 0xA4))
 			return;
-		// verify the reset of commands have the
+		// verify the rest of commands have the
 		// correct CLA byte, which specifies the
 		// command structure
 		if (buffer[ISO7816.OFFSET_CLA] != CardEdge_CLA)
@@ -616,13 +587,11 @@ public class CardEdge extends javacard.framework.Applet implements
 	/********** UTILITY FUNCTIONS **********/
 
 	/*
-	 * SendData() wraps the setGoing(), setLength(), .. stuff * that could be
+	 * SendData() wraps the setOutgoing(), setLength(), .. stuff * that could be
 	 * necessary to be fully JavaCard compliant.
 	 */
 	private void sendData(APDU apdu, byte[] data, short offset, short size) {
-
 		if (size > EXT_APDU_BUFFER_SIZE)
-
 			ISOException.throwIt(ISO7816.SW_WRONG_LENGTH);
 		apdu.setOutgoing();
 		apdu.setOutgoingLength(size);
@@ -672,9 +641,9 @@ public class CardEdge extends javacard.framework.Applet implements
 	}
 
 	/**
-	 * Retrieves the Key object to be used w/ the specified key number,* key
-	 * type (KEY_XX) and size. * If exists, check it has the proper key type *
-	 * If not, creates it. *
+	 * Retrieves the Key object to be used w/ the specified key number, key
+	 * type (KEY_XX) and size. If exists, check it has the proper key type
+	 * If not, creates it.
 	 * 
 	 * @return Retrieved Key object or throws SW_UNATUTHORIZED,
 	 *         SW_OPERATION_NOT_ALLOWED
