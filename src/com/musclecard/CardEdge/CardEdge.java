@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2001
  * BSD ?
@@ -22,6 +23,9 @@ import javacard.framework.OwnerPIN;
 import javacard.framework.SystemException;
 import javacard.framework.Util;
 import javacard.security.DESKey;
+import javacard.security.DSAKey;
+import javacard.security.DSAPrivateKey;
+import javacard.security.DSAPublicKey;
 import javacard.security.Key;
 import javacard.security.KeyBuilder;
 import javacard.security.KeyPair;
@@ -114,9 +118,6 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 
 	// Maximum external authentication tries per key
 	private final static byte MAX_KEY_TRIES = (byte) 5;
-
-	// Initial PIN 0 value
-	// private static byte[] PIN_INIT_VALUE;
 
 	// Import/Export Object ID
 	private final static short IN_OBJECT_CLA = (short) 0xFFFF;
@@ -677,11 +678,11 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 
 		case KEY_DSA_PUBLIC:
 
-			ISOException.throwIt(SW_UNSUPPORTED_FEATURE);
+			return KeyBuilder.TYPE_DSA_PUBLIC;
 
 		case KEY_DSA_PRIVATE:
 
-			ISOException.throwIt(SW_UNSUPPORTED_FEATURE);
+			return KeyBuilder.TYPE_DSA_PUBLIC;
 
 		case KEY_DES:
 
@@ -708,6 +709,11 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			return KEY_RSA_PRIVATE;
 		case KeyBuilder.TYPE_RSA_CRT_PRIVATE:
 			return KEY_RSA_PRIVATE_CRT;
+
+		case KeyBuilder.TYPE_DSA_PUBLIC:
+			return KEY_DSA_PUBLIC;
+		case KeyBuilder.TYPE_DSA_PRIVATE:
+			return KEY_DSA_PRIVATE;
 
 		case KeyBuilder.TYPE_DES:
 
@@ -913,8 +919,13 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 					break;
 				case KeyBuilder.TYPE_DSA_PUBLIC:
 				case KeyBuilder.TYPE_DSA_PRIVATE:
-					ISOException.throwIt(SW_UNSUPPORTED_FEATURE);
-					return;
+					if (ciph_mode == CM_DSA_SHA)
+						ciph_alg_id = Signature.ALG_DSA_SHA;
+					else {
+						ISOException.throwIt(SW_INVALID_PARAMETER);
+						return; // Compiler warning (ciph_alg_id)
+					}
+					break;
 				default:
 					// DSA Encryption/Decryption is not supported by JavaCard !!
 					ISOException.throwIt(SW_INCORRECT_ALG);
@@ -1123,7 +1134,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			GenerateKeyPairRSA(buffer);
 			break;
 		case ALG_DSA:
-			ISOException.throwIt(SW_UNSUPPORTED_FEATURE);
+			GenerateKeyPairDSA(buffer);
 			break;
 		/*
 		 * case ALG_DES: case ALG_3DES: case ALG_3DES3:
@@ -1198,6 +1209,127 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			ISOException.throwIt(SW_INTERNAL_ERROR);
 		// We Rely on genKeyPair() to make all necessary checks about types
 		kp.genKeyPair();
+	}
+
+	// Data has already been receive()ed
+	private void GenerateKeyPairDSA(byte[] buffer) {
+		byte prv_key_nb = buffer[ISO7816.OFFSET_P1];
+		if ((prv_key_nb < 0) || (prv_key_nb >= MAX_NUM_KEYS))
+			ISOException.throwIt(SW_INCORRECT_P1);
+		byte pub_key_nb = buffer[ISO7816.OFFSET_P2];
+		if ((pub_key_nb < 0) || (pub_key_nb >= MAX_NUM_KEYS))
+			ISOException.throwIt(SW_INCORRECT_P2);
+		byte alg_id = buffer[OFFSET_GENKEY_ALG];
+		short key_size = Util.getShort(buffer, OFFSET_GENKEY_SIZE);
+		byte options = buffer[OFFSET_GENKEY_OPTIONS];
+		if (pub_key_nb == prv_key_nb)
+			ISOException.throwIt(ISO7816.SW_INCORRECT_P1P2);
+		DSAPublicKey pub_key = (DSAPublicKey) getKey(pub_key_nb, KEY_DSA_PUBLIC, key_size);
+		DSAPrivateKey prv_key = (DSAPrivateKey) getKey(prv_key_nb, KEY_DSA_PRIVATE, key_size);
+		/* If we're going to overwrite a keyPair's contents, check ACL */
+		if (pub_key.isInitialized() && !authorizeKeyWrite(pub_key_nb))
+			ISOException.throwIt(SW_UNAUTHORIZED);
+		if (prv_key.isInitialized() && !authorizeKeyWrite(prv_key_nb))
+			ISOException.throwIt(SW_UNAUTHORIZED);
+		/* Store private key ACL */
+		Util.arrayCopy(buffer, OFFSET_GENKEY_PRV_ACL, keyACLs, (short) (prv_key_nb * KEY_ACL_SIZE), KEY_ACL_SIZE);
+		/* Store public key ACL */
+		Util.arrayCopy(buffer, OFFSET_GENKEY_PUB_ACL, keyACLs, (short) (pub_key_nb * KEY_ACL_SIZE), KEY_ACL_SIZE);
+		switch (options) {
+		case OPT_DEFAULT:
+			// As default params were specified, we have to clear the
+			// public key if already initialized, otherwise their params
+			// would be used.
+			if (pub_key.isInitialized())
+				pub_key.clearKey();
+			break;
+		case OPT_DSA_GPQ:
+			short base = om.getBaseAddress(IN_OBJECT_CLA, IN_OBJECT_ID);
+			if (base == MemoryManager.NULL_OFFSET)
+				ISOException.throwIt(SW_OBJECT_NOT_FOUND);
+			short avail = om.getSizeFromAddress(base);
+			if (avail < 2)
+				ISOException.throwIt(SW_INVALID_PARAMETER);
+			DSAGetGPQ(mem.getBuffer(), base, avail, pub_key);
+			om.destroyObject(IN_OBJECT_CLA, IN_OBJECT_ID, true);
+			break;
+		default:
+			ISOException.throwIt(SW_INVALID_PARAMETER);
+		}
+		/*
+		 * TODO: Migrate checks on KeyPair on the top, so we avoid resource
+		 * allocation on error conditions
+		 */
+		/*
+		 * If no keypair was previously used, ok. If different keypairs were
+		 * used, or for 1 key there is a keypair but the other key not, then
+		 * error If the same keypair object was used previously, check keypair
+		 * size & type
+		 */
+		if ((keyPairs[pub_key_nb] == null) && (keyPairs[prv_key_nb] == null)) {
+			keyPairs[pub_key_nb] = new KeyPair(pub_key, prv_key);
+			keyPairs[prv_key_nb] = keyPairs[pub_key_nb];
+		} else if (keyPairs[pub_key_nb] != keyPairs[prv_key_nb])
+			ISOException.throwIt(SW_OPERATION_NOT_ALLOWED);
+		KeyPair kp = keyPairs[pub_key_nb];
+		if ((kp.getPublic() != pub_key) || (kp.getPrivate() != prv_key))
+			// This should never happen with this Applet policies
+			ISOException.throwIt(SW_INTERNAL_ERROR);
+		// We Rely on genKeyPair() to make all necessary checks about types
+		try {
+			kp.genKeyPair();
+		} catch (Exception e) {
+			ISOException.throwIt(SW_UNSPECIFIED_ERROR);
+		}
+	}
+
+	/**
+	 * Reads parameters G, P, Q from a buffer and sets them in a DSA key.
+	 * 
+	 * @param buffer
+	 *            The buffer
+	 * @param base
+	 *            The offset in buffer[] where parameters start
+	 * @param avail
+	 *            The maximum number of bytes allowed to read in buffer[]. If it
+	 *            was not possible to read parameters within avail bytes
+	 *            starting from base, throw a DATA_INVALID exception.
+	 * @param key
+	 *            The destination DSAKey object.
+	 * @return The effective number of bytes read
+	 */
+	private short DSAGetGPQ(byte[] buffer, short base, short avail, DSAKey key) {
+		short size;
+		short orig_base = base;
+		if (avail < 2)
+			ISOException.throwIt(SW_INVALID_PARAMETER);
+		size = Util.getShort(buffer, base);
+		base += (short) 2; // Skip G Size
+		avail -= (short) 2;
+		if (avail < (short) (size + 2))
+			ISOException.throwIt(SW_INVALID_PARAMETER);
+		key.setG(buffer, base, size);
+		base += size; // Skip G Value
+		avail -= size;
+		// avail ok...
+		size = Util.getShort(buffer, base);
+		base += (short) 2; // Skip P Size
+		avail -= (short) 2;
+		if (avail < (short) (size + 2))
+			ISOException.throwIt(SW_INVALID_PARAMETER);
+		key.setP(buffer, base, size);
+		base += size; // Skip P Value
+		avail -= size;
+		// avail ok...
+		size = Util.getShort(buffer, base);
+		base += (short) 2; // Skip Q Size
+		avail -= (short) 2;
+		if (avail < size)
+			ISOException.throwIt(SW_INVALID_PARAMETER);
+		key.setQ(buffer, base, size);
+		base += size; // Skip Q Value
+		avail -= size;
+		return (short) (base - orig_base);
 	}
 
 	private void ImportKey(APDU apdu, byte[] buffer) {
@@ -1329,8 +1461,37 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			avail -= size;
 			break;
 		case KEY_DSA_PRIVATE:
+			DSAPrivateKey dsa_prv_key = (DSAPrivateKey) getKey(key_nb, key_type, key_size);
+			short num_bytes = DSAGetGPQ(mem.getBuffer(), base, avail, dsa_prv_key);
+			base += num_bytes;
+			avail -= num_bytes;
+			if (avail < 2)
+				ISOException.throwIt(SW_INVALID_PARAMETER);
+			size = mem.getShort(base);
+			base += (short) 2; // Skip X Size
+			avail -= (short) 2;
+			if (avail < size)
+				ISOException.throwIt(SW_INVALID_PARAMETER);
+			dsa_prv_key.setX(mem.getBuffer(), base, size);
+			base += size; // Skip X Value
+			avail -= size;
+			break;
 		case KEY_DSA_PUBLIC:
-			ISOException.throwIt(SW_UNSUPPORTED_FEATURE);
+			DSAPublicKey dsa_pub_key = (DSAPublicKey) getKey(key_nb, key_type, key_size);
+			num_bytes = DSAGetGPQ(mem.getBuffer(), base, avail, dsa_pub_key);
+			base += num_bytes;
+			avail -= num_bytes;
+			if (avail < 2)
+				ISOException.throwIt(SW_INVALID_PARAMETER);
+			size = mem.getShort(base);
+			base += (short) 2; // Skip Y Size
+			avail -= (short) 2;
+			if (avail < size)
+				ISOException.throwIt(SW_INVALID_PARAMETER);
+			dsa_pub_key.setY(mem.getBuffer(), base, size);
+			base += size; // Skip Y Value
+			avail -= size;
+			break;
 		case KEY_DES:
 		case KEY_3DES:
 		case KEY_3DES3:
@@ -1476,10 +1637,60 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			base += (short) (2 + size); // Skip P Size & Value
 			avail -= (short) (2 + size);
 			break;
-		/*
-		 * Nothing here. If DSA is disabled, you cannot ever have DSA keys to
-		 * export
-		 */
+		case KeyBuilder.TYPE_DSA_PUBLIC:
+			DSAPublicKey dsa_pub_key = (DSAPublicKey) key;
+			if (avail < bn_size)
+				ThrowDeleteObjects(SW_NO_MEMORY_LEFT);
+			size = dsa_pub_key.getG(mem.getBuffer(), (short) (base + 2));
+			mem.setShort(base, size);
+			base += (short) (2 + size); // Skip G Size & Value
+			avail -= (short) (2 + size);
+			if (avail < bn_size)
+				ThrowDeleteObjects(SW_NO_MEMORY_LEFT);
+			size = dsa_pub_key.getP(mem.getBuffer(), (short) (base + 2));
+			mem.setShort(base, size);
+			base += (short) (2 + size); // Skip P Size & Value
+			avail -= (short) (2 + size);
+			if (avail < bn_size)
+				ThrowDeleteObjects(SW_NO_MEMORY_LEFT);
+			size = dsa_pub_key.getQ(mem.getBuffer(), (short) (base + 2));
+			mem.setShort(base, size);
+			base += (short) (2 + size); // Skip Q Size & Value
+			avail -= (short) (2 + size);
+			if (avail < bn_size)
+				ThrowDeleteObjects(SW_NO_MEMORY_LEFT);
+			size = dsa_pub_key.getY(mem.getBuffer(), (short) (base + 2));
+			mem.setShort(base, size);
+			base += (short) (2 + size); // Skip Y Size & Value
+			avail -= (short) (2 + size);
+			break;
+		case KeyBuilder.TYPE_DSA_PRIVATE:
+			DSAPrivateKey dsa_prv_key = (DSAPrivateKey) key;
+			if (avail < bn_size)
+				ThrowDeleteObjects(SW_NO_MEMORY_LEFT);
+			size = dsa_prv_key.getG(mem.getBuffer(), (short) (base + 2));
+			mem.setShort(base, size);
+			base += (short) (2 + size); // Skip G Size & Value
+			avail -= (short) (2 + size);
+			if (avail < bn_size)
+				ThrowDeleteObjects(SW_NO_MEMORY_LEFT);
+			size = dsa_prv_key.getP(mem.getBuffer(), (short) (base + 2));
+			mem.setShort(base, size);
+			base += (short) (2 + size); // Skip P Size & Value
+			avail -= (short) (2 + size);
+			if (avail < bn_size)
+				ThrowDeleteObjects(SW_NO_MEMORY_LEFT);
+			size = dsa_prv_key.getQ(mem.getBuffer(), (short) (base + 2));
+			mem.setShort(base, size);
+			base += (short) (2 + size); // Skip Q Size & Value
+			avail -= (short) (2 + size);
+			if (avail < bn_size)
+				ThrowDeleteObjects(SW_NO_MEMORY_LEFT);
+			size = dsa_prv_key.getX(mem.getBuffer(), (short) (base + 2));
+			mem.setShort(base, size);
+			base += (short) (2 + size); // Skip X Size & Value
+			avail -= (short) (2 + size);
+			break;
 		default:
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		}
@@ -1975,19 +2186,20 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			byte jc_sign_alg;
 			switch (ciph_mode) {
 			case CM_DSA_SHA:
-				ISOException.throwIt(SW_UNSUPPORTED_FEATURE);
-				return;
+				if (key_type != KeyBuilder.TYPE_DSA_PUBLIC)
+					ISOException.throwIt(SW_INVALID_PARAMETER);
+				jc_sign_alg = Signature.ALG_DSA_SHA;
+				break;
 			default:
 				ISOException.throwIt(SW_INVALID_PARAMETER);
 				return; // Suppress compiler warning
 			}
-			// Signature sign = getSignature(key_nb, jc_sign_alg);
-			// sign.init(key, Signature.MODE_VERIFY);
-			// if (sign.verify(mem.getBuffer(), (short) (chall_base + 2),
-			// chall_size,
-			// src_buffer, (short) (src_offset + 2), size))
-			// result = true;
-			// break;
+			Signature sign = getSignature(key_nb, jc_sign_alg);
+			sign.init(key, Signature.MODE_VERIFY);
+			if (sign.verify(mem.getBuffer(), (short) (chall_base + 2), chall_size, src_buffer,
+					(short) (src_offset + 2), size))
+				result = true;
+			break;
 		default:
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		}
