@@ -157,7 +157,7 @@ public class ObjectManager {
 	}
 
 	/**
-	 * Allow or unallow read on object given the logged identities
+	 * Allow or disallow read on object given the logged identities
 	 * 
 	 * @param base
 	 *            The object base address as returned from getBaseAddress()
