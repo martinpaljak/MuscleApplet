@@ -47,23 +47,7 @@ import javacardx.crypto.Cipher;
  * <li>How do transactions fit in the methods ?
  * <li>Where should we issue begin/end transaction ?
  * <li>Should we ever abort transaction ? Where ?
- * <li>Everytime there is an "if (avail < )" check, call ThrowDeleteObjects().
- * </ul>
- * NOTES:
- * <ul>
- * <li>C preprocessor flags
- * <ul>
- * <li>Encrytpion algorithms: WITH_RSA, WITH_DSA, WITH_DES, WITH_3DES
- * <li>ComputeCrypt directions: WITH_ENCRYPT, WITH_DECRYPT, WITH_SIGN
- * <li>Enable/Disable External Authenticate: WITH_EXT_AUTH
- * <li>Enable/Disable PIN Policy enforcement: WITH_PIN_POLICY
- * <li>Enable/Disable Extended APDU support: WITH_EXT_APDU
- * </ul>
- * <li>C preprocessor defines
- * <ul>
- * <li>JAVA_PACKAGE: The name of Java package for this Applet
- * <li>JAVA_APPLET: The name of Java class for the Applet
- * </ul>
+ * <li>Every time there is an "if (avail < )" check, call ThrowDeleteObjects().
  * </ul>
  */
 
