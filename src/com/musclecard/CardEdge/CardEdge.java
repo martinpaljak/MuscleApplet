@@ -881,7 +881,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			case DL_OBJECT:
 				src_buff = mem.getBuffer();
 				src_base = om.getBaseAddress(IN_OBJECT_CLA, IN_OBJECT_ID);
-				if (src_base == mem.NULL_OFFSET)
+				if (src_base == MemoryManager.NULL_OFFSET)
 					ISOException.throwIt(SW_OBJECT_NOT_FOUND);
 				src_avail = om.getSizeFromAddress(src_base);
 				break;
@@ -2102,7 +2102,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			break;
 		case DL_OBJECT:
 			src_offset = om.getBaseAddress(IN_OBJECT_CLA, IN_OBJECT_ID);
-			if (src_offset == mem.NULL_OFFSET)
+			if (src_offset == MemoryManager.NULL_OFFSET)
 				ISOException.throwIt(SW_OBJECT_NOT_FOUND);
 			src_buffer = mem.getBuffer();
 			src_avail = om.getSizeFromAddress(src_offset);
