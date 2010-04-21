@@ -15,11 +15,25 @@
 
 package com.musclecard.CardEdge;
 
-import javacard.framework.*;
-import javacard.security.*;
-import javacardx.crypto.*;
-
+import javacard.framework.APDU;
+import javacard.framework.ISO7816;
+import javacard.framework.ISOException;
+import javacard.framework.JCSystem;
+import javacard.framework.OwnerPIN;
+import javacard.framework.SystemException;
+import javacard.framework.Util;
+import javacard.security.DESKey;
+import javacard.security.Key;
+import javacard.security.KeyBuilder;
+import javacard.security.KeyPair;
+import javacard.security.PrivateKey;
+import javacard.security.RSAPrivateCrtKey;
+import javacard.security.RSAPrivateKey;
+import javacard.security.RSAPublicKey;
+import javacard.security.RandomData;
+import javacard.security.Signature;
 import javacardx.apdu.ExtendedLength;
+import javacardx.crypto.Cipher;
 
 /**
  * Implements MUSCLE's Card Edge Specification.
