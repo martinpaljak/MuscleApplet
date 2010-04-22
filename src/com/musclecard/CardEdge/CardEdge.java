@@ -106,7 +106,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 	 * Instruction codes *
 	 ****************************************/
 
-	// Keys' use and management
+	// Applet initialization
 	private final static byte INS_SETUP = (byte) 0x2A;
 
 	// Keys' use and management
@@ -136,7 +136,6 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 	private final static byte INS_LIST_KEYS = (byte) 0x3A;
 	private final static byte INS_GET_STATUS = (byte) 0x3C;
 
-	// TODO: Allocate error return codes
 
 	/** There have been memory problems on the card */
 	private final static short SW_NO_MEMORY_LEFT = ObjectManager.SW_NO_MEMORY_LEFT;
@@ -216,17 +215,9 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 	private final static byte LIST_OPT_RESET = (byte) 0x00;
 	private final static byte LIST_OPT_NEXT = (byte) 0x01;
 
-	private final static byte OPT_DEFAULT = (byte) 0x00; // For every algorithm:
-	// use default
-	// JavaCard
-	// generation
-	// parameters
-	private final static byte OPT_RSA_PUB_EXP = (byte) 0x01; // For RSA: provide
-	// public
-	// exponent
-	private final static byte OPT_DSA_GPQ = (byte) 0x02; // For DSA: provide
-	// p,q,g public key
-	// parameters
+	private final static byte OPT_DEFAULT = (byte) 0x00; // Use JC defaults
+	private final static byte OPT_RSA_PUB_EXP = (byte) 0x01; // RSA: provide public exponent
+	private final static byte OPT_DSA_GPQ = (byte) 0x02; // DSA: provide p,q,g public key parameters 
 
 	// Offsets in buffer[] for key generation
 	private final static short OFFSET_GENKEY_ALG = (short) (ISO7816.OFFSET_CDATA);
@@ -270,7 +261,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 	private KeyPair[] keyPairs;
 	private RandomData randomData; // RandomData class instance
 
-	// OwnerPIN objects, allocated on demand
+	// PIN and PUK objects, allocated on demand
 	private OwnerPIN[] pins, ublk_pins;
 
 	// Buffer for storing extended APDUs
@@ -293,8 +284,8 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 	 ****************************************/
 
 	private CardEdge(byte[] bArray, short bOffset, byte bLength) {
-
-	} // end of the constructor
+		// FIXME: something should be done already here, not only with setup APDU
+	}
 
 	public static void install(byte[] bArray, short bOffset, byte bLength) {
 		CardEdge wal = new CardEdge(bArray, bOffset, bLength);
@@ -303,7 +294,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			wal.register();
 		else
 			wal.register(bArray, (short) (bOffset + 1), (byte) (bArray[bOffset]));
-	} // end of install method
+	}
 
 	public boolean select() {
 		/*
@@ -317,7 +308,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 		}
 		LogOutAll();
 		return true;
-	}// end of select method
+	}
 
 	public void deselect() {
 		// Destroy the IO objects (if they exist)
@@ -395,9 +386,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			GetChallenge(apdu, buffer);
 			break;
 		case INS_EXT_AUTH:
-
 			ExternalAuthenticate(apdu, buffer);
-
 			break;
 		case INS_CREATE_OBJ:
 			CreateObject(apdu, buffer);
@@ -429,7 +418,12 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 		;
 	} // end of process method
 
-	/********** SETUP FUNCTION *********/
+
+	/** Setup APDU - initialize the applet
+	 * 
+	 * Incoming data:
+	 * PIN0 len + PIN0 + PUK0 len + PUK0 +
+	 */
 	private void setup(APDU apdu, byte[] buffer) {
 		short bytesLeft = Util.makeShort((byte) 0x00, buffer[ISO7816.OFFSET_LC]);
 		if (bytesLeft != apdu.setIncomingAndReceive())
