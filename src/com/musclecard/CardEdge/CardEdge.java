@@ -73,48 +73,10 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 	// = 268 bytes
 	private final static short EXT_APDU_BUFFER_SIZE = (short) 268;
 
-	/* Pin policies constants (OR-ed in var pinPolicies) */
-	/** Enable pin size check */
-	private final static byte PIN_POLICY_SIZE = (byte) 0x01;
-	/** Enable pin charset check */
-	private final static byte PIN_POLICY_CHARSET = (byte) 0x02;
-	/** Enable charset mixing check */
-	private final static byte PIN_POLICY_MIXED = (byte) 0x04;
-
-	/* Options for POLICY_CHARSET policy (OR-ed in var pinCharset) */
-
-	/** Numbers are allowed */
-	private final static byte PIN_CHARSET_NUMBERS = (byte) 0x01;
-	/** Upper case letters */
-	private final static byte PIN_CHARSET_UC_LETTERS = (byte) 0x02;
-	/** Lower case letters */
-	private final static byte PIN_CHARSET_LC_LETTERS = (byte) 0x04;
-	/** Punctuation symbols: , . ; : ? */
-	private final static byte PIN_CHARSET_PUNCT = (byte) 0x08;
-	/** Other binary codes (NUMBERS | OTHERS excludes LETTERS and PUNCT) */
-	private final static byte PIN_CHARSET_OTHERS = (byte) 0x80;
-
-	/* Options for POLICY_MIXED policy (OR-ed in var pinMixType) */
-
-	/** PIN must contain chars from at least 2 different char sets */
-	private final static byte PIN_MIXED_TWO = (byte) 0x01;
-	/** PIN must at least contain chars from both upper and lower case */
-	private final static byte PIN_MIXED_CASE = (byte) 0x02;
-	/** PIN must at least contain 1 char from each char set */
-	private final static byte PIN_MIXED_ALL = (byte) 0x04;
-
-	// Actually enforced PIN Policies
-	private final static byte pinPolicies = (byte) (PIN_POLICY_SIZE | PIN_POLICY_CHARSET | PIN_POLICY_MIXED);
-
 	// Minimum PIN size
-	private final static byte pinMinSize = (byte) 4;
+	private final static byte PIN_MIN_SIZE = (byte) 4;
 	// Maximum PIN size
-	private final static byte pinMaxSize = (byte) 16;
-
-	/* Pin policies parameters */
-	// PIN Charset
-	private final static byte pinCharset = (byte) (PIN_CHARSET_NUMBERS | PIN_CHARSET_UC_LETTERS | PIN_CHARSET_LC_LETTERS);
-	private final static byte pinMixType = (byte) PIN_MIXED_TWO;
+	private final static byte PIN_MAX_SIZE = (byte) 16;
 
 	// Maximum external authentication tries per key
 	private final static byte MAX_KEY_TRIES = (byte) 5;
@@ -497,7 +459,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 		if (!CheckPINPolicy(buffer, base, numBytes))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 
-		pins[0] = new OwnerPIN(pin_tries, pinMaxSize);
+		pins[0] = new OwnerPIN(pin_tries, PIN_MAX_SIZE);
 		pins[0].update(buffer, base, numBytes);
 
 		base += numBytes;
@@ -506,7 +468,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 		if (!CheckPINPolicy(buffer, base, numBytes))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 
-		ublk_pins[0] = new OwnerPIN(ublk_tries, pinMaxSize);
+		ublk_pins[0] = new OwnerPIN(ublk_tries, PIN_MAX_SIZE);
 		ublk_pins[0].update(buffer, base, numBytes);
 
 		base += numBytes;
@@ -518,7 +480,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 		if (!CheckPINPolicy(buffer, base, numBytes))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 
-		pins[1] = new OwnerPIN(pin_tries, pinMaxSize);
+		pins[1] = new OwnerPIN(pin_tries, PIN_MAX_SIZE);
 		pins[1].update(buffer, base, numBytes);
 
 		base += numBytes;
@@ -527,7 +489,7 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 		if (!CheckPINPolicy(buffer, base, numBytes))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 
-		ublk_pins[1] = new OwnerPIN(ublk_tries, pinMaxSize);
+		ublk_pins[1] = new OwnerPIN(ublk_tries, PIN_MAX_SIZE);
 		ublk_pins[1].update(buffer, base, numBytes);
 		base += numBytes;
 
@@ -780,52 +742,8 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 
 	/** Checks if PIN policies are satisfied for a PIN code */
 	private boolean CheckPINPolicy(byte[] pin_buffer, short pin_offset, byte pin_size) {
-		if ((pinPolicies & PIN_POLICY_SIZE) != (byte) 0x00) {
-			if ((pin_size < pinMinSize) || (pin_size > pinMaxSize))
-				return false;
-		}
-
-		short pin_limit = (short) (pin_offset + pin_size);
-		byte pin_mix = (byte) 0x00;
-		for (short i = pin_offset; i < pin_limit; i++) {
-			byte ch = pin_buffer[i];
-			if ((ch >= '0') && (ch <= '9'))
-				pin_mix |= PIN_CHARSET_NUMBERS;
-			else if ((ch >= 'A') && (ch <= 'Z'))
-				pin_mix |= PIN_CHARSET_UC_LETTERS;
-			else if ((ch >= 'a') && (ch <= 'z'))
-				pin_mix |= PIN_CHARSET_LC_LETTERS;
-			else if ((ch == ',') || (ch == '.') || (ch == '?') || (ch == ';') || (ch == ':'))
-				pin_mix |= PIN_CHARSET_PUNCT;
-			else
-				pin_mix |= PIN_CHARSET_OTHERS;
-		}
-		// ISOException.throwIt((short) ((short) 0x9D00 | pin_mix));
-		if ((byte) (pinPolicies & PIN_POLICY_CHARSET) != (byte) 0x00) {
-			/* Actual Pin Mix MUST NOT have flags external to the pinCharset */
-			if (!((byte) (pin_mix | pinCharset) == pinCharset))
-				return false;
-		}
-		if ((byte) (pinPolicies & PIN_POLICY_MIXED) != (byte) 0x00) {
-			if ((pinMixType & PIN_MIXED_TWO) != 0x00) {
-				byte pin_mix_cnt = (byte) 0x00;
-				for (byte x = (byte) 0x01; x != (byte) 0x00; x <<= (byte) 1) {
-					if ((byte) (pin_mix & x) == x)
-						pin_mix_cnt++;
-				}
-				if (pin_mix_cnt < (byte) 2)
-					return false;
-			}
-			if ((byte) (pinMixType & PIN_MIXED_CASE) != (byte) 0x00)
-				/* Actual Pin Mix MUST HAVE BOTH UC and LC LETTERS */
-				if (!(((byte) (pin_mix & PIN_CHARSET_UC_LETTERS) != (byte) 0x00) && ((byte) (pin_mix & PIN_CHARSET_UC_LETTERS) != (byte) 0x00)))
-					return false;
-			if ((byte) (pinMixType & PIN_MIXED_ALL) != (byte) 0x00)
-				/* Actual Pin Mix MUST HAVE ALL flags set */
-				if (!((byte) (pin_mix & pinMixType) == pinMixType))
-					return false;
-		}
-
+		if ((pin_size < PIN_MIN_SIZE) || (pin_size > PIN_MAX_SIZE))
+			return false;
 		return true;
 	}
 
@@ -1122,11 +1040,6 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 		case ALG_DSA:
 			GenerateKeyPairDSA(buffer);
 			break;
-		/*
-		 * case ALG_DES: case ALG_3DES: case ALG_3DES3:
-		 */
-		// JavaCard does not support on board
-		// symmetric key generation.
 		default:
 			ISOException.throwIt(SW_INCORRECT_ALG);
 		}
@@ -1205,7 +1118,6 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 		byte pub_key_nb = buffer[ISO7816.OFFSET_P2];
 		if ((pub_key_nb < 0) || (pub_key_nb >= MAX_NUM_KEYS))
 			ISOException.throwIt(SW_INCORRECT_P2);
-		byte alg_id = buffer[OFFSET_GENKEY_ALG];
 		short key_size = Util.getShort(buffer, OFFSET_GENKEY_SIZE);
 		byte options = buffer[OFFSET_GENKEY_OPTIONS];
 		if (pub_key_nb == prv_key_nb)
@@ -1711,9 +1623,9 @@ public class CardEdge extends javacard.framework.Applet implements ExtendedLengt
 			ISOException.throwIt(SW_INVALID_PARAMETER);
 		if (!CheckPINPolicy(buffer, (short) (ISO7816.OFFSET_CDATA + 1 + pin_size + 1), ucode_size))
 			ISOException.throwIt(SW_INVALID_PARAMETER);
-		pins[pin_nb] = new OwnerPIN(num_tries, pinMaxSize);
+		pins[pin_nb] = new OwnerPIN(num_tries, PIN_MAX_SIZE);
 		pins[pin_nb].update(buffer, (short) (ISO7816.OFFSET_CDATA + 1), pin_size);
-		ublk_pins[pin_nb] = new OwnerPIN((byte) 3, pinMaxSize);
+		ublk_pins[pin_nb] = new OwnerPIN((byte) 3, PIN_MAX_SIZE);
 		// Recycle variable pin_size
 		pin_size = (byte) (ISO7816.OFFSET_CDATA + 1 + pin_size + 1);
 		ublk_pins[pin_nb].update(buffer, pin_size, ucode_size);
