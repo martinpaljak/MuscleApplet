@@ -1,4 +1,5 @@
 # DO NOT use MuscleApplet!
 
 It is morally outdated and not standards based.
-If you need a "out of box" solution, try OpenPGP instead.
+
+The source code is still available in [AppletPlayground](https://github.com/martinpaljak/AppletPlayground)
